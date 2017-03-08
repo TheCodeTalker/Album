@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="4s5-bW-53k">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <scenes>
+        <!--View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="ViewController" customModule="MYAlbum" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="y3c-jy-aDJ"/>
+                        <viewControllerLayoutGuide type="bottom" id="wfy-db-euE"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-94" y="150"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="FGR-Sa-iQx">
+            <objects>
+                <viewController storyboardIdentifier="HomePage" id="9qf-Of-FMG" customClass="ViewController" customModule="MYAlbum" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="13n-Th-tte"/>
+                        <viewControllerLayoutGuide type="bottom" id="92P-qj-JWz"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="nFq-BX-rFS">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome ChitaRanjan" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aqS-91-DqF">
+                                <rect key="frame" x="16" y="46" width="343" height="26"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="21"/>
+                                <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Let's get started! Create your first album and share your story." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hfE-OW-a7k">
+                                <rect key="frame" x="46" y="88" width="283" height="41"/>
+                                <fontDescription key="fontDescription" type="system" weight="light" pointSize="17"/>
+                                <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2kJ-JV-ln8">
+                                <rect key="frame" x="16" y="236" width="343" height="40"/>
+                                <color key="backgroundColor" red="0.24313725489999999" green="0.78039215689999997" blue="0.64705882349999999" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="M89-UG-uyI"/>
+                                </constraints>
+                                <state key="normal" title="Start Creating Story">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="IbaOpenGallery:" destination="9qf-Of-FMG" eventType="touchUpInside" id="CLu-Xk-pbm"/>
+                                </connections>
+                            </button>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="aqS-91-DqF" firstAttribute="leading" secondItem="nFq-BX-rFS" secondAttribute="leadingMargin" id="03g-5M-uqo"/>
+                            <constraint firstItem="aqS-91-DqF" firstAttribute="top" secondItem="13n-Th-tte" secondAttribute="bottom" constant="26" id="E4O-to-bN2"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="hfE-OW-a7k" secondAttribute="trailing" constant="30" id="Nso-BJ-neL"/>
+                            <constraint firstItem="hfE-OW-a7k" firstAttribute="top" secondItem="aqS-91-DqF" secondAttribute="bottom" constant="16" id="SjP-Rj-fFv"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="aqS-91-DqF" secondAttribute="trailing" id="e8Y-Hs-pjc"/>
+                            <constraint firstItem="2kJ-JV-ln8" firstAttribute="top" secondItem="hfE-OW-a7k" secondAttribute="bottom" constant="106.5" id="env-A6-wa5"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="2kJ-JV-ln8" secondAttribute="leading" id="hMW-VZ-7U2"/>
+                            <constraint firstItem="hfE-OW-a7k" firstAttribute="leading" secondItem="nFq-BX-rFS" secondAttribute="leadingMargin" constant="30" id="pWf-GB-CEb"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="2kJ-JV-ln8" secondAttribute="trailing" id="ySh-ac-w1F"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="Guj-k8-b77"/>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="pcM-VW-tcp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1872.8" y="155.17241379310346"/>
+        </scene>
+        <!--Navigation Controller-->
+        <scene sceneID="UFk-sO-R5c">
+            <objects>
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="4s5-bW-53k" sceneMemberID="viewController">
+                    <toolbarItems/>
+                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="YGX-bD-UXe">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </navigationBar>
+                    <nil name="viewControllers"/>
+                    <connections>
+                        <segue destination="9qf-Of-FMG" kind="relationship" relationship="rootViewController" id="was-0x-fU2"/>
+                    </connections>
+                </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="g6S-2o-50c" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="933.60000000000002" y="155.17241379310346"/>
+        </scene>
+    </scenes>
+</document>
