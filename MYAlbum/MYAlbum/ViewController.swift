@@ -16,12 +16,22 @@ import NYTPhotoViewer
 class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate,GMImagePickerControllerDelegate {
 
     var collectionView :UICollectionView?
+     //UIView *lineView;
+    var lineView : UIView = UIView(frame: CGRect.zero)
     let CustomEverythingPhotoIndex = 1, DefaultLoadingSpinnerPhotoIndex = 3, NoReferenceViewPhotoIndex = 4
     fileprivate var imageCount : NSNumber = 0
     var requestOptions = PHImageRequestOptions()
     var requestOptionsVideo = PHVideoRequestOptions()
     fileprivate var videoCount : NSNumber = 0
     var mutablePhotos: [ExamplePhoto] = []
+    var originalIndexPath: IndexPath?
+    var swapImageView: UIImageView?
+    var stopped : Bool = false
+    var swapView: UIView?
+    var draggingIndexPath: IndexPath?
+    var draggingView: UIView?
+    var dragOffset = CGPoint.zero
+    var longPressGesture : UILongPressGestureRecognizer?
     fileprivate var images = [UIImage](), needsResetLayout = false
     let PrimaryImageName = "NYTimesBuilding"
     let PlaceholderImageName = "NYTimesBuildingPlaceholder"
@@ -104,6 +114,11 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                         self.collectionView?.collectionViewLayout.invalidateLayout()
                         self.collectionView?.alwaysBounceVertical = true
                         self.collectionView?.register(UICollectionViewCell.classForCoder(), forCellWithReuseIdentifier: self.cellIdentifier)
+                        self.longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress))
+                        self.collectionView?.addGestureRecognizer(self.longPressGesture!)
+                        self.swapView = UIView(frame: CGRect.zero)
+                        self.swapImageView = UIImageView(image: UIImage(named: "Swap-white"))
+
                         self.view.addSubview(self.collectionView!)
                         //let viewController = ViewController(collectionViewLayout: layout)
                                             self.getPhoto()
@@ -147,6 +162,10 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                         self.collectionView?.alwaysBounceVertical = true
                         self.collectionView?.reloadData()
                         self.collectionView?.collectionViewLayout.invalidateLayout()
+                        self.longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress))
+                        self.collectionView?.addGestureRecognizer(self.longPressGesture!)
+                        self.swapView = UIView(frame: CGRect.zero)
+                        self.swapImageView = UIImageView(image: UIImage(named: "Swap-white"))
                         self.view.addSubview(self.collectionView!)
                         //let viewController = ViewController(collectionViewLayout: layout)
                         self.getPhoto()
@@ -160,6 +179,355 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
             }
         }
     }
+    
+    func startDragAtLocation(location:CGPoint) {
+        
+        guard let vc = collectionView else {return}
+        guard let indexPath = vc.indexPathForItem(at: location) else {return}
+        guard let cell = vc.cellForItem(at: indexPath) else {return}
+        originalIndexPath = indexPath
+        draggingIndexPath = indexPath
+        draggingView = cell.snapshotView(afterScreenUpdates: true)
+        draggingView!.frame = cell.frame
+        vc.addSubview(draggingView!)
+        dragOffset = CGPoint(x: draggingView!.center.x - location.x, y: draggingView!.center.y - location.y)
+        
+        draggingView?.layer.shadowPath = UIBezierPath(rect: draggingView!.bounds).cgPath
+        draggingView?.layer.shadowColor = UIColor.black.cgColor
+        draggingView?.layer.shadowOpacity = 0.8
+        draggingView?.layer.shadowRadius = 10
+        
+        // self.collectionView?.collectionViewLayout.invalidateLayout()
+        //invalidateLayout()
+        cell.alpha = 0.0
+        cell.isHidden = true
+        UIView.animate(withDuration: 0.4, delay: 0, usingSpringWithDamping: 0.4, initialSpringVelocity: 0, options: [], animations: {
+            self.draggingView?.alpha = 0.95
+            self.draggingView?.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
+        }, completion: nil)
+    }
+
+    
+    func handleLongPress(gestureReconizer: UILongPressGestureRecognizer) {
+        let location  = gestureReconizer.location(in: self.collectionView)
+        
+        switch gestureReconizer.state {
+            
+        case .began:
+            startDragAtLocation(location: location)
+            
+            
+        case .changed:
+            guard let view = draggingView else { return }
+            guard let cv = collectionView else { return }
+            
+            draggingView?.center = CGPoint(x: location.x + dragOffset.x, y: location.y + dragOffset.y)
+            stopped = false
+            
+            guard let destIndexPathCh = cv.indexPathForItem(at: location) else {return}
+            guard let cell = cv.cellForItem(at: destIndexPathCh) else {return}
+            
+            guard let sourseIndexPathCh = cv.indexPathForItem(at: location) else {return}
+            guard let sourseCell = cv.cellForItem(at: sourseIndexPathCh) else {return}
+            
+            if sourseCell.frame.size.width == cell.frame.size.width{
+                swapView?.frame = cell.contentView.bounds
+                swapImageView?.center = CGPoint(x: (swapView?.frame.size.width)!, y: (swapView?.frame.size.height)!)
+                //self.swapView?.addSubview(swapImageView!)
+               // cell.contentView.addSubview(self.swapView!)
+            }else{
+             //   self.swapView!.removeFromSuperview()
+                //self.swapView = nil
+               // self.swapImageView?.removeFromSuperview()
+                //self.swapImageView = nil
+                
+            }
+            updateDragAtLocation(location: location)
+            //  scrollIfNeed(snapshotView: draggingView!)
+            self.checkPreviousIndexPathAndCalculate(location: (draggingView?.center)!, forScreenShort: (draggingView?.frame)!, withSourceIndexPath: sourseIndexPathCh)
+            
+            
+            
+            break
+        case .ended:
+            stopped = true
+            endDragAtLocation(location: location)
+        default:
+            break
+        }
+        
+        
+    }
+    
+    func checkPreviousIndexPathAndCalculate(location:CGPoint,forScreenShort snapshot:CGRect,withSourceIndexPath sourceIndexPath:IndexPath){
+        if let indexPath = self.collectionView?.indexPathForItem(at: location){
+            
+        let sourceCell = self.collectionView?.cellForItem(at: sourceIndexPath)
+        if let destinationCell = self.collectionView?.cellForItem(at: indexPath)
+        {
+            lineView.removeFromSuperview()
+            
+            if indexPath.item != sourceIndexPath.item{
+                
+                let topOffset = destinationCell.frame.origin.y + 20
+                let leftOffset = destinationCell.frame.origin.x + 20
+                let bottomOffset = destinationCell.frame.origin.y + destinationCell.frame.size.height - 20
+                let rightOffset = destinationCell.frame.origin.x + destinationCell.frame.size.width - 20
+                let differenceLeft = location.x - leftOffset
+                
+                let differenceRight = location.x - rightOffset
+                let differenceTop = location.y - topOffset
+                let differenceBottom = location.y - bottomOffset
+                if differenceLeft > -20 && differenceLeft < 0 {
+                    print("Insert to the left of cell line")
+                    lineView.removeFromSuperview()
+                    let xOffset = destinationCell.frame.origin.x - 4
+                    let yValue = destinationCell.frame.origin.y
+                    let nestedWidth = 2.0
+                    let nestedHeight = destinationCell.frame.height
+                    self.collectionView?.performBatchUpdates({
+                        self.lineView.frame = CGRect(x: xOffset, y: yValue, width: CGFloat(nestedWidth), height: nestedHeight)
+                        self.lineView.backgroundColor = UIColor.black
+                        self.collectionView?.addSubview(self.lineView)
+                    }, completion: { (test) in
+                        self.moveCellsApartWithFrame(frame: (self.lineView.frame), andOrientation: 0)
+                        
+                    })
+                    
+                    
+//                    [lineView removeFromSuperview];
+//                    [blackTransparentView removeFromSuperview];
+//                    
+//                    CGRect cellFrame = CGRectFromString([frames objectAtIndex:[keys[0] integerValue]]);
+//                    
+//                    xOffset = destinationCell.frame.origin.x - 4;
+//                    yValue = cellFrame.origin.y;
+//                    nestedWidth = 2.0;
+//                    nestedHeight = cellFrame.size.height;
+//                    
+//                    [self.collectionView performBatchUpdates:^{
+//                        
+//                        //[self makeSpaceToInsertWithAnimationForViews:destinationCell and:viewB withMode:0];
+//                        
+//                        lineView.frame = CGRectMake(xOffset, yValue, nestedWidth, nestedHeight);
+//                        lineView.backgroundColor = [UIColor blackColor];
+//                        [self.collectionView addSubview:lineView];
+//                        
+//                        [self moveCellsApartWithFrame:lineView.frame andOrientation:0];
+//                        
+//                        } completion:nil];
+                }
+                
+                
+                
+            }
+            
+                
+        }
+            
+            
+            
+        }
+        
+        
+        
+        
+    }
+    
+    func moveCellsApartWithFrame(frame:CGRect,andOrientation orientation:Int) {
+        var certOne  = CGRect.zero
+        var certTwo = CGRect.zero
+        let cellsToMove0 = NSMutableArray.init()
+        let cellsToMove1 = NSMutableArray.init()
+        if orientation == 0 {
+            certOne = CGRect(x: frame.origin.x, y: frame.origin.y, width: CGFloat.greatestFiniteMagnitude, height: frame.size.height)
+            certTwo = CGRect(x: 0.0, y: frame.origin.y, width: frame.origin.x, height: frame.size.height)
+        }else{
+            certOne = CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.size.width, height: CGFloat.greatestFiniteMagnitude)
+            certTwo = CGRect(x: frame.origin.x, y: 0.0, width: frame.size.width, height: frame.size.height)
+        }
+        
+        for i in 0 ..< self.images.count{
+            
+            let indexPath = IndexPath(item: i, section: 0)
+            let cell = self.collectionView?.cellForItem(at: indexPath)
+            if (cell?.frame.intersects(certOne))!{
+                cellsToMove0.add(cell)
+            }else if (cell?.frame.intersects(certTwo))!
+            {
+                cellsToMove1.add(cell)
+                
+            }
+            
+        }
+        
+//        [self.collectionView performBatchUpdates:^{
+//            
+//            for(ImageCollectionViewCell *cell in cellsToMove1){
+//            
+//            if(orientation == 0){
+//            
+//            [UIView animateWithDuration:0.2 animations:^{
+//            cell.transform = CGAffineTransformMakeTranslation(-5.0, 0.0);
+//            }];
+//            
+//            }
+//            else{
+//            [UIView animateWithDuration:0.2 animations:^{
+//            cell.transform = CGAffineTransformMakeTranslation(0.0, -5.0);
+//            }];
+//            }
+//            
+//            }
+        
+        self.collectionView?.performBatchUpdates({
+            for i in  0 ..< cellsToMove0.count{
+                UIView.animate(withDuration: 0.2, animations: {
+                let cell = cellsToMove0[i] as! UICollectionViewCell
+                    cell.transform = CGAffineTransform(translationX: -5.0, y: 0.0)
+                })
+            }
+            
+            for i in  0 ..< cellsToMove1.count{
+                UIView.animate(withDuration: 0.2, animations: {
+                    let cell = cellsToMove1[i] as! UICollectionViewCell
+                    cell.transform = CGAffineTransform(translationX: 5.0, y: 0.0)
+                })
+            }
+        }, completion: { (Bool) in
+            
+        })
+
+        
+        
+        
+    }
+    
+    func scrollIfNeed(snapshotView:UIView)  {
+        var cellCenter = snapshotView.center
+        var newOffset = self.collectionView?.contentOffset
+        var buffer  = 10.0 as! CGFloat
+        var bottomY = (self.collectionView?.contentOffset.y)! + (self.collectionView?.frame.size.height)!
+        if bottomY  < ((snapshotView.frame.maxY) - buffer){
+            
+            newOffset?.y += 1
+            
+            if ((newOffset?.y)! + (self.collectionView?.bounds.size.height)! > (self.collectionView?.contentSize.height)!) {
+                return
+            }
+            cellCenter.y += 1;
+        }
+        
+        
+        var offsetY = self.collectionView?.contentOffset.y
+        if (snapshotView.frame.minY + buffer < offsetY!) {
+            // We're scrolling up
+            newOffset?.y -= 1;
+            
+            if ((newOffset?.y)! <= CGFloat(0)) {
+                return; // Stop moving, went too far
+            }
+            
+            // adjust cell's center by 1
+            cellCenter.y -= 1;
+        }
+        
+        
+        
+        
+        
+        self.collectionView?.contentOffset = self.dragOffset
+        snapshotView.center = cellCenter;
+        
+        // Repeat until we went to far.
+        if(self.stopped == true){
+            
+            return;
+            
+        }else
+        {
+            //DispatchQueue.main.as
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Double((Int64)(1 * NSEC_PER_SEC)), execute: {
+                self.scrollIfNeed(snapshotView: snapshotView)
+            })
+            //  DISPATCH_TIME_NOW, (Int64)(3 * NSEC_PER_SEC))
+            //            dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(0.1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+            //                [self scrollIfNeededWhileDraggingCell:snapshotView];
+            //                });
+        }
+        
+    }
+
+    
+    
+    func endDragAtLocation(location:CGPoint){
+        guard let vc = collectionView else {return}
+        if let indexPath = vc.indexPathForItem(at: location), let cell = vc.cellForItem(at: originalIndexPath!),let destination = vc.cellForItem(at: indexPath)  {
+            self.collectionView?.performBatchUpdates({
+                self.collectionView?.moveItem(at: self.originalIndexPath!, to: indexPath)
+                self.collectionView?.moveItem(at: indexPath, to: self.originalIndexPath!)
+            }, completion: { (Bool) in
+                //  self.draggingView!.alpha = 0.0
+                cell.alpha = 1
+                cell.isHidden = false
+                self.draggingView?.removeFromSuperview()
+                self.collectionView?.layoutIfNeeded()
+                self.collectionView?.setNeedsLayout()
+                self.originalIndexPath = nil
+                self.draggingView = nil
+                
+            })
+            UIView.animate(withDuration: 0.2, animations: {
+                self.draggingView!.center = cell.center
+                self.draggingView!.transform = CGAffineTransform.identity
+                self.draggingView!.alpha = 0.0
+                //self.draggingView!.
+                cell.alpha = 1
+                cell.isHidden = false
+            }) { (Bool) in
+                self.draggingView?.removeFromSuperview()
+                self.collectionView?.layoutIfNeeded()
+                self.collectionView?.setNeedsLayout()
+                // cell.alpha = 1
+                self.originalIndexPath = nil
+                self.draggingView = nil
+            }
+
+            
+        }else{
+            let cell = self.collectionView?.cellForItem(at: self.originalIndexPath!)
+            UIView.animate(withDuration: 0.2, animations: {
+                
+                
+                self.draggingView?.frame = (cell?.frame)!
+                self.draggingView?.transform = CGAffineTransform.identity
+                
+                self.draggingView?.removeFromSuperview()
+                
+            }, completion: { (Bool) in
+                cell?.alpha = 1
+                cell?.isHidden = false
+                return
+            })
+
+        }
+       // guard let cell = vc.cellForItem(at: originalIndexPath!) else {return}
+       // guard let destination = vc.cellForItem(at: indexPath) else {return}
+        
+        
+        
+    }
+    
+    func updateDragAtLocation(location:CGPoint) {
+        
+        
+        //        if let newIndexPath = cv.indexPathForItem(at: location) {
+        //        //    cv.moveItem(at: draggingIndexPath!, to: newIndexPath)
+        //            draggingIndexPath = newIndexPath
+        //        }
+        
+    }
+
     
     func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
         dismiss(animated: true, completion: nil)

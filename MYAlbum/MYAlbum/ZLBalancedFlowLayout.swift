@@ -22,6 +22,8 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
             invalidateLayout()
         }
     }
+    
+    public var currentAnswer = [[String]]()
 
     fileprivate var headerFrames = [CGRect](), footerFrames = [CGRect]()
     fileprivate var itemFrames = [[CGRect]](), itemOriginYs = [[CGFloat]]()
@@ -310,6 +312,27 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
         // traceback the optimal solution
         var partitions = [[Float]]()
         findSolution(values, slacks: slacks, opt: opt, to: numValues-1, partitions: &partitions)
+        
+        for (index1,value) in partitions.enumerated(){
+            var insideArray : [Float] = value as! [Float]
+            print("\(index1),,\(value)")
+            var arrayObj = [String]()
+            for (index,value) in insideArray.enumerated(){
+                print("\(index),\(value)")
+                let placeHolder = "\(index1)-\(index)-\(0)"
+                arrayObj.append(placeHolder)
+            //    arrayObj.adding(placeHolder)
+                //let arrayObj = NSArray(object: placeHolder)
+                
+                
+                
+            }
+            currentAnswer.append(arrayObj)
+           // currentAnswer.addObjects(from: arrayObj as! [Any])
+            
+        }
+        
+        
         return partitions
     }
 
@@ -334,6 +357,14 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
             }
            // for var from=to; from>=0; from -= 1 {
              //             }
+            
+            print("values\(values[minIndex...to])")
+            
+            
+            
+            
+            
+            
             partitions.append([Float](values[minIndex...to]))
             findSolution(values, slacks: slacks, opt: opt, to: minIndex-1, partitions: &partitions)
         }
