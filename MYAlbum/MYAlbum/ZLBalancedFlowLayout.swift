@@ -315,10 +315,10 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
         
         for (index1,value) in partitions.enumerated(){
             var insideArray : [Float] = value as! [Float]
-            print("\(index1),,\(value)")
+           // print("\(index1),,\(value)")
             var arrayObj = [String]()
             for (index,value) in insideArray.enumerated(){
-                print("\(index),\(value)")
+            //    print("\(index),\(value)")
                 let placeHolder = "\(index1)-\(index)-\(0)"
                 arrayObj.append(placeHolder)
             //    arrayObj.adding(placeHolder)
@@ -358,7 +358,7 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
            // for var from=to; from>=0; from -= 1 {
              //             }
             
-            print("values\(values[minIndex...to])")
+          //  print("values\(values[minIndex...to])")
             
             
             

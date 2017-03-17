@@ -37,6 +37,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     let PlaceholderImageName = "NYTimesBuildingPlaceholder"
     fileprivate let cellIdentifier = "cell", headerIdentifier = "header", footerIdentifier = "footer"
     var collectionArray  = [Any]()
+    var headerView : PictureHeaderCollectionReusableView?
 
    //var pickerController: GMImagePickerCon!
    //  var assets: [DKAsset]?
@@ -240,7 +241,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                 //self.swapView?.addSubview(swapImageView!)
                // cell.contentView.addSubview(self.swapView!)
             }else{
-             //   self.swapView!.removeFromSuperview()
+             //   self.swapView!.removeFromSuperview()x
                 //self.swapView = nil
                // self.swapImageView?.removeFromSuperview()
                 //self.swapImageView = nil
@@ -248,7 +249,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
             }
             updateDragAtLocation(location: location)
             //  scrollIfNeed(snapshotView: draggingView!)
-            self.checkPreviousIndexPathAndCalculate(location: (draggingView?.center)!, forScreenShort: (draggingView?.frame)!, withSourceIndexPath: sourseIndexPathCh)
+            self.checkPreviousIndexPathAndCalculate(location: (draggingView?.center)!, forScreenShort: (draggingView?.frame)!, withSourceIndexPath: originalIndexPath!)
             
             
             
@@ -265,10 +266,10 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionElementKindSectionHeader {
-          let headerView =  collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "HeaderView", for: indexPath) as! PictureHeaderCollectionReusableView
-           headerView.iboHeaderImage.image = self.images[0]
+          headerView =  collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "HeaderView", for: indexPath) as! PictureHeaderCollectionReusableView
+           self.headerView?.iboHeaderImage.image = self.images[0]
            // headerView.backgroundColor = UIColor.yellow
-            return headerView
+            return headerView!
         } else if kind == UICollectionElementKindSectionFooter {
         //    assert(0)
             let fotterView =  collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionFooter, withReuseIdentifier: "FotterView", for: indexPath) as! FooterReusableView
@@ -287,22 +288,26 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         {
             lineView.removeFromSuperview()
             
+         //   print("\(indexPath.item)source but destination\(sourceIndexPath.item)")
             if indexPath.item != sourceIndexPath.item{
                 
-                let topOffset = destinationCell.frame.origin.y + 20
-                let leftOffset = destinationCell.frame.origin.x + 20
-                let bottomOffset = destinationCell.frame.origin.y + destinationCell.frame.size.height - 20
-                let rightOffset = destinationCell.frame.origin.x + destinationCell.frame.size.width - 20
+                let topOffset = destinationCell.frame.origin.y + 10
+                let leftOffset = destinationCell.frame.origin.x + 10
+                let bottomOffset = destinationCell.frame.origin.y + destinationCell.frame.size.height - 10
+                let rightOffset = destinationCell.frame.origin.x + destinationCell.frame.size.width - 10
                 let differenceLeft = location.x - leftOffset
                 
                 let differenceRight = location.x - rightOffset
+                print("destination\(destinationCell.frame)")
                 let differenceTop = location.y - topOffset
                 let differenceBottom = location.y - bottomOffset
                 if differenceLeft > -20 && differenceLeft < 0 {
                     print("Insert to the left of cell line")
                     lineView.removeFromSuperview()
                     let xOffset = destinationCell.frame.origin.x - 4
+                      print("\(xOffset)in right of the cell line ")
                     let yValue = destinationCell.frame.origin.y
+                    print("\(yValue)in right of the cell line ")
                     let nestedWidth = 2.0
                     let nestedHeight = destinationCell.frame.height
                     self.collectionView?.performBatchUpdates({
@@ -315,32 +320,97 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                     })
                     
                     
-//                    [lineView removeFromSuperview];
-//                    [blackTransparentView removeFromSuperview];
-//                    
-//                    CGRect cellFrame = CGRectFromString([frames objectAtIndex:[keys[0] integerValue]]);
-//                    
-//                    xOffset = destinationCell.frame.origin.x - 4;
-//                    yValue = cellFrame.origin.y;
-//                    nestedWidth = 2.0;
-//                    nestedHeight = cellFrame.size.height;
-//                    
-//                    [self.collectionView performBatchUpdates:^{
+
+                }else if differenceRight < 20 && differenceRight > 0{
+                    
+                    print("Insert to the right of the cell line")
+                    lineView.removeFromSuperview()
+                    
+                    let  xOffset = destinationCell.frame.origin.x + destinationCell.frame.size.width + 2
+                    let  yValue = destinationCell.frame.origin.y
+                    let nestedWidth = 2.0
+                    let nestedHeight = sourceCell?.frame.size.height
+                    //floor(xOffset)
+                    //floor(yValue)
+                    print("\(floor(xOffset))in right of the cell line ")
+                    print("\(floor(yValue))in right of the cell line ")
+                    self.collectionView?.performBatchUpdates({
+                        self.lineView.frame = CGRect(x: xOffset, y: yValue, width: CGFloat(nestedWidth), height: nestedHeight!)
+                        self.lineView.backgroundColor = UIColor.black
+                        self.collectionView?.addSubview(self.lineView)
+                    }, completion: { (test) in
+                        self.moveCellsApartWithFrame(frame: (self.lineView.frame), andOrientation: 0)
+                        
+                    })
+
+                    
+//                    let xOffset = destinationCell.frame.origin.x + destinationCell.frame.size.width + 2
+//                    let yValue = destinationCell.frame.origin.y
+//                    let nestedWidth = 2.0
+//                    let nestedHeight = destinationCell.frame.height
+//                    self.collectionView?.performBatchUpdates({
+//                        self.lineView.frame = CGRect(x: xOffset, y: yValue, width: CGFloat(nestedWidth), height: nestedHeight)
+//                        self.lineView.backgroundColor = UIColor.black
+//                        self.collectionView?.addSubview(self.lineView)
+//                    }, completion: { (test) in
+//                        self.moveCellsApartWithFrame(frame: (self.lineView.frame), andOrientation: 0)
 //                        
-//                        //[self makeSpaceToInsertWithAnimationForViews:destinationCell and:viewB withMode:0];
-//                        
-//                        lineView.frame = CGRectMake(xOffset, yValue, nestedWidth, nestedHeight);
-//                        lineView.backgroundColor = [UIColor blackColor];
-//                        [self.collectionView addSubview:lineView];
-//                        
-//                        [self moveCellsApartWithFrame:lineView.frame andOrientation:0];
-//                        
-//                        } completion:nil];
+//                    })
+
+                    
+                }else if (differenceTop > -20 && differenceTop < 0 && destinationCell.frame.size.width < (UIScreen.main.bounds.width - 16)){
+                    print("Insert to the TOP of the cell line")
+                    lineView.removeFromSuperview()
+                    
+                    let  xOffset = destinationCell.frame.origin.x
+                    let  yValue = destinationCell.frame.origin.y - 4
+                    let nestedWidth = destinationCell.frame.size.width
+                    let nestedHeight = 2.0
+                    //floor(xOffset)
+                    //floor(yValue)
+                    print("\(floor(xOffset))in right of the cell line ")
+                    print("\(floor(yValue))in right of the cell line ")
+                    self.collectionView?.performBatchUpdates({
+                        self.lineView.frame = CGRect(x: xOffset, y: yValue, width: CGFloat(nestedWidth), height: CGFloat(nestedHeight))
+                        self.lineView.backgroundColor = UIColor.black
+                        self.collectionView?.addSubview(self.lineView)
+                    }, completion: { (test) in
+                        self.moveCellsApartWithFrame(frame: (self.lineView.frame), andOrientation: 0)
+                        
+                    })
+
+                    
+                }else if(differenceBottom > 0 && differenceBottom < 20 && destinationCell.frame.size.width < (UIScreen.main.bounds.width - 16)){
+                    print("Insert to the Bottom of the cell line")
+                    lineView.removeFromSuperview()
+                    
+                    let  xOffset = destinationCell.frame.origin.x
+                    let  yValue = destinationCell.frame.origin.y + destinationCell.frame.size.height + 2
+                    let nestedWidth = destinationCell.frame.size.width
+                    let nestedHeight = 2.0
+                    //floor(xOffset)
+                    //floor(yValue)
+                    print("\(floor(xOffset))in right of the cell line ")
+                    print("\(floor(yValue))in right of the cell line ")
+                    self.collectionView?.performBatchUpdates({
+                        self.lineView.frame = CGRect(x: xOffset, y: yValue, width: CGFloat(nestedWidth), height: CGFloat(nestedHeight))
+                        self.lineView.backgroundColor = UIColor.black
+                        self.collectionView?.addSubview(self.lineView)
+                    }, completion: { (test) in
+                        self.moveCellsApartWithFrame(frame: (self.lineView.frame), andOrientation: 0)
+                        
+                    })
+
+                    
                 }
                 
                 
                 
             }
+//            else{
+//                moveCellsApartWithFrame(frame: (self.lineView.frame), andOrientation: 1)
+//                
+//            }
             
                 
         }
@@ -376,7 +446,6 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
             }else if (cell?.frame.intersects(certTwo))!
             {
                 cellsToMove1.add(cell)
-                
             }
             
         }
@@ -402,17 +471,33 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         
         self.collectionView?.performBatchUpdates({
             for i in  0 ..< cellsToMove0.count{
-                UIView.animate(withDuration: 0.2, animations: {
-                let cell = cellsToMove0[i] as! UICollectionViewCell
-                    cell.transform = CGAffineTransform(translationX: -5.0, y: 0.0)
-                })
+                if orientation == 0{
+                    UIView.animate(withDuration: 0.2, animations: {
+                        let cell = cellsToMove0[i] as! UICollectionViewCell
+                        cell.transform = CGAffineTransform(translationX: 5.0, y: 0.0)
+                    })
+                }else{
+                    UIView.animate(withDuration: 0.2, animations: {
+                        let cell = cellsToMove0[i] as! UICollectionViewCell
+                        cell.transform = CGAffineTransform(translationX: 0.0, y: -5.0)
+                    })
+                }
+               
             }
             
             for i in  0 ..< cellsToMove1.count{
+               if orientation == 1{
                 UIView.animate(withDuration: 0.2, animations: {
                     let cell = cellsToMove1[i] as! UICollectionViewCell
-                    cell.transform = CGAffineTransform(translationX: 5.0, y: 0.0)
+                    cell.transform = CGAffineTransform(translationX: -5.0, y: 0.0)
                 })
+               }else{
+                UIView.animate(withDuration: 0.2, animations: {
+                    let cell = cellsToMove1[i] as! UICollectionViewCell
+                    cell.transform = CGAffineTransform(translationX: 0.0, y: 0.0)
+                })
+
+                }
             }
         }, completion: { (Bool) in
             
@@ -486,8 +571,13 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
             self.collectionView?.performBatchUpdates({
                 self.collectionView?.moveItem(at: self.originalIndexPath!, to: indexPath)
                 self.collectionView?.moveItem(at: indexPath, to: self.originalIndexPath!)
-            }, completion: { (Bool) in
+                let temp  = self.images[indexPath.item]
+                self.images[indexPath.item] = self.images[(self.originalIndexPath?.item)!]
+                self.images[(self.originalIndexPath?.item)!] = temp
+
+                            }, completion: { (Bool) in
                 //  self.draggingView!.alpha = 0.0
+                
                 cell.alpha = 1
                 cell.isHidden = false
                 self.draggingView?.removeFromSuperview()
@@ -515,6 +605,63 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
 
             
         }else{
+            
+            let indexPaths = self.collectionView?.indexPathsForVisibleSupplementaryElements(ofKind: UICollectionElementKindSectionHeader)
+            for indexPath in indexPaths! {
+                if (headerView) == collectionView?.supplementaryView(forElementKind: UICollectionElementKindSectionHeader, at: indexPath){
+                    let headerView  = collectionView?.supplementaryView(forElementKind: UICollectionElementKindSectionHeader, at: indexPath) as! PictureHeaderCollectionReusableView
+                    
+                    if (self.draggingView?.frame.intersects(headerView.frame))!
+                    {
+                        let cell = self.collectionView?.cellForItem(at: self.originalIndexPath!)
+                        
+                       // imageTemp.contentMode = .scaleAspectFill
+                        let imageData =  images[0]
+                        // let image = UIImage(c)
+                        let imageTemp = UIImageView(image: imageData)
+                       
+
+                        
+                        cell?.backgroundView = imageTemp
+                        cell?.backgroundView?.contentMode = .scaleAspectFill
+                        cell?.clipsToBounds = true
+                        
+                        //cell?.backgroundView
+                        headerView.iboHeaderImage.image = self.images[(self.originalIndexPath?.item)!]
+                        
+                        self.images[0] = self.images[(self.originalIndexPath?.item)!]
+                        
+                        self.images[(self.originalIndexPath?.item)!] = imageData
+                        self.draggingView?.removeFromSuperview()
+                        cell?.alpha = 1
+                        cell?.isHidden = false
+                        
+                        return
+                    }else{
+                        let cell = self.collectionView?.cellForItem(at: self.originalIndexPath!)
+                        UIView.animate(withDuration: 0.2, animations: {
+                            
+                            
+                            self.draggingView?.frame = (cell?.frame)!
+                            self.draggingView?.transform = CGAffineTransform.identity
+                            
+                            self.draggingView?.removeFromSuperview()
+                            
+                        }, completion: { (Bool) in
+                            cell?.alpha = 1
+                            cell?.isHidden = false
+                            return
+                        })
+                        
+
+                    }
+                    //break
+                }
+            }
+            
+            
+            
+           // if let headerView = self.collectionView.
             let cell = self.collectionView?.cellForItem(at: self.originalIndexPath!)
             UIView.animate(withDuration: 0.2, animations: {
                 
