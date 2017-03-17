@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
+        <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="raleway-light.ttf">
+            <string>Raleway-Light</string>
+        </array>
+        <array key="raleway-regular.ttf">
+            <string>Raleway-Regular</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionReusableView opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="HeaderView" id="Rgu-Ok-zuy" customClass="PictureHeaderCollectionReusableView" customModule="MYAlbum" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="422" height="490"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Sdc-wu-W75">
+                    <rect key="frame" x="0.0" y="0.0" width="422" height="490"/>
+                    <subviews>
+                        <imageView contentMode="scaleAspectFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="HJv-D4-AKe">
+                            <rect key="frame" x="0.0" y="0.0" width="422" height="490"/>
+                        </imageView>
+                        <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="storygrad" translatesAutoresizingMaskIntoConstraints="NO" id="xby-l8-3Nu">
+                            <rect key="frame" x="0.0" y="0.0" width="422" height="490"/>
+                        </imageView>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M5B-0b-lIg">
+                            <rect key="frame" x="181" y="369.5" width="60" height="60.5"/>
+                            <constraints>
+                                <constraint firstAttribute="width" secondItem="M5B-0b-lIg" secondAttribute="height" multiplier="1:1" id="2Um-pS-JKn"/>
+                            </constraints>
+                            <state key="normal" image="down"/>
+                        </button>
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="uMc-vn-R9m">
+                            <rect key="frame" x="11" y="261.5" width="403" height="100"/>
+                            <subviews>
+                                <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" placeholder="Enter your title here" textAlignment="center" minimumFontSize="28" translatesAutoresizingMaskIntoConstraints="NO" id="sXO-ff-VKn">
+                                    <rect key="frame" x="0.0" y="8" width="403" height="40"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="40" id="z31-Hs-wHh"/>
+                                    </constraints>
+                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <fontDescription key="fontDescription" name="Raleway-Light" family="Raleway" pointSize="26"/>
+                                    <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
+                                </textField>
+                                <textField opaque="NO" clipsSubviews="YES" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" placeholder="Enter your subtitle here" textAlignment="center" minimumFontSize="15" translatesAutoresizingMaskIntoConstraints="NO" id="QCy-iO-y4u">
+                                    <rect key="frame" x="0.0" y="56" width="403" height="18"/>
+                                    <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <fontDescription key="fontDescription" name="Raleway-Regular" family="Raleway" pointSize="15"/>
+                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                </textField>
+                            </subviews>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                            <constraints>
+                                <constraint firstItem="QCy-iO-y4u" firstAttribute="leading" secondItem="uMc-vn-R9m" secondAttribute="leading" id="9dD-MR-yda"/>
+                                <constraint firstItem="sXO-ff-VKn" firstAttribute="top" secondItem="uMc-vn-R9m" secondAttribute="top" constant="8" id="UDQ-VM-VVn"/>
+                                <constraint firstItem="QCy-iO-y4u" firstAttribute="top" secondItem="sXO-ff-VKn" secondAttribute="bottom" constant="8" id="VMi-QJ-cOp"/>
+                                <constraint firstAttribute="trailing" secondItem="sXO-ff-VKn" secondAttribute="trailing" id="Vbd-fh-7H0"/>
+                                <constraint firstAttribute="trailing" secondItem="QCy-iO-y4u" secondAttribute="trailing" id="nK5-V3-hBX"/>
+                                <constraint firstAttribute="height" constant="100" id="tdL-Yd-4db"/>
+                                <constraint firstItem="sXO-ff-VKn" firstAttribute="leading" secondItem="uMc-vn-R9m" secondAttribute="leading" id="u0o-ML-h3x"/>
+                            </constraints>
+                        </view>
+                    </subviews>
+                    <constraints>
+                        <constraint firstItem="xby-l8-3Nu" firstAttribute="centerX" secondItem="Sdc-wu-W75" secondAttribute="centerX" id="4cA-mf-zSS"/>
+                        <constraint firstItem="HJv-D4-AKe" firstAttribute="centerX" secondItem="Sdc-wu-W75" secondAttribute="centerX" id="5pD-W7-3hs"/>
+                        <constraint firstAttribute="trailing" secondItem="HJv-D4-AKe" secondAttribute="trailing" id="8Ao-UF-MN6"/>
+                        <constraint firstItem="HJv-D4-AKe" firstAttribute="top" secondItem="Sdc-wu-W75" secondAttribute="top" id="Bo9-Jb-ya8"/>
+                        <constraint firstItem="M5B-0b-lIg" firstAttribute="width" secondItem="Sdc-wu-W75" secondAttribute="width" multiplier="1:7" id="D0g-lI-hE4"/>
+                        <constraint firstAttribute="trailing" secondItem="uMc-vn-R9m" secondAttribute="trailing" constant="8" id="GpQ-ni-yy9"/>
+                        <constraint firstItem="HJv-D4-AKe" firstAttribute="leading" secondItem="Sdc-wu-W75" secondAttribute="leading" id="IaV-oU-1ud"/>
+                        <constraint firstItem="HJv-D4-AKe" firstAttribute="centerY" secondItem="Sdc-wu-W75" secondAttribute="centerY" id="f3O-Ub-7Yj"/>
+                        <constraint firstItem="xby-l8-3Nu" firstAttribute="height" secondItem="Sdc-wu-W75" secondAttribute="height" id="fr6-jc-q92"/>
+                        <constraint firstItem="uMc-vn-R9m" firstAttribute="leading" secondItem="Sdc-wu-W75" secondAttribute="leading" constant="11" id="gO6-xn-Aqq"/>
+                        <constraint firstItem="M5B-0b-lIg" firstAttribute="top" secondItem="uMc-vn-R9m" secondAttribute="bottom" constant="8" id="gsA-T0-7tU"/>
+                        <constraint firstAttribute="bottom" secondItem="HJv-D4-AKe" secondAttribute="bottom" id="odO-gc-4A4"/>
+                        <constraint firstItem="M5B-0b-lIg" firstAttribute="centerX" secondItem="Sdc-wu-W75" secondAttribute="centerX" id="pIi-7n-Nsh"/>
+                        <constraint firstItem="xby-l8-3Nu" firstAttribute="width" secondItem="Sdc-wu-W75" secondAttribute="width" id="rgR-9Y-QNL"/>
+                        <constraint firstItem="xby-l8-3Nu" firstAttribute="centerY" secondItem="Sdc-wu-W75" secondAttribute="centerY" id="xch-ZD-Uut"/>
+                    </constraints>
+                </scrollView>
+            </subviews>
+            <constraints>
+                <constraint firstAttribute="bottom" secondItem="M5B-0b-lIg" secondAttribute="bottom" constant="60" id="PJq-s7-faU"/>
+                <constraint firstAttribute="bottom" secondItem="Sdc-wu-W75" secondAttribute="bottom" id="UxH-3A-sKI"/>
+                <constraint firstItem="Sdc-wu-W75" firstAttribute="top" secondItem="Rgu-Ok-zuy" secondAttribute="top" id="gzU-XC-cdf"/>
+                <constraint firstAttribute="trailing" secondItem="Sdc-wu-W75" secondAttribute="trailing" id="iQ3-5c-1jA"/>
+                <constraint firstItem="Sdc-wu-W75" firstAttribute="leading" secondItem="Rgu-Ok-zuy" secondAttribute="leading" id="vis-xJ-SUp"/>
+            </constraints>
+            <connections>
+                <outlet property="iboHeaderImage" destination="HJv-D4-AKe" id="Uno-JY-WdI"/>
+                <outlet property="iboScrollDownBrn" destination="M5B-0b-lIg" id="XFk-bV-Mme"/>
+                <outlet property="iboSubTitle" destination="QCy-iO-y4u" id="gdA-6E-uZx"/>
+                <outlet property="iboTitle" destination="sXO-ff-VKn" id="AMU-Au-jgX"/>
+            </connections>
+            <point key="canvasLocation" x="96" y="553"/>
+        </collectionReusableView>
+    </objects>
+    <resources>
+        <image name="down" width="30" height="30"/>
+        <image name="storygrad" width="1000" height="1000"/>
+    </resources>
+</document>

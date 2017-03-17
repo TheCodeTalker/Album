@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		2063E70D0057AE76417001BC /* Pods_MYAlbum.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8EE2002A809137522D10EAD /* Pods_MYAlbum.framework */; };
+		B667D1881E7AEA3F00747D23 /* PictureHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = B667D1871E7AEA3F00747D23 /* PictureHeader.xib */; };
+		B667D18A1E7AEA8C00747D23 /* PictureHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B667D1891E7AEA8C00747D23 /* PictureHeaderCollectionReusableView.swift */; };
 		B66A79441E6EC20E001A2861 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66A79431E6EC20E001A2861 /* AppDelegate.swift */; };
 		B66A79461E6EC20E001A2861 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66A79451E6EC20E001A2861 /* ViewController.swift */; };
 		B66A79491E6EC20E001A2861 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B66A79471E6EC20E001A2861 /* Main.storyboard */; };
@@ -16,10 +18,14 @@
 		B66A79561E6ED2A3001A2861 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66A79551E6ED2A3001A2861 /* Utils.swift */; };
 		B66A796B1E6EEC0A001A2861 /* ZLBalancedFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66A796A1E6EEC0A001A2861 /* ZLBalancedFlowLayout.swift */; };
 		B67637511E6FE9BF0029808C /* ExamplePhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67637501E6FE9BF0029808C /* ExamplePhoto.swift */; };
+		B6E43F8C1E7BB971000106E6 /* FooterReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E43F8A1E7BB971000106E6 /* FooterReusableView.swift */; };
+		B6E43F8D1E7BB971000106E6 /* FooterReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6E43F8B1E7BB971000106E6 /* FooterReusableView.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		AA4E140A50FC9544679E4EA1 /* Pods-MYAlbum.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MYAlbum.release.xcconfig"; path = "Pods/Target Support Files/Pods-MYAlbum/Pods-MYAlbum.release.xcconfig"; sourceTree = "<group>"; };
+		B667D1871E7AEA3F00747D23 /* PictureHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PictureHeader.xib; sourceTree = "<group>"; };
+		B667D1891E7AEA8C00747D23 /* PictureHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PictureHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
 		B66A79401E6EC20E001A2861 /* MYAlbum.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MYAlbum.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B66A79431E6EC20E001A2861 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B66A79451E6EC20E001A2861 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -30,6 +36,8 @@
 		B66A79551E6ED2A3001A2861 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		B66A796A1E6EEC0A001A2861 /* ZLBalancedFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZLBalancedFlowLayout.swift; sourceTree = "<group>"; };
 		B67637501E6FE9BF0029808C /* ExamplePhoto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExamplePhoto.swift; sourceTree = "<group>"; };
+		B6E43F8A1E7BB971000106E6 /* FooterReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FooterReusableView.swift; sourceTree = "<group>"; };
+		B6E43F8B1E7BB971000106E6 /* FooterReusableView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FooterReusableView.xib; sourceTree = "<group>"; };
 		CBD36776616130F114A75B4C /* Pods-MYAlbum.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MYAlbum.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MYAlbum/Pods-MYAlbum.debug.xcconfig"; sourceTree = "<group>"; };
 		D8EE2002A809137522D10EAD /* Pods_MYAlbum.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MYAlbum.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -79,11 +87,15 @@
 				B66A79451E6EC20E001A2861 /* ViewController.swift */,
 				B66A796A1E6EEC0A001A2861 /* ZLBalancedFlowLayout.swift */,
 				B67637501E6FE9BF0029808C /* ExamplePhoto.swift */,
+				B667D1871E7AEA3F00747D23 /* PictureHeader.xib */,
 				B66A79551E6ED2A3001A2861 /* Utils.swift */,
 				B66A79471E6EC20E001A2861 /* Main.storyboard */,
 				B66A794A1E6EC20E001A2861 /* Assets.xcassets */,
 				B66A794C1E6EC20E001A2861 /* LaunchScreen.storyboard */,
 				B66A794F1E6EC20E001A2861 /* Info.plist */,
+				B667D1891E7AEA8C00747D23 /* PictureHeaderCollectionReusableView.swift */,
+				B6E43F8A1E7BB971000106E6 /* FooterReusableView.swift */,
+				B6E43F8B1E7BB971000106E6 /* FooterReusableView.xib */,
 			);
 			path = MYAlbum;
 			sourceTree = "<group>";
@@ -163,6 +175,8 @@
 				B66A794E1E6EC20E001A2861 /* LaunchScreen.storyboard in Resources */,
 				B66A794B1E6EC20E001A2861 /* Assets.xcassets in Resources */,
 				B66A79491E6EC20E001A2861 /* Main.storyboard in Resources */,
+				B667D1881E7AEA3F00747D23 /* PictureHeader.xib in Resources */,
+				B6E43F8D1E7BB971000106E6 /* FooterReusableView.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -221,9 +235,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B6E43F8C1E7BB971000106E6 /* FooterReusableView.swift in Sources */,
 				B67637511E6FE9BF0029808C /* ExamplePhoto.swift in Sources */,
 				B66A79461E6EC20E001A2861 /* ViewController.swift in Sources */,
 				B66A79441E6EC20E001A2861 /* AppDelegate.swift in Sources */,
+				B667D18A1E7AEA8C00747D23 /* PictureHeaderCollectionReusableView.swift in Sources */,
 				B66A79561E6ED2A3001A2861 /* Utils.swift in Sources */,
 				B66A796B1E6EEC0A001A2861 /* ZLBalancedFlowLayout.swift in Sources */,
 			);

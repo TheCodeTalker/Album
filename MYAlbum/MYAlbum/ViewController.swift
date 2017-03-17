@@ -103,8 +103,8 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                     if asset == (ass1[assets.count - 1]){
                         
                         let layout = ZLBalancedFlowLayout()
-                        layout.headerReferenceSize = CGSize(width: 100, height: 100)
-                        layout.footerReferenceSize = CGSize(width: 100, height: 100)
+                        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width , height: UIScreen.main.bounds.height)
+                        layout.footerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2)
                         layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
                         self.collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
                         self.collectionView?.delegate = self
@@ -114,6 +114,8 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                         self.collectionView?.collectionViewLayout.invalidateLayout()
                         self.collectionView?.alwaysBounceVertical = true
                         self.collectionView?.register(UICollectionViewCell.classForCoder(), forCellWithReuseIdentifier: self.cellIdentifier)
+                        self.collectionView?.register(UINib(nibName: "PictureHeader", bundle: nil), forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "HeaderView")
+                        self.collectionView?.register(UINib(nibName: "FooterReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionElementKindSectionFooter, withReuseIdentifier: "FotterView")
                         self.longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress))
                         self.collectionView?.addGestureRecognizer(self.longPressGesture!)
                         self.swapView = UIView(frame: CGRect.zero)
@@ -151,8 +153,8 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                     if asset == (ass1[assets.count - 1]){
                         
                         let layout = ZLBalancedFlowLayout()
-                        layout.headerReferenceSize = CGSize(width: 100, height: 100)
-                        layout.footerReferenceSize = CGSize(width: 100, height: 100)
+                        layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width , height: UIScreen.main.bounds.height)
+                        layout.footerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2)
                         layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
                         self.collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
                         self.collectionView?.register(UICollectionViewCell.classForCoder(), forCellWithReuseIdentifier: self.cellIdentifier)
@@ -166,6 +168,8 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                         self.collectionView?.addGestureRecognizer(self.longPressGesture!)
                         self.swapView = UIView(frame: CGRect.zero)
                         self.swapImageView = UIImageView(image: UIImage(named: "Swap-white"))
+                         self.collectionView?.register(UINib(nibName: "PictureHeader", bundle: nil), forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "HeaderView")
+                        self.collectionView?.register(UINib(nibName: "FooterReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionElementKindSectionFooter, withReuseIdentifier: "FotterView")
                         self.view.addSubview(self.collectionView!)
                         //let viewController = ViewController(collectionViewLayout: layout)
                         self.getPhoto()
@@ -257,6 +261,22 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         }
         
         
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if kind == UICollectionElementKindSectionHeader {
+          let headerView =  collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "HeaderView", for: indexPath) as! PictureHeaderCollectionReusableView
+           headerView.iboHeaderImage.image = self.images[0]
+           // headerView.backgroundColor = UIColor.yellow
+            return headerView
+        } else if kind == UICollectionElementKindSectionFooter {
+        //    assert(0)
+            let fotterView =  collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionFooter, withReuseIdentifier: "FotterView", for: indexPath) as! FooterReusableView
+            fotterView.backgroundColor = UIColor.yellow
+            return fotterView
+        }else{
+            return UICollectionReusableView()
+        }
     }
     
     func checkPreviousIndexPathAndCalculate(location:CGPoint,forScreenShort snapshot:CGRect,withSourceIndexPath sourceIndexPath:IndexPath){
