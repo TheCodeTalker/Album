@@ -17,6 +17,8 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
 
     var collectionView :UICollectionView?
      //UIView *lineView;
+    var cellsToMove0 = NSMutableArray.init()
+    var cellsToMove1 = NSMutableArray.init()
     var lineView : UIView = UIView(frame: CGRect.zero)
     let CustomEverythingPhotoIndex = 1, DefaultLoadingSpinnerPhotoIndex = 3, NoReferenceViewPhotoIndex = 4
     fileprivate var imageCount : NSNumber = 0
@@ -255,6 +257,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
             
             break
         case .ended:
+            self.changeToIdentiPosition()
             stopped = true
             endDragAtLocation(location: location)
         default:
@@ -286,28 +289,29 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         let sourceCell = self.collectionView?.cellForItem(at: sourceIndexPath)
         if let destinationCell = self.collectionView?.cellForItem(at: indexPath)
         {
+            self.changeToIdentiPosition()
             lineView.removeFromSuperview()
             
          //   print("\(indexPath.item)source but destination\(sourceIndexPath.item)")
             if indexPath.item != sourceIndexPath.item{
                 
-                let topOffset = destinationCell.frame.origin.y + 10
-                let leftOffset = destinationCell.frame.origin.x + 10
+                let topOffset = destinationCell.frame.origin.y + 20
+                let leftOffset = destinationCell.frame.origin.x + 20
                 let bottomOffset = destinationCell.frame.origin.y + destinationCell.frame.size.height - 10
                 let rightOffset = destinationCell.frame.origin.x + destinationCell.frame.size.width - 10
                 let differenceLeft = location.x - leftOffset
                 
                 let differenceRight = location.x - rightOffset
-                print("destination\(destinationCell.frame)")
+               // print("destination\(destinationCell.frame)")
                 let differenceTop = location.y - topOffset
                 let differenceBottom = location.y - bottomOffset
                 if differenceLeft > -20 && differenceLeft < 0 {
-                    print("Insert to the left of cell line")
+                  //  print("Insert to the left of cell line")
                     lineView.removeFromSuperview()
-                    let xOffset = destinationCell.frame.origin.x - 4
-                      print("\(xOffset)in right of the cell line ")
+                    let xOffset = destinationCell.frame.origin.x - 5
+                     // print("\(xOffset)in left of the cell line ")
                     let yValue = destinationCell.frame.origin.y
-                    print("\(yValue)in right of the cell line ")
+                    //print("\(yValue)in left of the cell line ")
                     let nestedWidth = 2.0
                     let nestedHeight = destinationCell.frame.height
                     self.collectionView?.performBatchUpdates({
@@ -318,22 +322,19 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                         self.moveCellsApartWithFrame(frame: (self.lineView.frame), andOrientation: 0)
                         
                     })
-                    
-                    
-
                 }else if differenceRight < 20 && differenceRight > 0{
                     
                     print("Insert to the right of the cell line")
                     lineView.removeFromSuperview()
                     
-                    let  xOffset = destinationCell.frame.origin.x + destinationCell.frame.size.width + 2
+                    let  xOffset = destinationCell.frame.origin.x + destinationCell.frame.size.width + 5
                     let  yValue = destinationCell.frame.origin.y
                     let nestedWidth = 2.0
                     let nestedHeight = sourceCell?.frame.size.height
                     //floor(xOffset)
                     //floor(yValue)
-                    print("\(floor(xOffset))in right of the cell line ")
-                    print("\(floor(yValue))in right of the cell line ")
+                    //print("\(floor(xOffset))in right of the cell line ")
+                    //print("\(floor(yValue))in right of the cell line ")
                     self.collectionView?.performBatchUpdates({
                         self.lineView.frame = CGRect(x: xOffset, y: yValue, width: CGFloat(nestedWidth), height: nestedHeight!)
                         self.lineView.backgroundColor = UIColor.black
@@ -368,8 +369,8 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                     let nestedHeight = 2.0
                     //floor(xOffset)
                     //floor(yValue)
-                    print("\(floor(xOffset))in right of the cell line ")
-                    print("\(floor(yValue))in right of the cell line ")
+                   // print("\(floor(xOffset))in right of the cell line ")
+                    //print("\(floor(yValue))in right of the cell line ")
                     self.collectionView?.performBatchUpdates({
                         self.lineView.frame = CGRect(x: xOffset, y: yValue, width: CGFloat(nestedWidth), height: CGFloat(nestedHeight))
                         self.lineView.backgroundColor = UIColor.black
@@ -390,8 +391,8 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                     let nestedHeight = 2.0
                     //floor(xOffset)
                     //floor(yValue)
-                    print("\(floor(xOffset))in right of the cell line ")
-                    print("\(floor(yValue))in right of the cell line ")
+                 //   print("\(floor(xOffset))in right of the cell line ")
+                  //  print("\(floor(yValue))in right of the cell line ")
                     self.collectionView?.performBatchUpdates({
                         self.lineView.frame = CGRect(x: xOffset, y: yValue, width: CGFloat(nestedWidth), height: CGFloat(nestedHeight))
                         self.lineView.backgroundColor = UIColor.black
@@ -402,18 +403,91 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                     })
 
                     
+                }else{
+                //    moveCellsApartWithFrame(frame: (self.lineView.frame), andOrientation: 1)
                 }
                 
                 
                 
             }
-//            else{
-//                moveCellsApartWithFrame(frame: (self.lineView.frame), andOrientation: 1)
-//                
-//            }
+            else{
+              //  moveCellsApartWithFrame(frame: (self.lineView.frame), andOrientation: 1)
+                
+            }
             
                 
-        }
+        }else{
+            
+
+            
+            }
+            
+            
+            
+        }else{
+            
+            
+            let uIndexPath = self.collectionView?.indexPathForItem(at: CGPoint(x: location.x, y: location.y - 10))
+            let lIndexPath = self.collectionView?.indexPathForItem(at: CGPoint(x: location.x, y: location.y + 10))
+            if let  pIndexPath = self.collectionView?.indexPathForItem(at: CGPoint(x: location.x - 10, y: location.y)),  let nIndexPath = self.collectionView?.indexPathForItem(at: CGPoint(x: location.x + 10, y: location.y)){
+                print("Insert in between two cells in the same row taken as horizontally line")
+                //                NSLog(@"Insert in between two cells in the same row taken as horizontally line");
+                //
+                //                NSArray *keys = [[singletonArray objectAtIndex:pIndexPath.item] componentsSeparatedByString:@"-"];
+                //
+                //                ImageCollectionViewCell *pCell = (ImageCollectionViewCell *)[_collectionView cellForItemAtIndexPath:pIndexPath];
+                //                CGRect cellFrame = CGRectFromString([frames objectAtIndex:[keys[0] integerValue]]);
+                //
+                //                [lineView removeFromSuperview];
+                //                [blackTransparentView removeFromSuperview];
+                //
+                //                xOffset = pCell.frame.origin.x + pCell.frame.size.width + 2;
+                //                yValue = cellFrame.origin.y;
+                //                nestedWidth = 2.0;
+                //                nestedHeight = cellFrame.size.height;
+                //
+                //                [self.collectionView performBatchUpdates:^{
+                //
+                //                lineView.frame = CGRectMake(xOffset, yValue, nestedWidth, nestedHeight);
+                //                lineView.backgroundColor = [UIColor blackColor];
+                //                [self.collectionView addSubview:lineView];
+                //
+                //                [self moveCellsApartWithFrame:lineView.frame andOrientation:0];
+                //
+                //                } completion:nil];
+//                if  let pCell = self.collectionView?.cellForItem(at: pIndexPath){
+//                    lineView.removeFromSuperview()
+//                    
+//                    let  xOffset = pCell.frame.origin.x + pCell.frame.size.width + 2
+//                    
+//                    let  yValue = destinationCell.frame.origin.y + destinationCell.frame.size.height + 2
+//                    let nestedWidth = destinationCell.frame.size.width
+//                    let nestedHeight = 2.0
+//                    
+                
+                }
+                
+                
+                
+                
+                //floor(xOffset)
+                //floor(yValue)
+                //   print("\(floor(xOffset))in right of the cell line ")
+                //  print("\(floor(yValue))in right of the cell line ")
+//                self.collectionView?.performBatchUpdates({
+//                    self.lineView.frame = CGRect(x: xOffset, y: yValue, width: CGFloat(nestedWidth), height: CGFloat(nestedHeight))
+//                    self.lineView.backgroundColor = UIColor.black
+//                    self.collectionView?.addSubview(self.lineView)
+//                }, completion: { (test) in
+//                    self.moveCellsApartWithFrame(frame: (self.lineView.frame), andOrientation: 0)
+//                    
+//                })
+            
+                
+                
+                
+                
+            }
             
             
             
@@ -422,19 +496,21 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         
         
         
-    }
+    
     
     func moveCellsApartWithFrame(frame:CGRect,andOrientation orientation:Int) {
         var certOne  = CGRect.zero
         var certTwo = CGRect.zero
-        let cellsToMove0 = NSMutableArray.init()
-        let cellsToMove1 = NSMutableArray.init()
+         cellsToMove0.removeAllObjects()
+         cellsToMove1.removeAllObjects()
         if orientation == 0 {
             certOne = CGRect(x: frame.origin.x, y: frame.origin.y, width: CGFloat.greatestFiniteMagnitude, height: frame.size.height)
             certTwo = CGRect(x: 0.0, y: frame.origin.y, width: frame.origin.x, height: frame.size.height)
+            print("\(certOne)first One")
+            print("\(certTwo)secondOne")
         }else{
-            certOne = CGRect(x: frame.origin.x, y: frame.origin.y, width: frame.size.width, height: CGFloat.greatestFiniteMagnitude)
-            certTwo = CGRect(x: frame.origin.x, y: 0.0, width: frame.size.width, height: frame.size.height)
+            certOne = CGRect(x: frame.origin.x, y: frame.origin.y, width: CGFloat.greatestFiniteMagnitude, height: frame.size.height)
+            certTwo = CGRect(x: frame.origin.x, y: 0.0, width: frame.size.width, height: frame.origin.y)
         }
         
         for i in 0 ..< self.images.count{
@@ -450,51 +526,32 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
             
         }
         
-//        [self.collectionView performBatchUpdates:^{
-//            
-//            for(ImageCollectionViewCell *cell in cellsToMove1){
-//            
-//            if(orientation == 0){
-//            
-//            [UIView animateWithDuration:0.2 animations:^{
-//            cell.transform = CGAffineTransformMakeTranslation(-5.0, 0.0);
-//            }];
-//            
-//            }
-//            else{
-//            [UIView animateWithDuration:0.2 animations:^{
-//            cell.transform = CGAffineTransformMakeTranslation(0.0, -5.0);
-//            }];
-//            }
-//            
-//            }
-        
         self.collectionView?.performBatchUpdates({
-            for i in  0 ..< cellsToMove0.count{
+            for i in  0 ..< self.cellsToMove0.count{
                 if orientation == 0{
                     UIView.animate(withDuration: 0.2, animations: {
-                        let cell = cellsToMove0[i] as! UICollectionViewCell
+                        let cell = self.cellsToMove0[i] as! UICollectionViewCell
                         cell.transform = CGAffineTransform(translationX: 5.0, y: 0.0)
                     })
                 }else{
                     UIView.animate(withDuration: 0.2, animations: {
-                        let cell = cellsToMove0[i] as! UICollectionViewCell
-                        cell.transform = CGAffineTransform(translationX: 0.0, y: -5.0)
+                        let cell = self.cellsToMove0[i] as! UICollectionViewCell
+                        cell.transform = CGAffineTransform(translationX: 0.0, y: 5.0)
                     })
                 }
                
             }
             
-            for i in  0 ..< cellsToMove1.count{
-               if orientation == 1{
+            for i in  0 ..< self.cellsToMove1.count{
+               if orientation == 0{
                 UIView.animate(withDuration: 0.2, animations: {
-                    let cell = cellsToMove1[i] as! UICollectionViewCell
+                    let cell = self.cellsToMove1[i] as! UICollectionViewCell
                     cell.transform = CGAffineTransform(translationX: -5.0, y: 0.0)
                 })
                }else{
                 UIView.animate(withDuration: 0.2, animations: {
-                    let cell = cellsToMove1[i] as! UICollectionViewCell
-                    cell.transform = CGAffineTransform(translationX: 0.0, y: 0.0)
+                    let cell = self.cellsToMove1[i] as! UICollectionViewCell
+                    cell.transform = CGAffineTransform(translationX: 0.0, y: -5.0)
                 })
 
                 }
@@ -502,10 +559,55 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         }, completion: { (Bool) in
             
         })
+    }
+    
+    func changeToIdentiPosition()  {
+        
+        self.collectionView?.performBatchUpdates({
+            for i in  0 ..< self.cellsToMove0.count{
+               
+                    UIView.animate(withDuration: 0.2, animations: {
+                        let cell = self.cellsToMove0[i] as! UICollectionViewCell
+                        cell.transform = CGAffineTransform.identity
+                    })
+            }
+            
+            for i in  0 ..< self.cellsToMove1.count{
+               
+                    UIView.animate(withDuration: 0.2, animations: {
+                        let cell = self.cellsToMove1[i] as! UICollectionViewCell
+                        cell.transform = CGAffineTransform.identity
+                    })
+                
+            }
+            
+            
+        }, completion: { (test) in
+            
+        })
+//        -(void)changeToIdentityPosition{
+//            
+//            [self.collectionView performBatchUpdates:^{
+//                
+//                for(ImageCollectionViewCell *cell in cellsToMove1){
+//                
+//                [UIView animateWithDuration:0.2 animations:^{
+//                cell.transform = CGAffineTransformIdentity;
+//                }];
+//                
+//                }
+//                
+//                for(ImageCollectionViewCell *cell in cellsToMove0){
+//                
+//                [UIView animateWithDuration:0.2 animations:^{
+//                cell.transform = CGAffineTransformIdentity;
+//                }];
+//                }
+//                
+//                } completion:nil];
+//        }
+//        
 
-        
-        
-        
     }
     
     func scrollIfNeed(snapshotView:UIView)  {
