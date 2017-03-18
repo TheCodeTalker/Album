@@ -1,0 +1,16 @@
+# Uncomment the next line to define a global platform for your project
+# platform :ios, '9.0'
+
+target 'MYAlbum' do
+  # Comment the next line if you're not using Swift and don't want to use dynamic frameworks
+  use_frameworks!
+
+  # Pods for MYAlbum
+  pod 'NYTPhotoViewer', '~> 1.1.0'
+  pod 'Alamofire'
+  pod 'SDWebImage'
+  pod 'ReachabilitySwift', '~> 3'
+  pod 'Letters'
+  pod 'GMImagePicker'
+
+end

@@ -1,0 +1,37 @@
+PODS:
+  - Alamofire (4.4.0)
+  - FLAnimatedImage (1.0.12)
+  - GMImagePicker (0.0.2)
+  - Letters (1.0.2)
+  - NYTPhotoViewer (1.1.0):
+    - NYTPhotoViewer/AnimatedGifSupport (= 1.1.0)
+    - NYTPhotoViewer/Core (= 1.1.0)
+  - NYTPhotoViewer/AnimatedGifSupport (1.1.0):
+    - FLAnimatedImage (~> 1.0.8)
+    - NYTPhotoViewer/Core
+  - NYTPhotoViewer/Core (1.1.0)
+  - ReachabilitySwift (3)
+  - SDWebImage (4.0.0):
+    - SDWebImage/Core (= 4.0.0)
+  - SDWebImage/Core (4.0.0)
+
+DEPENDENCIES:
+  - Alamofire
+  - GMImagePicker
+  - Letters
+  - NYTPhotoViewer (~> 1.1.0)
+  - ReachabilitySwift (~> 3)
+  - SDWebImage
+
+SPEC CHECKSUMS:
+  Alamofire: dc44b1600b800eb63da6a19039a0083d62a6a62d
+  FLAnimatedImage: 4a0b56255d9b05f18b6dd7ee06871be5d3b89e31
+  GMImagePicker: 6438a6764d6280b1dbf19b59140313f5a73daeeb
+  Letters: 5cfa7075f0d15083ea24365186ffa848ea858293
+  NYTPhotoViewer: e80e8767f3780d2df37c6f72cbab15d6c7232911
+  ReachabilitySwift: f5b9bb30a0777fac8f09ce8b067e32faeb29bb64
+  SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
+
+PODFILE CHECKSUM: c47ec52eb3739b35651717f498e85fc573f67178
+
+COCOAPODS: 1.2.0
