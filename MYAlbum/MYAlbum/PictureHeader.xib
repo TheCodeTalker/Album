@@ -99,6 +99,7 @@
             </constraints>
             <connections>
                 <outlet property="iboHeaderImage" destination="HJv-D4-AKe" id="Uno-JY-WdI"/>
+                <outlet property="iboHeaderScroll" destination="Sdc-wu-W75" id="2ZX-BW-jCG"/>
                 <outlet property="iboScrollDownBrn" destination="M5B-0b-lIg" id="XFk-bV-Mme"/>
                 <outlet property="iboSubTitle" destination="QCy-iO-y4u" id="gdA-6E-uZx"/>
                 <outlet property="iboTitle" destination="sXO-ff-VKn" id="AMU-Au-jgX"/>

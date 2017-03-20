@@ -68,6 +68,19 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         
     }
     
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView == self.collectionView{
+        self.headerView?.layoutHeaderViewForScrollViewOffset(offset: scrollView.contentOffset)
+        }
+//        let header : PictureHeaderCollectionReusableView
+//        let header: ParallaxHeaderView = self.tableview.tableHeaderView as ParallaxHeaderView
+//        header.layoutHeaderViewForScrollViewOffset(scrollView.contentOffset)
+//        
+//        self.tableview.tableHeaderView = header
+        
+        
+    }
+    
     
     func assetsPickerController(_ picker: GMImagePickerController!, didFinishPickingAssets assets: [Any]!) {
         self.requestOptions.resizeMode = .exact
@@ -106,16 +119,19 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                     if asset == (ass1[assets.count - 1]){
                         
                         let layout = ZLBalancedFlowLayout()
+                        //layout.sectionHeadersPinToVisibleBounds = false
                         layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width , height: UIScreen.main.bounds.height)
                         layout.footerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2)
                         layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
                         self.collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
+                        self.collectionView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
                         self.collectionView?.delegate = self
                         self.collectionView?.dataSource  = self
                         self.collectionView?.backgroundColor = UIColor.white
                         self.collectionView?.reloadData()
                         self.collectionView?.collectionViewLayout.invalidateLayout()
                         self.collectionView?.alwaysBounceVertical = true
+                        self.collectionView?.bounces = false
                         self.collectionView?.register(UICollectionViewCell.classForCoder(), forCellWithReuseIdentifier: self.cellIdentifier)
                         self.collectionView?.register(UINib(nibName: "PictureHeader", bundle: nil), forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "HeaderView")
                         self.collectionView?.register(UINib(nibName: "FooterReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionElementKindSectionFooter, withReuseIdentifier: "FotterView")
@@ -156,14 +172,17 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                     if asset == (ass1[assets.count - 1]){
                         
                         let layout = ZLBalancedFlowLayout()
+                       // layout.sectionHeadersPinToVisibleBounds = false
                         layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width , height: UIScreen.main.bounds.height)
                         layout.footerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2)
                         layout.sectionInset = UIEdgeInsets(top: 10, left: 10, bottom: 10, right: 10)
                         self.collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
                         self.collectionView?.register(UICollectionViewCell.classForCoder(), forCellWithReuseIdentifier: self.cellIdentifier)
                         self.collectionView?.delegate = self
+                        self.collectionView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
                         self.collectionView?.backgroundColor = UIColor.white
                         self.collectionView?.dataSource  = self
+                        self.collectionView?.bounces = false
                         self.collectionView?.alwaysBounceVertical = true
                         self.collectionView?.reloadData()
                         self.collectionView?.collectionViewLayout.invalidateLayout()
@@ -291,6 +310,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         {
             self.changeToIdentiPosition()
             lineView.removeFromSuperview()
+            self.swapView?.removeFromSuperview()
             
          //   print("\(indexPath.item)source but destination\(sourceIndexPath.item)")
             if indexPath.item != sourceIndexPath.item{
@@ -308,6 +328,8 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                 if differenceLeft > -20 && differenceLeft < 0 {
                   //  print("Insert to the left of cell line")
                     lineView.removeFromSuperview()
+                    self.swapView?.removeFromSuperview()
+                    print("differenceLeft\(differenceLeft)")
                     let xOffset = destinationCell.frame.origin.x - 5
                      // print("\(xOffset)in left of the cell line ")
                     let yValue = destinationCell.frame.origin.y
@@ -325,7 +347,9 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                 }else if differenceRight < 20 && differenceRight > 0{
                     
                     print("Insert to the right of the cell line")
+                    print("differenceright\(differenceRight)")
                     lineView.removeFromSuperview()
+                    self.swapView?.removeFromSuperview()
                     
                     let  xOffset = destinationCell.frame.origin.x + destinationCell.frame.size.width + 5
                     let  yValue = destinationCell.frame.origin.y
@@ -362,6 +386,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                 }else if (differenceTop > -20 && differenceTop < 0 && destinationCell.frame.size.width < (UIScreen.main.bounds.width - 16)){
                     print("Insert to the TOP of the cell line")
                     lineView.removeFromSuperview()
+                    self.swapView?.removeFromSuperview()
                     
                     let  xOffset = destinationCell.frame.origin.x
                     let  yValue = destinationCell.frame.origin.y - 4
@@ -384,6 +409,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                 }else if(differenceBottom > 0 && differenceBottom < 20 && destinationCell.frame.size.width < (UIScreen.main.bounds.width - 16)){
                     print("Insert to the Bottom of the cell line")
                     lineView.removeFromSuperview()
+                    self.swapView?.removeFromSuperview()
                     
                     let  xOffset = destinationCell.frame.origin.x
                     let  yValue = destinationCell.frame.origin.y + destinationCell.frame.size.height + 2
@@ -401,16 +427,35 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                         self.moveCellsApartWithFrame(frame: (self.lineView.frame), andOrientation: 0)
                         
                     })
-
-                    
                 }else{
+                    
+                    self.lineView.removeFromSuperview()
+                    self.swapView?.removeFromSuperview()
+                    self.collectionView?.performBatchUpdates({
+//                        blackTransparentView.frame = destinationCell.contentView.bounds;
+//                        blackTransparentView.backgroundColor = [UIColor blackColor];
+//                        blackTransparentView.alpha = 0.6;
+//                        swapImageView.center = CGPointMake(blackTransparentView.frame.size.width  / 2,blackTransparentView.frame.size.height / 2);
+//                        [blackTransparentView addSubview:swapImageView];
+//                        [destinationCell.contentView addSubview:blackTransparentView];
+                        self.swapView?.frame = destinationCell.contentView.bounds
+                        self.swapView?.backgroundColor = UIColor.black
+                        self.swapView?.alpha = 0.6
+                        self.swapImageView?.center = CGPoint(x: (self.swapView?.frame.size.width)! / 2, y: (self.swapView?.frame.size.height)! / 2)
+                        self.swapView?.addSubview(self.swapImageView!)
+                        destinationCell.contentView.addSubview(self.swapView!)
+                        
+                    }, completion: { (boolTest) in
+                        
+                    })
+                    
+                    print("outof left and right and top and bottom")
                 //    moveCellsApartWithFrame(frame: (self.lineView.frame), andOrientation: 1)
                 }
-                
-                
-                
             }
             else{
+                //self.lineView.removeFromSuperview()
+                print("outofsource")
               //  moveCellsApartWithFrame(frame: (self.lineView.frame), andOrientation: 1)
                 
             }
@@ -430,6 +475,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
             let uIndexPath = self.collectionView?.indexPathForItem(at: CGPoint(x: location.x, y: location.y - 10))
             let lIndexPath = self.collectionView?.indexPathForItem(at: CGPoint(x: location.x, y: location.y + 10))
             if let  pIndexPath = self.collectionView?.indexPathForItem(at: CGPoint(x: location.x - 10, y: location.y)),  let nIndexPath = self.collectionView?.indexPathForItem(at: CGPoint(x: location.x + 10, y: location.y)){
+                print("pIndexPath\(pIndexPath) and nIndexPath\(nIndexPath)")
                 print("Insert in between two cells in the same row taken as horizontally line")
                 //                NSLog(@"Insert in between two cells in the same row taken as horizontally line");
                 //
@@ -673,6 +719,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
             self.collectionView?.performBatchUpdates({
                 self.collectionView?.moveItem(at: self.originalIndexPath!, to: indexPath)
                 self.collectionView?.moveItem(at: indexPath, to: self.originalIndexPath!)
+                 self.swapView?.removeFromSuperview()
                 let temp  = self.images[indexPath.item]
                 self.images[indexPath.item] = self.images[(self.originalIndexPath?.item)!]
                 self.images[(self.originalIndexPath?.item)!] = temp
