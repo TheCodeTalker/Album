@@ -23,7 +23,8 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
         }
     }
     
-    public var currentAnswer = [[String]]()
+   
+    public var finalCurrentAnswer = NSMutableArray()
 
     fileprivate var headerFrames = [CGRect](), footerFrames = [CGRect]()
     fileprivate var itemFrames = [[CGRect]](), itemOriginYs = [[CGFloat]]()
@@ -313,24 +314,43 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
         var partitions = [[Float]]()
         findSolution(values, slacks: slacks, opt: opt, to: numValues-1, partitions: &partitions)
         
-        for (index1,value) in partitions.enumerated(){
-            var insideArray : [Float] = value as! [Float]
-           // print("\(index1),,\(value)")
-            var arrayObj = [String]()
-            for (index,value) in insideArray.enumerated(){
-            //    print("\(index),\(value)")
-                let placeHolder = "\(index1)-\(index)-\(0)"
-                arrayObj.append(placeHolder)
-            //    arrayObj.adding(placeHolder)
-                //let arrayObj = NSArray(object: placeHolder)
+       // if let local : NSMutableArray = defaults.object(forKey: "partition") as? NSMutableArray{
+        
+        if let partion : NSArray = UserDefaults.standard.object(forKey: "partition") as? NSArray{
+            
+            
+            
+            
+        }else{
+            
+            var currentAnswer = NSMutableArray()
+            for (index1,value) in partitions.enumerated(){
+                var insideArray : [Float] = value as! [Float]
+                // print("\(index1),,\(value)")
+                var arrayInsideArray = NSMutableArray()
                 
+                for (index,value) in insideArray.enumerated(){
+                    //    print("\(index),\(value)")
+                    let placeHolder = "\(index1)-\(index)-\(0)"
+                    let element = NSArray(object: placeHolder)
+                    //let arrayOfElement = NSArray(array: [placeHolder])
+                    arrayInsideArray.add(element)
+                }
                 
-                
-            }
-            currentAnswer.append(arrayObj)
+                currentAnswer.add(arrayInsideArray)
+                //currentAnswer.add(arrayInsideArray)
+             //   finalCurrentAnswer.add(currentAnswer)
+               // currentAnswer.append(arrayObj)
+        }
+      
+            
+            UserDefaults.standard.set(currentAnswer, forKey: "partition")
            // currentAnswer.addObjects(from: arrayObj as! [Any])
             
         }
+        
+        
+
         
         
         return partitions

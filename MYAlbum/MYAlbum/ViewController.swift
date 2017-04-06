@@ -20,6 +20,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     var cellsToMove0 = NSMutableArray.init()
     var cellsToMove1 = NSMutableArray.init()
     var lineView : UIView = UIView(frame: CGRect.zero)
+    var localPartition = NSMutableArray.init()
     let CustomEverythingPhotoIndex = 1, DefaultLoadingSpinnerPhotoIndex = 3, NoReferenceViewPhotoIndex = 4
     fileprivate var imageCount : NSNumber = 0
     var requestOptions = PHImageRequestOptions()
@@ -29,6 +30,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     var originalIndexPath: IndexPath?
     var swapImageView: UIImageView?
     var stopped : Bool = false
+     let defaults = UserDefaults.standard
     var swapView: UIView?
     var draggingIndexPath: IndexPath?
     var draggingView: UIView?
@@ -44,9 +46,13 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
    //var pickerController: GMImagePickerCon!
    //  var assets: [DKAsset]?
     
-    let defaults = UserDefaults.standard
     override func viewDidLoad() {
         super.viewDidLoad()
+       
+        defaults.removeObject(forKey: "partition")
+        defaults.synchronize()
+        
+    //    UserDefaults.standard.set(currentAnswer, forKey: "partation")
                 // Do any additional setup after loading the view, typically from a nib.
     }
     
@@ -240,6 +246,11 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         switch gestureReconizer.state {
             
         case .began:
+            if let local : NSArray = defaults.object(forKey: "partition") as? NSArray{
+                localPartition = NSMutableArray(array: local)
+            }
+            
+
             startDragAtLocation(location: location)
             
             
@@ -712,11 +723,293 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     }
 
     
+    func insertNewCellAtPoint(location:CGPoint ,withSourceIndexPathwithSourceIndexPath  sourceIndexPath : IndexPath ,forSnapshot snapshot:CGRect){
+        
+        if let  destinationIndexPath = self.collectionView?.indexPathForItem(at: location){
+            if let destinationCell  = self.collectionView?.cellForItem(at: destinationIndexPath){
+                
+                if destinationIndexPath.item != sourceIndexPath.item{
+                    
+                    
+                    let topOffset = destinationCell.frame.origin.y + 20
+                    let leftOffset = destinationCell.frame.origin.x + 20
+                    let bottomOffset = destinationCell.frame.origin.y + destinationCell.frame.size.height - 10
+                    let rightOffset = destinationCell.frame.origin.x + destinationCell.frame.size.width - 10
+                    let differenceLeft = location.x - leftOffset
+                    
+                    let differenceRight = location.x - rightOffset
+                    let differenceTop = location.y - topOffset
+                    let differenceBottom = location.y - bottomOffset
+                    
+                    var singletonArray = self.getSingletonArray()
+                    var sourseKey = singletonArray.object(at: sourceIndexPath.item)
+                   var sourseKeys = (sourseKey as! String).components(separatedBy: "-")
+                    
+                  //  if   let sourseKeys = findWithIndex(array: singletonArray, index: sourceIndexPath.item){
+                    
+                        if(differenceLeft > -20 && differenceLeft < 0){
+                            
+                            print("Inserting to the left of cell")
+                            let destPaths = singletonArray.object(at: destinationIndexPath.item)
+                           // let destPaths = findWithIndex(array: singletonArray, index: destinationIndexPath.item)
+                            let destKeys = (destPaths as! NSString).components(separatedBy: "-")
+                            let rowNumber :NSArray = self.localPartition.object(at: Int(destKeys[0])!) as! NSArray
+                           // let rowNumber : NSMutableArray = self.localPartition.object(at: destKeys[0])
+                            let rowTemp = rowNumber
+                            
+                            let nextItem :NSArray = rowTemp.object(at: Int(destKeys[1])!) as! NSArray
+                            let searchString = nextItem.firstObject as! String
+                            
+                           // let nextItem = rowNumber.object(at: destKeys[1])
+                            var destIndex = singletonArray.index(of: searchString)
+                            
+                            
+                            if sourceIndexPath.item < destinationIndexPath.item && destIndex != 0{
+                                destIndex -= 1
+                                
+                            }
+                            var insertRow = self.localPartition[Int((destKeys[0]))!] as! NSArray
+                            var insertRowArray = NSMutableArray.init(array: insertRow)
+                            let columnNumber = Int((destKeys[1]))!
+                            guard let newIndex = Int(destKeys.first!) else {
+                               return
+                            }
+                            print("New index \(newIndex)")
+                           
+                            
+                            let ArrayWithObj = "\(newIndex)-\(columnNumber)-\(0)"
+                             var arrayObj = NSArray(array: [ArrayWithObj])
+                           // arrayObj.adding(ArrayWithObj)
+                           // arrayObj.append(ArrayWithObj)
+                            insertRowArray.insert(arrayObj, at: columnNumber)
+                            print("start\(insertRowArray)")
+                            
+                            for i in columnNumber ..< insertRowArray.count{
+                                let insertColumn  = insertRowArray.object(at: i) as! NSArray
+                                let insertColumnArray = NSMutableArray.init(array: [insertColumn])
+                                print("start\(insertColumnArray)")
+                                for j in 0 ..< insertColumnArray.count{
+                                    insertColumnArray.replaceObject(at: j, with: "\(newIndex)-\(i)-\(j)")
+                                    
+                                    
+                                }
+                                insertRowArray.replaceObject(at: i, with: insertColumnArray)
+                                
+                            }
+                            self.localPartition.replaceObject(at: newIndex, with: insertRowArray)
+                            print("NEW Index\(destIndex)")
+                            let obj = collectionArray[sourceIndexPath.item]
+                            collectionArray.remove(at: sourceIndexPath.item)
+                            collectionArray.insert(obj, at: destIndex)
+                            print("locacl Part")
+                            let sourseKeysSecond = Int(sourseKeys[1])
+                            if (Int(sourseKeys[0])) == Int(destKeys[0]){
+                                
+                                if (Int(sourseKeys[1]) ) == Int(destKeys[1]){
+                                    
+                                    sourseKeys = NSArray.init(objects: "\(Int(sourseKeys[0]))","\(sourseKeysSecond)","\(Int(sourseKeys[2]))") as! [String]
+                                }
+                                
+                            }
+                            let rowArray : NSArray = (self.localPartition.object(at: (Int(sourseKeys[0]))!) as! NSArray)
+                            let row : NSMutableArray = rowArray.mutableCopy() as! NSMutableArray
+                            print("source row array\(row)")
+                            
+                            let columnArray  = row.object(at: (Int(sourseKeys[1]))!) as! NSArray
+                            let column : NSMutableArray = columnArray.mutableCopy() as! NSMutableArray
+                            print("column  array \(column)")
+                            
+                            column.removeObject(at: column.count-1)
+                        //     [self changePartitionForSourceRowWithRow:rowArray andColumn:columnArray andSourceKeys:sourceKeys andDestKeys:destKeys]
+                            
+                            
+                            
+                            
+//                            [columnArray removeObjectAtIndex:[columnArray count]-1];
+//                            
+//                            [self changePartitionForSourceRowWithRow:rowArray andColumn:columnArray andSourceKeys:sourceKeys andDestKeys:destKeys];
+//                            
+//                            NSLog(@"partition after %@",localPartition);
+//                            [defaults setObject:localPartition forKey:@"partition"];
+//                            
+//                            
+//                            [self.collectionView performBatchUpdates:^{
+//                            [self.collectionView moveItemAtIndexPath:sourceIndexPath toIndexPath:[NSIndexPath indexPathForItem:destIndex inSection:0]];
+//                            } completion:^(BOOL finished) {
+//                            [self.collectionView reloadSections:[NSIndexSet indexSetWithIndex:0]];
+//                            [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:destIndex inSection:0] atScrollPosition:UICollectionViewScrollPositionCenteredVertically animated:YES];
+//                            }];
+//                            
+                            
+                            
+                            
+                            
+                        }
+                        
+                        
+                 //   }
+                    
+                    
+            }
+            
+        }
+        
+        
+    }
+    }
+    func changePartitionForSourceRowWithRow(rowArray : NSArray,andColumn columnArray:NSArray,andSourceKeys keys:NSArray,andDestKeys destKeys:NSArray) {
+        
+        
+        
+    }
+    func findWithIndex(array : [String],index i : Int = 0) -> String? {
+        for j in 0...array.count {
+            if j == i {
+                return  array[i]
+            }
+        }
+        return nil
+    }
+    
+    func getSingletonArray() -> NSMutableArray{
+        let returnArray = NSMutableArray.init()
+        for (_,indexArray) in localPartition.enumerated(){
+            for (_,insideArray) in (indexArray as! NSArray).enumerated(){
+            for (_,inside) in (insideArray as! NSArray).enumerated(){
+             //   returnArray.addObjects(from: inside)
+                let element = inside as! String
+                returnArray.add(element)
+          //  returnArray.addObjects(from: element)
+                //returnArray.add(element[0])
+                }
+          
+            }
+        }
+        return returnArray
+        
+    }
     
     func endDragAtLocation(location:CGPoint){
         guard let vc = collectionView else {return}
         if let indexPath = vc.indexPathForItem(at: location), let cell = vc.cellForItem(at: originalIndexPath!),let destination = vc.cellForItem(at: indexPath)  {
+            //added
+            
+            
+            if let indexPath = self.collectionView?.indexPathForItem(at: location){
+                
+                let sourceCell = self.collectionView?.cellForItem(at: originalIndexPath!)
+                if let destinationCell = self.collectionView?.cellForItem(at: indexPath)
+                {
+                    self.changeToIdentiPosition()
+                    lineView.removeFromSuperview()
+                    self.swapView?.removeFromSuperview()
+                    
+                    //   print("\(indexPath.item)source but destination\(sourceIndexPath.item)")
+                    if indexPath.item != originalIndexPath?.item{
+                        
+                        let topOffset = destinationCell.frame.origin.y + 20
+                        let leftOffset = destinationCell.frame.origin.x + 20
+                        let bottomOffset = destinationCell.frame.origin.y + destinationCell.frame.size.height - 10
+                        let rightOffset = destinationCell.frame.origin.x + destinationCell.frame.size.width - 10
+                        let differenceLeft = location.x - leftOffset
+                        
+                        let differenceRight = location.x - rightOffset
+                        // print("destination\(destinationCell.frame)")
+                        let differenceTop = location.y - topOffset
+                        let differenceBottom = location.y - bottomOffset
+                        if differenceLeft > -20 && differenceLeft < 0 {
+                              print("Insert to the left of cell line")
+                            self.insertNewCellAtPoint(location: location, withSourceIndexPathwithSourceIndexPath: originalIndexPath!, forSnapshot: (self.draggingView?.frame)!)
+                            sourceCell?.isHidden  = false
+                            originalIndexPath = nil
+                            sourceCell?.removeFromSuperview()
+                            //sourceCell.hidden = NO;
+                            //sourceIndexPath = nil;
+                            self.draggingView = nil
+                            //[snapshot removeFromSuperview];
+                            //snapshot = nil;
+
+                            
+                            
+                            
+                            
+                            
+                        }else if differenceRight < 20 && differenceRight > 0{
+                            
+                            print("Insert to the right of the cell line")
+                            
+                            self.insertNewCellAtPoint(location: location, withSourceIndexPathwithSourceIndexPath: originalIndexPath!, forSnapshot: (self.draggingView?.frame)!)
+                            sourceCell?.isHidden  = false
+                            originalIndexPath = nil
+                            sourceCell?.removeFromSuperview()
+                            //sourceCell.hidden = NO;
+                            //sourceIndexPath = nil;
+                            self.draggingView = nil
+                            
+                            
+                            
+                        }else if (differenceTop > -20 && differenceTop < 0 && destinationCell.frame.size.width < (UIScreen.main.bounds.width - 16)){
+                            print("Insert to the TOP of the cell line")
+                            self.insertNewCellAtPoint(location: location, withSourceIndexPathwithSourceIndexPath: originalIndexPath!, forSnapshot: (self.draggingView?.frame)!)
+                            sourceCell?.isHidden  = false
+                            originalIndexPath = nil
+                            sourceCell?.removeFromSuperview()
+                            //sourceCell.hidden = NO;
+                            //sourceIndexPath = nil;
+                            self.draggingView = nil
+                            
+                            
+                        }else if(differenceBottom > 0 && differenceBottom < 20 && destinationCell.frame.size.width < (UIScreen.main.bounds.width - 16)){
+                            print("Insert to the Bottom of the cell line")
+                            self.insertNewCellAtPoint(location: location, withSourceIndexPathwithSourceIndexPath: originalIndexPath!, forSnapshot: (self.draggingView?.frame)!)
+                            sourceCell?.isHidden  = false
+                            originalIndexPath = nil
+                            sourceCell?.removeFromSuperview()
+                            //sourceCell.hidden = NO;
+                            //sourceIndexPath = nil;
+                            self.draggingView = nil
+                        }else{
+                            
+
+                            
+                            print("outof left and right and top and bottom")
+                            //    moveCellsApartWithFrame(frame: (self.lineView.frame), andOrientation: 1)
+                        }
+                    }
+                    else{
+                        //self.lineView.removeFromSuperview()
+                        print("outofsource")
+                        //  moveCellsApartWithFrame(frame: (self.lineView.frame), andOrientation: 1)
+                        
+                    }
+                    
+                    
+                }else{
+                    
+                    
+                    
+                }
+                
+                
+                
+            }
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            
             self.collectionView?.performBatchUpdates({
+                print("\(UserDefaults.standard.object(forKey: "partition"))final partation")
+                   self.insertNewCellAtPoint(location: location, withSourceIndexPathwithSourceIndexPath: self.originalIndexPath!, forSnapshot: (self.draggingView?.frame)!)
                 self.collectionView?.moveItem(at: self.originalIndexPath!, to: indexPath)
                 self.collectionView?.moveItem(at: indexPath, to: self.originalIndexPath!)
                  self.swapView?.removeFromSuperview()
@@ -727,6 +1020,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                             }, completion: { (Bool) in
                 //  self.draggingView!.alpha = 0.0
                 
+                 
                 cell.alpha = 1
                 cell.isHidden = false
                 self.draggingView?.removeFromSuperview()
@@ -781,6 +1075,8 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                         self.images[0] = self.images[(self.originalIndexPath?.item)!]
                         
                         self.images[(self.originalIndexPath?.item)!] = imageData
+                        self.lineView.removeFromSuperview()
+                        self.swapView?.removeFromSuperview()
                         self.draggingView?.removeFromSuperview()
                         cell?.alpha = 1
                         cell?.isHidden = false
