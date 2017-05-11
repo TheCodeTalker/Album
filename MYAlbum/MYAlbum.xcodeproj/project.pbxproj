@@ -144,7 +144,7 @@
 				TargetAttributes = {
 					B66A793F1E6EC20E001A2861 = {
 						CreatedOnToolsVersion = 8.2.1;
-						DevelopmentTeam = 6CQVVCK5W9;
+						DevelopmentTeam = J9PJNU3T28;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -363,7 +363,7 @@
 			baseConfigurationReference = CBD36776616130F114A75B4C /* Pods-MYAlbum.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 6CQVVCK5W9;
+				DEVELOPMENT_TEAM = J9PJNU3T28;
 				INFOPLIST_FILE = MYAlbum/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
@@ -378,7 +378,7 @@
 			baseConfigurationReference = AA4E140A50FC9544679E4EA1 /* Pods-MYAlbum.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				DEVELOPMENT_TEAM = 6CQVVCK5W9;
+				DEVELOPMENT_TEAM = J9PJNU3T28;
 				INFOPLIST_FILE = MYAlbum/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";

@@ -15,7 +15,10 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
             invalidateLayout()
         }
     }
-
+    
+    var isNested = false
+    
+    
     /// The option to enforce the ideal row height by changing the aspect ratio of the item if necessary.
     open var enforcesRowHeight: Bool = false {
         didSet {
@@ -23,40 +26,88 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
         }
     }
     
-   
-    public var finalCurrentAnswer = NSMutableArray()
-
+    var frameArray = [CGRect]()
+    
+    typealias partitionTypeLayout = Array<Array<Array<String>>>
+    var localPartition  = Array<Array<Array<String>>>()
+    
     fileprivate var headerFrames = [CGRect](), footerFrames = [CGRect]()
     fileprivate var itemFrames = [[CGRect]](), itemOriginYs = [[CGFloat]]()
     fileprivate var contentSize = CGSize.zero
-
+    let defaults = UserDefaults.standard
+    
     // TODO: shouldInvalidateLayoutForBoundsChange
-
+    
     // MARK: - UICollectionViewLayout
     override open func prepare() {
         resetItemFrames()
         contentSize = CGSize.zero
-
+        
         if let collectionView = self.collectionView {
+            
+            var  width  = [Float]()
+            let maxWidth = Float(scrollDirection == .vertical ? contentSize.width : contentSize.height)
+            for i in (0..<collectionView.numberOfItems(inSection: 0)) {
+                let itemSize = self.sizeForItemAtIndexPath(IndexPath(item: i, section: 0)),
+                ratio = self.scrollDirection == .vertical ?
+                    itemSize.width/itemSize.height :
+                    itemSize.height/itemSize.width
+                width.append(min(Float(ratio*self.rowHeight), Float(maxWidth)))
+                
+            }
+            
+            // parition widths
+            _ = partition(width, max: Float(maxWidth))
+            
+            //UserDefaults.standard.set(partitions, forKey: "partition")
+            
+            
+            
+            
+            
             contentSize = scrollDirection == .vertical ?
                 CGSize(width: collectionView.bounds.width - collectionView.contentInset.left - collectionView.contentInset.right, height: 0) :
                 CGSize(width: 0, height: collectionView.bounds.size.height - collectionView.contentInset.top - collectionView.contentInset.bottom)
-
-            for section in (0..<collectionView.numberOfSections) {
-                headerFrames.append(self.collectionView(collectionView, frameForHeader: true, inSection: section, updateContentSize: &contentSize))
-
-                let (frames, originYs) = self.collectionView(collectionView, framesForItemsInSection: section, updateContentSize: &contentSize)
-                itemFrames.append(frames)
-                itemOriginYs.append(originYs)
-
-                footerFrames.append(self.collectionView(collectionView, frameForHeader: false, inSection: section, updateContentSize: &contentSize))
+            
+            if let local = defaults.object(forKey: "partition") as? partitionTypeLayout{
+                localPartition = local
             }
+            var sectionOffset = CGPoint.init()
+            var sectionSize = CGSize.zero
+            var numberItems  = collectionView.numberOfItems(inSection: 0)
+            var section  = collectionView.numberOfSections - 1
+
+            
+            for section in (0..<collectionView.numberOfSections) {
+                let headerFrame = self.collectionView(collectionView, frameForHeader: true, inSection: section, updateContentSize: &contentSize)
+                headerFrames.append(headerFrame)
+                
+               // var headerSize = self.collectionView(self.collectionView!, frameForHeader: true, inSection: section, updateContentSize: &contentSize)
+                sectionOffset = CGPoint(x: 0, y: headerFrame.height)//CGPointMake(0, contentSize.height + headerSize.height);
+                
+                
+               let (frames1, originYs1) = self.collectionLayoutElement(collectionView, framesForItemsInSection: section, numberOf: numberItems, sectionOff: sectionOffset, updateContentSize: &sectionSize)
+              //let (frames, originYs) = self.collectionView(collectionView, framesForItemsInSection: section, updateContentSize: &contentSize)
+                itemFrames.append(frames1)
+                itemOriginYs.append(originYs1)
+            let footerFrame =  self.collectionView(collectionView, frameForHeader: false, inSection: section, updateContentSize: &contentSize)
+                
+                let myfooterFrame = CGRect(x: 0, y: headerFrame.height + sectionSize.height, width: collectionView.bounds.width, height: footerFrame.height)
+                footerFrames.append(myfooterFrame)
+                contentSize = CGSize(width: sectionSize.width, height: (contentSize.height +  sectionSize.height))
+            }
+            
+           
+            
+            //CGPoint sectionOffset
+           
         }
     }
-
+    
+    
     override open func layoutAttributesForElements(in rect: CGRect) -> [UICollectionViewLayoutAttributes]? {
         var layoutAttributes = [UICollectionViewLayoutAttributes]()
-
+        
         if let collectionView = self.collectionView {
             // can be further optimized
             for section in (0..<collectionView.numberOfSections) {
@@ -77,24 +128,36 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
                 }
                 let lowerIndex = binarySearch(itemOriginYs[section], value: minY)
                 let upperIndex = binarySearch(itemOriginYs[section], value: maxY)
-
+                
+//                var numberItems  = collectionView.numberOfItems(inSection: 0)
+//                
+//                for  i in 0 ..< numberItems {
+//                let itemFrame = frameArray[i]
+//                    if rect.intersects(itemFrame)
+//                    {
+//                    layoutAttributes.append(self.layoutAttributesForItem(at: IndexPath(item: i, section: section)))
+//                    }
+//                    
+//                }
                 for item in lowerIndex..<upperIndex {
                     layoutAttributes.append(self.layoutAttributesForItem(at: IndexPath(item: item, section: section)))
                 }
+                
+                
             }
         }
         return layoutAttributes
     }
-
+    
     override open func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes! {
         let attributes = super.layoutAttributesForItem(at: indexPath)
         attributes?.frame = itemFrames[indexPath.section][indexPath.row]
         return attributes
     }
-
+    
     override open func layoutAttributesForSupplementaryView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes! {
         let attributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: elementKind, with: indexPath)
-
+        
         switch (elementKind) {
         case UICollectionElementKindSectionHeader:
             attributes.frame = headerFrames[indexPath.section]
@@ -107,14 +170,14 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
         if(attributes.frame.isEmpty) {
             return nil;
         }
-
+        
         return attributes
     }
-
+    
     override open var collectionViewContentSize : CGSize {
         return contentSize
     }
-
+    
     // MARK: - UICollectionViewLayout Helpers
     fileprivate func collectionView(_ collectionView:UICollectionView, frameForHeader isForHeader:Bool, inSection section:Int, updateContentSize contentSize:inout CGSize) -> CGRect {
         var size = referenceSizeForHeader(isForHeader, inSection: section), frame = CGRect.zero
@@ -127,8 +190,156 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
         }
         return frame
     }
-
+    
+    
+    fileprivate func collectionLayoutElement(_ collectionView:UICollectionView, framesForItemsInSection section: Int,numberOf numberOfRows: Int,sectionOff sectionOffset: CGPoint, updateContentSize contentSize:inout CGSize) -> ([CGRect], [CGFloat])  {
+        
+        var i = 0
+        var count = 0
+        var itemCount = 0
+        
+        var framesArray = [String]()
+        var rowHeight = CGFloat(0)
+        frameArray.removeAll()
+        
+        var offset = CGPoint(x: sectionOffset.x + self.sectionInset.left, y: sectionOffset.y + self.sectionInset.top)
+        var previousItemSize = CGFloat.init()
+        var contentMaxValueInScrollDirection = CGFloat.init()
+        var actualSize = CGSize.zero
+        var actualWidth = CGFloat.greatestFiniteMagnitude
+        var actualHeight = CGFloat.leastNormalMagnitude
+        var frameForEachRow = [String]()
+        var framesInSection = [CGRect](), originYsInSection = [CGFloat]()
+        
+        
+        for (_,indexArray) in localPartition.enumerated(){
+            var summedRatios = CGFloat(0)
+            var rectForRow = CGRect.zero
+            rectForRow.origin.x = offset.x
+            rectForRow.origin.y = offset.y
+            var n = indexArray.count
+            
+            for j  in 0 ..< n {
+                var preferredWidth = CGFloat.leastNormalMagnitude
+                var preferredHeight = CGFloat.leastNormalMagnitude
+                var valueToAdd = CGFloat(0.0)
+                if (indexArray[j].count == 1){
+                    let preferredSize = self.sizeForItemAtIndexPath(IndexPath(item: count, section: section))
+                    
+                    preferredWidth = preferredSize.width
+                    preferredHeight = preferredSize.height
+                    
+                    valueToAdd = preferredWidth/preferredHeight
+                    count  = count + 1
+                }else{
+                    var ratio = CGFloat(0.0)
+                    for k in 0 ..< indexArray[j].count {
+                        let preferredSize = self.sizeForItemAtIndexPath(IndexPath(item: count, section: section))
+                        
+                        ratio += preferredSize.height/preferredSize.width
+                        count = count + 1
+                    }
+                    valueToAdd = 1/ratio
+                    
+                }
+                
+                summedRatios +=  valueToAdd
+                
+            }
+            
+            var rowSize = (self.viewPortAvailableSize().width - self.sectionInset.left - self.sectionInset.right) -  CGFloat(indexArray.count - 1) * self.minimumInteritemSpacing
+            
+            rowHeight = CGFloat(roundf(Float(rowSize) / Float(summedRatios)))
+            
+            
+            
+            rectForRow.size.height = CGFloat(rowHeight)
+            rectForRow.size.width = self.viewPortAvailableSize().width
+            
+            for (index,insideArray) in indexArray .enumerated(){
+                if insideArray.count == 1{
+                    
+                    let preferredSize = self.sizeForItemAtIndexPath(IndexPath(item: itemCount, section: section))
+                    var width = (rowSize/summedRatios) * (preferredSize.width/preferredSize.height)
+                    actualSize = CGSize(width: width, height: rowHeight)
+                    var frame = CGRect(x: offset.x, y: offset.y, width: actualSize.width, height: actualSize.height)
+                    frameArray.append(NSValue(cgRect: frame) as CGRect)
+                    framesArray.append(NSStringFromCGRect(frame))
+                    //need to write some code
+                    framesInSection.append(frame)
+                    previousItemSize  = actualSize.height
+                    contentMaxValueInScrollDirection = frame.maxY
+                    itemCount += 1
+                    offset.x += actualSize.width + self.minimumInteritemSpacing;
+                    originYsInSection.append(offset.y)
+                    
+                }else{
+                    var yOffset = offset.y
+                    var actualRowHeight = rowHeight - (CGFloat(insideArray.count - 1) * self.minimumLineSpacing)
+                    var preferredWidth = CGFloat.init()
+                    var summedRatioHeight = CGFloat.init()
+                    
+                    var dItemCount = itemCount
+                    for (_,inside) in insideArray.enumerated(){
+                        let preferredSize = self.sizeForItemAtIndexPath(IndexPath(item: itemCount, section: section))
+                        summedRatioHeight += preferredSize.height/preferredSize.width
+                        dItemCount += 1
+                    }
+                    
+                    preferredWidth = (rowSize/summedRatios) * (1/summedRatioHeight)
+                    
+                    for (index,inside) in insideArray.enumerated(){
+                        let preferredSize = self.sizeForItemAtIndexPath(IndexPath(item: itemCount, section: section))
+                        actualWidth = preferredWidth
+                        actualHeight = (actualRowHeight/summedRatioHeight) * (preferredSize.height/preferredSize.width)
+                        var frame = CGRect(x: offset.x, y: offset.y, width: actualWidth, height: actualHeight)
+                        frameArray.append(NSValue(cgRect: frame) as CGRect)
+                        framesArray.append(NSStringFromCGRect(frame))
+                        
+                        
+                        framesInSection.append(frame)
+                        
+                        offset.y += actualHeight + self.minimumInteritemSpacing
+                        previousItemSize = actualSize.height
+                        contentMaxValueInScrollDirection = frame.maxY
+                        itemCount += 1
+                        originYsInSection.append(offset.y)
+                        
+                        
+                    }
+                    offset.y = yOffset
+                    offset.x += actualWidth + self.minimumInteritemSpacing
+                    
+                    
+                }
+                        }
+            i += 1
+            var strictRectForEachRow = NSStringFromCGRect(rectForRow)
+            
+            frameForEachRow.append(strictRectForEachRow)
+            
+            if (indexArray.count > 0) {
+                offset = CGPoint(x: self.sectionInset.left, y: offset.y+rowHeight+8.0)
+                isNested = false
+            }
+            
+        }
+        
+        UserDefaults.standard.set(framesArray, forKey: "Frames")
+        UserDefaults.standard.set(frameForEachRow, forKey: "FramesForEachRow")
+        
+        contentSize = CGSize(width: ((self.collectionView?.frame.width)! - (self.collectionView?.contentInset.left)! - (self.collectionView?.contentInset.right)!), height:(contentMaxValueInScrollDirection - sectionOffset.y) + self.sectionInset.bottom)
+        
+        return (framesInSection, originYsInSection)
+        
+    }
+    
+    
+    
+    
+    
     fileprivate func collectionView(_ collectionView:UICollectionView, framesForItemsInSection section:Int, updateContentSize contentSize:inout CGSize) -> ([CGRect], [CGFloat]) {
+        
         var  width  = [Float]()
         let maxWidth = Float(scrollDirection == .vertical ? contentSize.width : contentSize.height)
         for i in (0..<collectionView.numberOfItems(inSection: section)) {
@@ -139,21 +350,14 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
             width.append(min(Float(ratio*self.rowHeight), Float(maxWidth)))
             
         }
-        
-        
-        
-//        let maxWidth = Float(scrollDirection == .vertical ? contentSize.width : contentSize.height),
-//        widths = map(0..<collectionView.numberOfItems(inSection: section), {(item: Int) -> Float in
-//            let itemSize = self.sizeForItemAtIndexPath(IndexPath(item: item, section: section)),
-//            ratio = self.scrollDirection == .vertical ?
-//                itemSize.width/itemSize.height :
-//                itemSize.height/itemSize.width
-//            return min(Float(ratio*self.rowHeight), Float(maxWidth))
-//        })
+        defaults.removeObject(forKey: "partition")
+        defaults.synchronize()
 
+        
+        
         // parition widths
         let partitions = partition(width, max: Float(maxWidth))
-
+        
         let minimumInteritemSpacing = minimumInteritemSpacingForSection(section),
         minimumLineSpacing = minimumLineSpacingForSection(section),
         inset = insetForSection(section)
@@ -161,7 +365,7 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
         origin = scrollDirection == .vertical ?
             CGPoint(x: inset.left, y: contentSize.height+inset.top) :
             CGPoint(x: contentSize.width+inset.left, y: inset.top)
-
+        
         for row in partitions {
             // contentWidth/summedWidth
             let innerMargin = Float(CGFloat(row.count-1)*minimumInteritemSpacing),
@@ -191,23 +395,42 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
                 origin = CGPoint(x: origin.x+framesInSection.last!.width+minimumLineSpacing, y: inset.top)
             }
         }
-
+        
         if scrollDirection == .vertical {
             contentSize = CGSize(width: contentSize.width, height: origin.y+inset.bottom)
         } else {
             contentSize = CGSize(width: origin.x+inset.right, height: contentSize.height)
         }
-
+        
         return (framesInSection, originYsInSection)
     }
-
+    
+    
+    func viewPortAvailableSize() -> CGSize{
+        var availableSize = CGSize(width: 0, height: 0)
+        var inset = insetForSection(0)
+        var origin = scrollDirection == .vertical ?
+            CGPoint(x: inset.left, y: contentSize.height+inset.top) :
+            CGPoint(x: contentSize.width+inset.left, y: inset.top)
+        if scrollDirection == .vertical {
+            availableSize = CGSize(width: contentSize.width, height: origin.y+inset.bottom)
+        } else {
+            availableSize = CGSize(width: origin.x+inset.right, height: contentSize.height)
+        }
+        
+        return availableSize
+        
+    }
+    
     fileprivate func resetItemFrames() {
         headerFrames = [CGRect]()
         footerFrames = [CGRect]()
         itemFrames = [[CGRect]]()
         itemOriginYs = [[CGFloat]]()
+        defaults.removeObject(forKey: "partition")
+        defaults.synchronize()
     }
-
+    
     // MARK: - Delegate Helpers
     fileprivate func referenceSizeForHeader(_ isForHeader: Bool, inSection section: Int) -> CGSize {
         if let collectionView = self.collectionView, let delegate = collectionView.delegate as? UICollectionViewDelegateFlowLayout {
@@ -227,41 +450,41 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
             return footerReferenceSize
         }
     }
-
+    
     fileprivate func minimumLineSpacingForSection(_ section: Int) -> CGFloat {
         if let collectionView = self.collectionView, let delegate = collectionView.delegate as? UICollectionViewDelegateFlowLayout, let minimumLineSpacing = delegate.collectionView?(collectionView, layout: self, minimumLineSpacingForSectionAt: section) {
             return minimumLineSpacing
         }
         return minimumLineSpacing
     }
-
+    
     fileprivate func minimumInteritemSpacingForSection(_ section: Int) -> CGFloat {
         if let collectionView = self.collectionView, let delegate = collectionView.delegate as? UICollectionViewDelegateFlowLayout, let minimumInteritemSpacing = delegate.collectionView?(collectionView, layout: self, minimumInteritemSpacingForSectionAt: section) {
             return minimumInteritemSpacing
         }
         return minimumInteritemSpacing
     }
-
+    
     fileprivate func sizeForItemAtIndexPath(_ indexPath: IndexPath) -> CGSize {
         if let collectionView = self.collectionView, let delegate = collectionView.delegate as? UICollectionViewDelegateFlowLayout, let size = delegate.collectionView?(collectionView, layout: self, sizeForItemAt:indexPath) {
             return size
         }
         return itemSize
     }
-
+    
     fileprivate func insetForSection(_ section: Int) -> UIEdgeInsets {
         if let collectionView = self.collectionView, let delegate = collectionView.delegate as? UICollectionViewDelegateFlowLayout, let inset = delegate.collectionView?(collectionView, layout: self, insetForSectionAt: section){
-          return inset
+            return inset
         }
         return sectionInset
     }
-
+    
     // MARK: - ()
     fileprivate func binarySearch<T: Comparable>(_ array: Array<T>, value:T) -> Int{
         var imin=0, imax=array.count
         while imin<imax {
             let imid = imin+(imax-imin)/2
-
+            
             if array[imid] < value {
                 imin = imid+1
             } else {
@@ -270,14 +493,14 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
         }
         return imin
     }
-
+    
     // parition the widths in to rows using dynamic programming O(n^2)
     fileprivate func partition(_ values: [Float], max:Float) -> [[Float]] {
         let numValues = values.count
         if numValues == 0 {
             return []
         }
-
+        
         var slacks = [[Float]](repeating: [Float](repeating: Float.infinity, count: numValues), count: numValues)
         for from in 0 ..< numValues {
             for to in from ..< numValues {
@@ -289,7 +512,7 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
                 }
             }
         }
-
+        
         // build up values of optimal solutions
         var opt = [Float](repeating: 0, count: numValues)
         opt[0] = pow(slacks[0][0], 2)
@@ -304,58 +527,72 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
                 minVal = min(minVal, slack+opp)
             }
             opt[to] = minVal
-                
-            }
-//            for var from=0; from<=to; from += 1 {
-//               
-//        }
-
+            
+        }
+        //            for var from=0; from<=to; from += 1 {
+        //
+        //        }
+        
         // traceback the optimal solution
         var partitions = [[Float]]()
         findSolution(values, slacks: slacks, opt: opt, to: numValues-1, partitions: &partitions)
         
-       // if let local : NSMutableArray = defaults.object(forKey: "partition") as? NSMutableArray{
+        // if let local : NSMutableArray = defaults.object(forKey: "partition") as? NSMutableArray{
         
         if let partion : NSArray = UserDefaults.standard.object(forKey: "partition") as? NSArray{
             
-            
-            
-            
         }else{
             
-            var currentAnswer = NSMutableArray()
+            var array = Array<Array<Array<String>>>()
+            var insideArray = Array<Array<String>>()
+            
             for (index1,value) in partitions.enumerated(){
-                var insideArray : [Float] = value as! [Float]
-                // print("\(index1),,\(value)")
-                var arrayInsideArray = NSMutableArray()
-                
-                for (index,value) in insideArray.enumerated(){
-                    //    print("\(index),\(value)")
+                insideArray.removeAll()
+                for (index,value) in value.enumerated(){
                     let placeHolder = "\(index1)-\(index)-\(0)"
-                    let element = NSArray(object: placeHolder)
-                    //let arrayOfElement = NSArray(array: [placeHolder])
-                    arrayInsideArray.add(element)
+                    
+                    let element = [placeHolder]
+                    // let element = NSArray(object: placeHolder)
+                    insideArray.append(element)
+                    //insideArray.add(element)
                 }
                 
-                currentAnswer.add(arrayInsideArray)
-                //currentAnswer.add(arrayInsideArray)
-             //   finalCurrentAnswer.add(currentAnswer)
-               // currentAnswer.append(arrayObj)
-        }
-      
+                array.append(insideArray)
+            }
             
-            UserDefaults.standard.set(currentAnswer, forKey: "partition")
-           // currentAnswer.addObjects(from: arrayObj as! [Any])
+            
+            
+            
+            
+            
+            //            var currentAnswer = NSMutableArray()
+            //            for (index1,value) in partitions.enumerated(){
+            //                var insideArray : [Float] = value as! [Float]
+            //                // print("\(index1),,\(value)")
+            //                var arrayInsideArray = NSMutableArray()
+            //
+            //                for (index,value) in insideArray.enumerated(){
+            //                    let placeHolder = "\(index1)-\(index)-\(0)"
+            //                    let element = NSArray(object: placeHolder)
+            //                    arrayInsideArray.add(element)
+            //                }
+            //
+            //                currentAnswer.add(arrayInsideArray)
+            //            }
+            
+            
+            UserDefaults.standard.set(array, forKey: "partition")
+            // currentAnswer.addObjects(from: arrayObj as! [Any])
             
         }
         
         
-
+        
         
         
         return partitions
     }
-
+    
     // traceback solution
     fileprivate func findSolution(_ values: [Float], slacks:[[Float]], opt: [Float], to: Int, partitions: inout [[Float]]) {
         if to<0 {
@@ -373,12 +610,12 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
                     minVal = curVal
                     minIndex = from
                 }
-
+                
             }
-           // for var from=to; from>=0; from -= 1 {
-             //             }
+            // for var from=to; from>=0; from -= 1 {
+            //             }
             
-          //  print("values\(values[minIndex...to])")
+            //  print("values\(values[minIndex...to])")
             
             
             
@@ -389,5 +626,5 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
             findSolution(values, slacks: slacks, opt: opt, to: minIndex-1, partitions: &partitions)
         }
     }
-
+    
 }
