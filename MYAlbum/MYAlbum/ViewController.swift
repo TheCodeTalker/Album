@@ -23,6 +23,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     typealias partitionType = Array<Array<Array<String>>>
      //UIView *lineView;
     var cellsToMove0 = NSMutableArray.init()
+    var selectedIndexPath = 0
     var cellsToMove1 = NSMutableArray.init()
     var lineView : UIView = UIView(frame: CGRect.zero)
     var localPartition  = Array<Array<Array<String>>>()
@@ -275,6 +276,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         case .changed:
             guard let view = draggingView else { return }
             guard let cv = collectionView else { return }
+            guard let originalIndexPath = originalIndexPath else {return}
             
          //   view.center = CGPoint(x: location.x + dragOffset.x, y: location.y + dragOffset.y)
             
@@ -304,8 +306,8 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
             }
            // updateDragAtLocation(location: location)
             stopped = false
-              scrollIfNeed(snapshotView: draggingView!)
-            self.checkPreviousIndexPathAndCalculate(location: (draggingView?.center)!, forScreenShort: (draggingView?.frame)!, withSourceIndexPath: originalIndexPath!)
+              scrollIfNeed(snapshotView: view)
+            self.checkPreviousIndexPathAndCalculate(location: view.center, forScreenShort: view.frame, withSourceIndexPath: originalIndexPath)
             
             
             
@@ -796,7 +798,9 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                             let nextItem  = rowTemp[Int(destKeys[1])!]
                             let searchString = nextItem.first
                             
-                           // let nextItem = rowNumber.object(at: destKeys[1])
+                           
+                           
+                            
                             var destIndex = singletonArray.index(of: searchString!)
                             
                             
@@ -847,7 +851,9 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                                 
                                 if (Int(sourseKeys[1]) )! >= Int(destKeys[1])!{
                                     
-                                    sourseKeys = ["\(Int(sourseKeys[0]))-\(sourseKeysSecond)-\(Int(sourseKeys[2]))"]
+                                    sourseKeys[0] = "\(Int(sourseKeys[0])!)"
+                                    sourseKeys[1] = "\(sourseKeysSecond)"
+                                    sourseKeys[2] = "\(Int(sourseKeys[2])!)"
                             }
                                 
                             }
@@ -944,7 +950,13 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                                 
                                 if (Int(sourseKeys[1]) )! >= Int(destKeys[1])!{
                                     
-                                    sourseKeys = ["\(Int(sourseKeys[0]))-\(sourseKeysSecond)-\(Int(sourseKeys[2]))"]
+                                    
+                                    sourseKeys[0] = "\(Int(sourseKeys[0])!)"
+                                    sourseKeys[1] = "\(sourseKeysSecond)"
+                                    sourseKeys[2] = "\(Int(sourseKeys[2])!)"
+                                    
+                                    
+                                    //sourseKeys = ["\(Int(sourseKeys[0])!)-\(sourseKeysSecond)-\(Int(sourseKeys[2])!)"]
                                 }
                                 
                             }
@@ -1373,7 +1385,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                             self.draggingView = nil
                             
                         })
-                        UIView.animate(withDuration: 0.2, animations: {
+                        UIView.animate(withDuration: 0.4, animations: {
                             self.draggingView!.center = cell.center
                             self.draggingView!.transform = CGAffineTransform.identity
                             self.draggingView!.alpha = 0.0
@@ -1423,7 +1435,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                     self.draggingView = nil
                     
                 })
-                UIView.animate(withDuration: 0.2, animations: {
+                UIView.animate(withDuration: 0.4, animations: {
                     self.draggingView!.center = cell.center
                     self.draggingView!.transform = CGAffineTransform.identity
                     self.draggingView!.alpha = 0.0
@@ -1481,7 +1493,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                         return
                     }else{
                         let cell = vc.cellForItem(at: self.originalIndexPath!)
-                        UIView.animate(withDuration: 0.2, animations: {
+                        UIView.animate(withDuration: 0.4, animations: {
                             
                             
                             self.draggingView?.frame = (cell?.frame)!
@@ -1506,7 +1518,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
             
            // if let headerView = self.collectionView.
             let cell = vc.cellForItem(at: self.originalIndexPath!)
-            UIView.animate(withDuration: 0.2, animations: {
+            UIView.animate(withDuration: 0.4, animations: {
                 
                 
                 self.draggingView?.frame = (cell?.frame)!
@@ -1631,7 +1643,7 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
       // self.collectionView?.deselectItem(at: <#T##IndexPath#>, animated: <#T##Bool#>)
-        
+        selectedIndexPath = indexPath.item
         let photosViewController = NYTPhotosViewController(photos: mutablePhotos)
         
         photosViewController.display(mutablePhotos[indexPath.row], animated: true)
@@ -1648,6 +1660,17 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
         
     }
     
+    
+    
+    func photosViewController(_ photosViewController: NYTPhotosViewController, referenceViewFor photo: NYTPhoto) -> UIView? {
+        
+        guard let cell = collectionView?.cellForItem(at: IndexPath(item: selectedIndexPath, section: 0))else {return nil}
+        
+        return cell.contentView
+        
+        
+        
+    }
     
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
@@ -1670,6 +1693,9 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
         // let image = UIImage(c)
         let imageTemp = UIImageView(image: imageData)
         imageTemp.contentMode = .scaleAspectFill
+//        cell.backgroundColor = [UIColor lightGrayColor];
+        cell.backgroundColor = UIColor.brown
+
         cell.backgroundView = imageTemp
         cell.clipsToBounds = true
         return cell

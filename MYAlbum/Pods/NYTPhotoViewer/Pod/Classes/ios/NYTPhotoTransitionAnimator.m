@@ -9,7 +9,7 @@
 #import "NYTPhotoTransitionAnimator.h"
 
 static const CGFloat NYTPhotoTransitionAnimatorDurationWithZooming = 0.5;
-static const CGFloat NYTPhotoTransitionAnimatorDurationWithoutZooming = 0.3;
+static const CGFloat NYTPhotoTransitionAnimatorDurationWithoutZooming = 0.5;
 static const CGFloat NYTPhotoTransitionAnimatorBackgroundFadeDurationRatio = 4.0 / 9.0;
 static const CGFloat NYTPhotoTransitionAnimatorEndingViewFadeInDurationRatio = 0.1;
 static const CGFloat NYTPhotoTransitionAnimatorStartingViewFadeOutDurationRatio = 0.05;

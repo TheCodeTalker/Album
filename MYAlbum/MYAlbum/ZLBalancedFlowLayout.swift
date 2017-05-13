@@ -286,7 +286,7 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
                     
                     var dItemCount = itemCount
                     for (_,inside) in insideArray.enumerated(){
-                        let preferredSize = self.sizeForItemAtIndexPath(IndexPath(item: itemCount, section: section))
+                        let preferredSize = self.sizeForItemAtIndexPath(IndexPath(item: dItemCount, section: section))
                         summedRatioHeight += preferredSize.height/preferredSize.width
                         dItemCount += 1
                     }
