@@ -55,10 +55,17 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
                 width.append(min(Float(ratio*self.rowHeight), Float(maxWidth)))
                 
             }
-            
+           
             // parition widths
-            _ = partition(width, max: Float(maxWidth))
+            if (localPartition.count > 0){
             
+            }else{
+                _ = partition(width, max: Float(maxWidth))
+                
+            }
+            if let local = defaults.object(forKey: "partition") as? partitionTypeLayout{
+                localPartition = local
+            }
             //UserDefaults.standard.set(partitions, forKey: "partition")
             
             
@@ -69,9 +76,7 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
                 CGSize(width: collectionView.bounds.width - collectionView.contentInset.left - collectionView.contentInset.right, height: 0) :
                 CGSize(width: 0, height: collectionView.bounds.size.height - collectionView.contentInset.top - collectionView.contentInset.bottom)
             
-            if let local = defaults.object(forKey: "partition") as? partitionTypeLayout{
-                localPartition = local
-            }
+            
             var sectionOffset = CGPoint.init()
             var sectionSize = CGSize.zero
             var numberItems  = collectionView.numberOfItems(inSection: 0)
@@ -427,8 +432,6 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
         footerFrames = [CGRect]()
         itemFrames = [[CGRect]]()
         itemOriginYs = [[CGFloat]]()
-        defaults.removeObject(forKey: "partition")
-        defaults.synchronize()
     }
     
     // MARK: - Delegate Helpers
