@@ -12,5 +12,6 @@ target 'MYAlbum' do
   pod 'ReachabilitySwift', '~> 3'
   pod 'Letters'
   pod 'GMImagePicker'
+  #pod 'DKImagePickerController'
 
 end
