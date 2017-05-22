@@ -26,6 +26,20 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
      //UIView *lineView;
     var cellsToMove0 = NSMutableArray.init()
     var selectedIndexPath = 0
+    lazy var editToolBar: UIToolbar  = {
+        var edit = UIToolbar(frame: CGRect(x: 0, y: SCREENHEIGHT - 60, width: SCREENWIDTH, height: 60))
+        return edit
+    }()
+    var uploadMorePhotoButton:UIBarButtonItem = {
+        var upload = UIBarButtonItem.init(image: UIImage(named: "img-album"), landscapeImagePhone: UIImage(named: "img-album"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(enableGaleery))
+        return upload
+    }()
+    var addTextButton:UIBarButtonItem = {
+        var upload = UIBarButtonItem.init(image: UIImage(named: "typ-cursor"), landscapeImagePhone: UIImage(named: "typ-cursor"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(enableGaleery))
+        return upload
+    }()
+    
+    
     var cellsToMove1 = NSMutableArray.init()
     var lineView : UIView = UIView(frame: CGRect.zero)
     var localPartition  = Array<Array<Array<String>>>()
@@ -83,6 +97,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
             
             
         }else{
+            
             getDetailStoryWithId(storyId: storyId) {
         self.collectionView?.collectionViewLayout.invalidateLayout()
                 
@@ -113,6 +128,8 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                     self.swapImageView = UIImageView(image: UIImage(named: "Swap-white"))
                     
                     self.view.addSubview(self.collectionView!)
+                    self.setInitialToolbarConfiguration()
+                    
                     
                     self.isViewStory = true
                     let set :IndexSet = [0]
@@ -120,10 +137,21 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                     self.collectionView?.reloadSections(IndexSet(set))
                 }
                 
+
+                
                 
             }
             
         }
+    }
+    
+    
+    func setInitialToolbarConfiguration() {
+        self.editToolBar.items = nil
+        self.editToolBar.items = [uploadMorePhotoButton,addTextButton]
+        self.view.addSubview(self.editToolBar)
+        
+        
     }
     
     func enableGaleery()  {
