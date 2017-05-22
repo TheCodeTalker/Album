@@ -17,9 +17,18 @@
 		B66A794E1E6EC20E001A2861 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B66A794C1E6EC20E001A2861 /* LaunchScreen.storyboard */; };
 		B66A79561E6ED2A3001A2861 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66A79551E6ED2A3001A2861 /* Utils.swift */; };
 		B66A796B1E6EEC0A001A2861 /* ZLBalancedFlowLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66A796A1E6EEC0A001A2861 /* ZLBalancedFlowLayout.swift */; };
+		B66ECA971ED066C500E2F780 /* ImagesUploadProgressViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66ECA961ED066C500E2F780 /* ImagesUploadProgressViewController.swift */; };
+		B66ECA9F1ED0700F00E2F780 /* UIScrollView+EmptyDataSet.m in Sources */ = {isa = PBXBuildFile; fileRef = B66ECA9E1ED0700F00E2F780 /* UIScrollView+EmptyDataSet.m */; };
+		B66ECAA21ED074BC00E2F780 /* ListTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66ECAA01ED074BC00E2F780 /* ListTableViewCell.swift */; };
+		B66ECAA31ED074BC00E2F780 /* ListTableViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B66ECAA11ED074BC00E2F780 /* ListTableViewCell.xib */; };
+		B66ECAA51ED075CA00E2F780 /* ListAllTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66ECAA41ED075CA00E2F780 /* ListAllTableViewController.swift */; };
+		B66ECAA71ED078F600E2F780 /* StoryModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66ECAA61ED078F600E2F780 /* StoryModel.swift */; };
 		B67637511E6FE9BF0029808C /* ExamplePhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67637501E6FE9BF0029808C /* ExamplePhoto.swift */; };
 		B678C51F1ECEE94200D748F8 /* ImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B678C51E1ECEE94200D748F8 /* ImageCollectionViewCell.xib */; };
 		B678C5211ECEEA9A00D748F8 /* ImageViewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B678C5201ECEEA9A00D748F8 /* ImageViewCollectionViewCell.swift */; };
+		B68B7AFF1ED2EBFD007FB510 /* UIColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68B7AFE1ED2EBFD007FB510 /* UIColorExtensions.swift */; };
+		B68B7B011ED2EC96007FB510 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68B7B001ED2EC96007FB510 /* StringExtensions.swift */; };
+		B68B7B051ED309F1007FB510 /* MYAlbumConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68B7B041ED309F1007FB510 /* MYAlbumConstants.swift */; };
 		B6E43F8C1E7BB971000106E6 /* FooterReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B6E43F8A1E7BB971000106E6 /* FooterReusableView.swift */; };
 		B6E43F8D1E7BB971000106E6 /* FooterReusableView.xib in Resources */ = {isa = PBXBuildFile; fileRef = B6E43F8B1E7BB971000106E6 /* FooterReusableView.xib */; };
 /* End PBXBuildFile section */
@@ -37,9 +46,20 @@
 		B66A794F1E6EC20E001A2861 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B66A79551E6ED2A3001A2861 /* Utils.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		B66A796A1E6EEC0A001A2861 /* ZLBalancedFlowLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ZLBalancedFlowLayout.swift; sourceTree = "<group>"; };
+		B66ECA961ED066C500E2F780 /* ImagesUploadProgressViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagesUploadProgressViewController.swift; sourceTree = "<group>"; };
+		B66ECA9C1ED0700E00E2F780 /* MYAlbum-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MYAlbum-Bridging-Header.h"; sourceTree = "<group>"; };
+		B66ECA9D1ED0700F00E2F780 /* UIScrollView+EmptyDataSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIScrollView+EmptyDataSet.h"; sourceTree = "<group>"; };
+		B66ECA9E1ED0700F00E2F780 /* UIScrollView+EmptyDataSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIScrollView+EmptyDataSet.m"; sourceTree = "<group>"; };
+		B66ECAA01ED074BC00E2F780 /* ListTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListTableViewCell.swift; sourceTree = "<group>"; };
+		B66ECAA11ED074BC00E2F780 /* ListTableViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ListTableViewCell.xib; sourceTree = "<group>"; };
+		B66ECAA41ED075CA00E2F780 /* ListAllTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ListAllTableViewController.swift; sourceTree = "<group>"; };
+		B66ECAA61ED078F600E2F780 /* StoryModel.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StoryModel.swift; sourceTree = "<group>"; };
 		B67637501E6FE9BF0029808C /* ExamplePhoto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExamplePhoto.swift; sourceTree = "<group>"; };
 		B678C51E1ECEE94200D748F8 /* ImageCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageCollectionViewCell.xib; sourceTree = "<group>"; };
 		B678C5201ECEEA9A00D748F8 /* ImageViewCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewCollectionViewCell.swift; sourceTree = "<group>"; };
+		B68B7AFE1ED2EBFD007FB510 /* UIColorExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtensions.swift; sourceTree = "<group>"; };
+		B68B7B001ED2EC96007FB510 /* StringExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
+		B68B7B041ED309F1007FB510 /* MYAlbumConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MYAlbumConstants.swift; sourceTree = "<group>"; };
 		B6E43F8A1E7BB971000106E6 /* FooterReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FooterReusableView.swift; sourceTree = "<group>"; };
 		B6E43F8B1E7BB971000106E6 /* FooterReusableView.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FooterReusableView.xib; sourceTree = "<group>"; };
 		CBD36776616130F114A75B4C /* Pods-MYAlbum.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MYAlbum.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MYAlbum/Pods-MYAlbum.debug.xcconfig"; sourceTree = "<group>"; };
@@ -88,9 +108,13 @@
 			isa = PBXGroup;
 			children = (
 				B66A79431E6EC20E001A2861 /* AppDelegate.swift */,
+				B66ECA9D1ED0700F00E2F780 /* UIScrollView+EmptyDataSet.h */,
+				B66ECA9E1ED0700F00E2F780 /* UIScrollView+EmptyDataSet.m */,
 				B66A79451E6EC20E001A2861 /* ViewController.swift */,
+				B68B7AFE1ED2EBFD007FB510 /* UIColorExtensions.swift */,
 				B66A796A1E6EEC0A001A2861 /* ZLBalancedFlowLayout.swift */,
 				B67637501E6FE9BF0029808C /* ExamplePhoto.swift */,
+				B68B7B001ED2EC96007FB510 /* StringExtensions.swift */,
 				B667D1871E7AEA3F00747D23 /* PictureHeader.xib */,
 				B678C51E1ECEE94200D748F8 /* ImageCollectionViewCell.xib */,
 				B66A79551E6ED2A3001A2861 /* Utils.swift */,
@@ -102,6 +126,13 @@
 				B6E43F8A1E7BB971000106E6 /* FooterReusableView.swift */,
 				B6E43F8B1E7BB971000106E6 /* FooterReusableView.xib */,
 				B678C5201ECEEA9A00D748F8 /* ImageViewCollectionViewCell.swift */,
+				B66ECA961ED066C500E2F780 /* ImagesUploadProgressViewController.swift */,
+				B66ECA9C1ED0700E00E2F780 /* MYAlbum-Bridging-Header.h */,
+				B66ECAA01ED074BC00E2F780 /* ListTableViewCell.swift */,
+				B66ECAA11ED074BC00E2F780 /* ListTableViewCell.xib */,
+				B66ECAA41ED075CA00E2F780 /* ListAllTableViewController.swift */,
+				B66ECAA61ED078F600E2F780 /* StoryModel.swift */,
+				B68B7B041ED309F1007FB510 /* MYAlbumConstants.swift */,
 			);
 			path = MYAlbum;
 			sourceTree = "<group>";
@@ -151,6 +182,7 @@
 					B66A793F1E6EC20E001A2861 = {
 						CreatedOnToolsVersion = 8.2.1;
 						DevelopmentTeam = J9PJNU3T28;
+						LastSwiftMigration = 0820;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -184,6 +216,7 @@
 				B667D1881E7AEA3F00747D23 /* PictureHeader.xib in Resources */,
 				B678C51F1ECEE94200D748F8 /* ImageCollectionViewCell.xib in Resources */,
 				B6E43F8D1E7BB971000106E6 /* FooterReusableView.xib in Resources */,
+				B66ECAA31ED074BC00E2F780 /* ListTableViewCell.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -242,14 +275,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B66ECAA21ED074BC00E2F780 /* ListTableViewCell.swift in Sources */,
+				B68B7AFF1ED2EBFD007FB510 /* UIColorExtensions.swift in Sources */,
 				B6E43F8C1E7BB971000106E6 /* FooterReusableView.swift in Sources */,
+				B66ECAA51ED075CA00E2F780 /* ListAllTableViewController.swift in Sources */,
 				B67637511E6FE9BF0029808C /* ExamplePhoto.swift in Sources */,
+				B68B7B051ED309F1007FB510 /* MYAlbumConstants.swift in Sources */,
 				B66A79461E6EC20E001A2861 /* ViewController.swift in Sources */,
 				B678C5211ECEEA9A00D748F8 /* ImageViewCollectionViewCell.swift in Sources */,
 				B66A79441E6EC20E001A2861 /* AppDelegate.swift in Sources */,
 				B667D18A1E7AEA8C00747D23 /* PictureHeaderCollectionReusableView.swift in Sources */,
 				B66A79561E6ED2A3001A2861 /* Utils.swift in Sources */,
 				B66A796B1E6EEC0A001A2861 /* ZLBalancedFlowLayout.swift in Sources */,
+				B66ECA9F1ED0700F00E2F780 /* UIScrollView+EmptyDataSet.m in Sources */,
+				B68B7B011ED2EC96007FB510 /* StringExtensions.swift in Sources */,
+				B66ECA971ED066C500E2F780 /* ImagesUploadProgressViewController.swift in Sources */,
+				B66ECAA71ED078F600E2F780 /* StoryModel.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,12 +412,15 @@
 			baseConfigurationReference = CBD36776616130F114A75B4C /* Pods-MYAlbum.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = J9PJNU3T28;
 				INFOPLIST_FILE = MYAlbum/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.myalbum.chitaranjan.ios.MYAlbum;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "MYAlbum/MYAlbum-Bridging-Header.h";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Debug;
@@ -386,12 +430,14 @@
 			baseConfigurationReference = AA4E140A50FC9544679E4EA1 /* Pods-MYAlbum.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				DEVELOPMENT_TEAM = J9PJNU3T28;
 				INFOPLIST_FILE = MYAlbum/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 9.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.myalbum.chitaranjan.ios.MYAlbum;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_OBJC_BRIDGING_HEADER = "MYAlbum/MYAlbum-Bridging-Header.h";
 				SWIFT_VERSION = 3.0;
 			};
 			name = Release;

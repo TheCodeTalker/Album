@@ -38,6 +38,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     var originalIndexPath: IndexPath?
     var swapImageView: UIImageView?
     var stopped : Bool = false
+    var storyId :String = ""
      let defaults = UserDefaults.standard
     var swapView: UIView?
     var draggingIndexPath: IndexPath?
@@ -57,6 +58,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     var writen_by = ""
     var story_cover_photo_path = ""
     var story_cover_photo_code = ""
+    var story_cover_photo_slice_code = ""
     var story_json = [[String:AnyObject]]()
     var isViewStory = false
 
@@ -71,6 +73,57 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         
     //    UserDefaults.standard.set(currentAnswer, forKey: "partation")
                 // Do any additional setup after loading the view, typically from a nib.
+    }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        if storyId == ""{
+            
+            
+        }else{
+            getDetailStoryWithId(storyId: storyId) {
+        self.collectionView?.collectionViewLayout.invalidateLayout()
+                
+                runOnMainThread {
+                    
+                    let layout = ZLBalancedFlowLayout()
+                    //layout.sectionHeadersPinToVisibleBounds = false
+                    layout.headerReferenceSize = CGSize(width: UIScreen.main.bounds.width , height: UIScreen.main.bounds.height)
+                    layout.footerReferenceSize = CGSize(width: UIScreen.main.bounds.width, height: UIScreen.main.bounds.height/2)
+                    layout.sectionInset = UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8)
+                    //collectionView?.setCollectionViewLayout(layout, animated: true)
+                    self.collectionView = UICollectionView(frame: self.view.frame, collectionViewLayout: layout)
+                    self.collectionView?.autoresizingMask = [.flexibleWidth, .flexibleHeight]
+                    self.collectionView?.delegate = self
+                    //self.collectionView?.collectionViewLayout = self
+                    self.collectionView?.dataSource  = self
+                    self.collectionView?.backgroundColor = UIColor.white
+                    self.collectionView?.reloadData()
+                    self.collectionView?.collectionViewLayout.invalidateLayout()
+                    self.collectionView?.alwaysBounceVertical = true
+                    self.collectionView?.bounces = false
+                    self.collectionView?.register(UINib(nibName: "ImageCollectionViewCell", bundle: nil), forCellWithReuseIdentifier: self.cellIdentifier)
+                    self.collectionView?.register(UINib(nibName: "PictureHeader", bundle: nil), forSupplementaryViewOfKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "HeaderView")
+                    self.collectionView?.register(UINib(nibName: "FooterReusableView", bundle: nil), forSupplementaryViewOfKind: UICollectionElementKindSectionFooter, withReuseIdentifier: "FotterView")
+                    self.longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress))
+                    self.collectionView?.addGestureRecognizer(self.longPressGesture!)
+                    self.swapView = UIView(frame: CGRect.zero)
+                    self.swapImageView = UIImageView(image: UIImage(named: "Swap-white"))
+                    
+                    self.view.addSubview(self.collectionView!)
+                    
+                    self.isViewStory = true
+                    let set :IndexSet = [0]
+                    // self.collectionView?.reloadSections(set)
+                    self.collectionView?.reloadSections(IndexSet(set))
+                }
+                
+                
+            }
+            
+        }
     }
     
     func enableGaleery()  {
@@ -99,8 +152,8 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         
         defaults.set(true, forKey: "viewStory")
         
-        
-        getDetailStoryWithId(storyId: "77781055") {
+        storyId = "77781055"
+        getDetailStoryWithId(storyId: storyId) {
             //self.collectionView
             
             
@@ -155,7 +208,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     
     
     func getDetailStoryWithId(storyId:String,handler: ((Void) -> Void)?) {
-            let postUrl = "http://192.168.1.56:8000/storyDetails/" + storyId
+            let postUrl = URLConstants.BaseURL + "storyDetails/" + storyId
             Alamofire.request(postUrl, method: .get, parameters: nil, encoding: URLEncoding.default, headers: nil).responseJSON { (response:DataResponse<Any>) in
                 switch response.result {
                 case .success(let JSON):
@@ -183,6 +236,11 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                         if let photo_code =  dataArray["story_cover_photo_code"] as! String?{
                             self.story_cover_photo_code = photo_code
                         }
+                        if let photo_code =  dataArray["story_cover_photo_slice_code"] as! String?{
+                            self.story_cover_photo_slice_code = photo_code
+                        }
+                        
+                        
                         if let story_json  =  dataArray["story_json"] as! String?{
                             
                             let json: AnyObject? = story_json.parseJSONString
@@ -196,6 +254,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                         }
                         
                         print(self.story_json)
+                     //   self.getPhoto()
                         handler?()
                     }else {
                         //  self.activityLoaderForFirstTime.stopAnimating()
@@ -336,28 +395,9 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         i += 1
         //partition.append(singleObj)
         }
-       
+        
         
         defaults.set(localPartition, forKey: "partition")
-        
-        
-//        dictToAdd.updateValue(urlString, forKey: "cloudFilePath")
-//        dictToAdd.updateValue(0, forKey: "cover")
-//        dictToAdd.updateValue(urlString, forKey: "filePath")
-//        dictToAdd.updateValue("#322e20,#d3d5db,#97989d,#aeb2b9,#858176", forKey: "hexCode")
-//        dictToAdd.updateValue("#322e20,#d3d5db,#97989d,#aeb2b9,#858176", forKey: "hexCode")
-//        let sizeImage = compressedImage?.size
-//        dictToAdd.updateValue(sizeImage as Any, forKey: "item_size")
-//        dictToAdd.updateValue(urlString, forKey: "item_url")
-//        dictToAdd.updateValue(sizeImage as Any, forKey: "original_size")
-//        dictToAdd.updateValue("Image", forKey: "type")
-        
-       // self.collectionArray.append(contentsOf: "")
-        
-        
-        
-        //self.images.append(compressedImage!)
-        
     }
     
     func assetsPickerController(_ picker: GMImagePickerController!, didFinishPickingAssets assets: [Any]!) {
@@ -436,7 +476,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                    // print(info)
                     var dictToAdd = Dictionary<String, AnyObject>()
                     let compressedImage = UIImage(data: data!)
-                    self.images.append(compressedImage!)
+                   // self.images.append(compressedImage!)
                     let urlString =  "\(((((info as! Dictionary<String,Any>)["PHImageFileURLKey"])! as! URL)))"
                     dictToAdd.updateValue(urlString as AnyObject, forKey: "cloudFilePath")
                     dictToAdd.updateValue(0 as AnyObject, forKey: "cover")
@@ -446,9 +486,11 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                     let sizeImage = compressedImage?.size
                     dictToAdd.updateValue(sizeImage as AnyObject, forKey: "item_size")
                     dictToAdd.updateValue(urlString as AnyObject, forKey: "item_url")
+                    dictToAdd.updateValue(data as AnyObject, forKey: "data")
                     dictToAdd.updateValue(sizeImage as AnyObject, forKey: "original_size")
                     dictToAdd.updateValue("Image" as AnyObject, forKey: "type")
                     self.collectionArray.append(dictToAdd)
+                    
                     if asset == (ass1[assets.count - 1]){
                         
                         let layout = ZLBalancedFlowLayout()
@@ -487,6 +529,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
             }
         }
     }
+    
     
     func startDragAtLocation(location:CGPoint) {
         
@@ -601,10 +644,16 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         if kind == UICollectionElementKindSectionHeader {
           headerView =  collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "HeaderView", for: indexPath) as! PictureHeaderCollectionReusableView
-            if self.images.count == 0{
-                self.headerView?.iboHeaderImage.image = UIImage(named: "IMG_1162")
+            if self.isViewStory{
+                self.headerView?.iboHeaderImage.backgroundColor = UIColor(hexString: self.story_cover_photo_slice_code)
+                var urlImage = self.story_cover_photo_path.components(separatedBy: "album")
+                
+                var totalPath = URLConstants.imgDomain
+                self.headerView?.iboHeaderImage.sd_setImage(with: URL(string: totalPath + urlImage[1]), placeholderImage: UIImage(named: ""))
             }else{
-           self.headerView?.iboHeaderImage.image = self.images[0]
+                let temp = collectionArray[indexPath.row]
+                let sizeOrg = (temp as AnyObject).object(forKey: "data") as? Data
+                self.headerView?.iboHeaderImage.image = UIImage(data: sizeOrg!)
             }
            
            // headerView.backgroundColor = UIColor.yellow
@@ -1024,7 +1073,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
             certTwo = CGRect(x: frame.origin.x, y: 0.0, width: frame.size.width, height: frame.origin.y)
         }
         
-        for i in 0 ..< self.images.count{
+        for i in 0 ..< self.collectionArray.count{
             
             let indexPath = IndexPath(item: i, section: 0)
             if let cell = self.collectionView?.cellForItem(at: indexPath){
@@ -1121,6 +1170,12 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
 //        }
 //        
 
+    }
+    
+    
+    
+    @IBAction func cancelClicked(_ sender: UIBarButtonItem) {
+        self.navigationController?.popViewController(animated: true)
     }
     
     func scrollIfNeed(snapshotView:UIView)  {
@@ -1740,9 +1795,9 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                                 self.collectionView?.moveItem(at: self.originalIndexPath!, to: indexPath)
                                 self.collectionView?.moveItem(at: indexPath, to: self.originalIndexPath!)
                                 self.swapView?.removeFromSuperview()
-                                let temp  = self.images[indexPath.item]
-                                self.images[indexPath.item] = self.images[(self.originalIndexPath?.item)!]
-                                self.images[(self.originalIndexPath?.item)!] = temp
+                             //   let temp  = self.images[indexPath.item]
+                               // self.images[indexPath.item] = self.images[(self.originalIndexPath?.item)!]
+                                //self.images[(self.originalIndexPath?.item)!] = temp
                                 
                             }, completion: { (Bool) in
                                 cell.alpha = 1
@@ -1785,9 +1840,9 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                             self.collectionView?.moveItem(at: self.originalIndexPath!, to: indexPath)
                             self.collectionView?.moveItem(at: indexPath, to: self.originalIndexPath!)
                             self.swapView?.removeFromSuperview()
-                            let temp  = self.images[indexPath.item]
-                            self.images[indexPath.item] = self.images[(self.originalIndexPath?.item)!]
-                            self.images[(self.originalIndexPath?.item)!] = temp
+                          //  let temp  = self.images[indexPath.item]
+                           // self.images[indexPath.item] = self.images[(self.originalIndexPath?.item)!]
+//self.images[(self.originalIndexPath?.item)!] = temp
                             
                         }, completion: { (Bool) in
                             
@@ -1833,9 +1888,9 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                     self.collectionView?.moveItem(at: self.originalIndexPath!, to: indexPath)
                     self.collectionView?.moveItem(at: indexPath, to: self.originalIndexPath!)
                     self.swapView?.removeFromSuperview()
-                    let temp  = self.images[indexPath.item]
-                    self.images[indexPath.item] = self.images[(self.originalIndexPath?.item)!]
-                    self.images[(self.originalIndexPath?.item)!] = temp
+                 //   let temp  = self.images[indexPath.item]
+                  //  self.images[indexPath.item] = self.images[(self.originalIndexPath?.item)!]
+//self.images[(self.originalIndexPath?.item)!] = temp
                     
                 }, completion: { (Bool) in
                     
@@ -2024,11 +2079,17 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         
        // let photoOriginal = NYTPhoto
         
-        for photoIndex in 0 ..< images.count {
-            let image = images[photoIndex]
+        for photoIndex in 0 ..< self.collectionArray.count {
+            let temp = collectionArray[photoIndex]
+            let sizeOrg = (temp as AnyObject).object(forKey: "data") as? Data
+            
+            
+            let imageView = UIImage(data: sizeOrg!)
+            
+            //let image = images[photoIndex]
             let title = NSAttributedString(string: "\(photoIndex + 1)", attributes: [NSForegroundColorAttributeName: UIColor.white])
             
-            let photo = shouldSetImageOnIndex(photoIndex: photoIndex) ? ExamplePhoto(image: image, attributedCaptionTitle: title) : ExamplePhoto(attributedCaptionTitle: title)
+            let photo = shouldSetImageOnIndex(photoIndex: photoIndex) ? ExamplePhoto(image: imageView, attributedCaptionTitle: title) : ExamplePhoto(attributedCaptionTitle: title)
             
             if photoIndex == CustomEverythingPhotoIndex {
                 photo.placeholderImage = UIImage(named: PlaceholderImageName)
@@ -2055,13 +2116,13 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
         return self.collectionArray.count
     }
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-      // self.collectionView?.deselectItem(at: <#T##IndexPath#>, animated: <#T##Bool#>)
-        selectedIndexPath = indexPath.item
-        let photosViewController = NYTPhotosViewController(photos: mutablePhotos)
-        
-        photosViewController.display(mutablePhotos[indexPath.row], animated: true)
-        photosViewController.delegate = self
-        self.present(photosViewController, animated: true, completion: nil)
+    // UNDO This Comments
+//        selectedIndexPath = indexPath.item
+//        let photosViewController = NYTPhotosViewController(photos: mutablePhotos)
+//        
+//        photosViewController.display(mutablePhotos[indexPath.row], animated: true)
+//        photosViewController.delegate = self
+//        self.present(photosViewController, animated: true, completion: nil)
         
     }
     
@@ -2070,11 +2131,7 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
     func photosViewController(_ photosViewController: NYTPhotosViewController, referenceViewFor photo: NYTPhoto) -> UIView? {
         
         guard let cell = collectionView?.cellForItem(at: IndexPath(item: selectedIndexPath, section: 0))else {return nil}
-        
         return cell.contentView
-        
-        
-        
     }
     
     
@@ -2087,7 +2144,7 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
             size = sizeOrg!
             
         }else{
-           size = imageForIndexPath(indexPath).size
+           size = imageForIndexPath(indexPath)
         }
         
        // let percentWidth = CGFloat(UInt32(140) - arc4random_uniform(UInt32(80)))/100
@@ -2095,8 +2152,13 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
     }
     
 
-    func imageForIndexPath(_ indexPath:IndexPath) -> UIImage {
-        return images[indexPath.item%images.count]
+    func imageForIndexPath(_ indexPath:IndexPath) -> CGSize {
+        //return images[indexPath.item%images.count]
+        
+        let temp = collectionArray[indexPath.row]
+        let sizeOrg = (temp as AnyObject).object(forKey: "original_size") as? CGSize
+
+        return sizeOrg!
     }
     
     func getDataFromUrl(urL:URL, completion: @escaping ((_ data: NSData?) -> Void)) {
@@ -2115,10 +2177,13 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
      
         if isViewStory {
             let temp = collectionArray[indexPath.row]
-           let url = (temp as AnyObject).object(forKey: "imagePath") as? String
+           var url = (temp as AnyObject).object(forKey: "imagePath") as? String
             
+            var urlImage = url?.components(separatedBy: "album")
+            var totalPath = URLConstants.imgDomain
+            url = totalPath + (urlImage?[1])!
             var version = url?.components(separatedBy: "compressed")
-           
+            
             var afterAppending  = url?.components(separatedBy: "compressed")
              var widthImage = (version?[0])! + "480" + (afterAppending?[1])!
           //  let url1 = URL(string: url!)
@@ -2146,7 +2211,9 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
         let temp = collectionArray[indexPath.row]
         //   let imageView = UIImageView(image: imageForIndexPath(indexPath))
         let url = (temp as AnyObject).object(forKey: "item_url") as? String
-       let imageData =  images[indexPath.item]
+            let sizeOrg = (temp as AnyObject).object(forKey: "data") as? Data
+           // self.headerView?.iboHeaderImage.image = UIImage(data: sizeOrg!)
+      // let imageData =  images[indexPath.item]
         // let image = UIImage(c)
         //let imageTemp = UIImageView(image: imageData)
         //imageTemp.contentMode = .scaleAspectFill
@@ -2159,7 +2226,7 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
             imageViewCell.videoPlayBtn.isHidden = true
             imageViewCell.volumeBtn.isHidden = true
             imageViewCell.fullScreenBtn.isHidden = true
-            imageViewCell.imageViewToShow.image = imageData
+            imageViewCell.imageViewToShow.image = UIImage(data: sizeOrg!)
             imageViewCell.imageViewToShow.contentMode = .scaleAspectFill
         //imageViewCell.backgroundView = imageTemp
         imageViewCell.clipsToBounds = true
