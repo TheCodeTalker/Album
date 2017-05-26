@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		2063E70D0057AE76417001BC /* Pods_MYAlbum.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8EE2002A809137522D10EAD /* Pods_MYAlbum.framework */; };
+		B660EA811ED4823400B24FB0 /* SAMTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = B660EA801ED4823200B24FB0 /* SAMTextView.m */; };
+		B660EA831ED4826100B24FB0 /* TextCellStory.xib in Resources */ = {isa = PBXBuildFile; fileRef = B660EA821ED4826100B24FB0 /* TextCellStory.xib */; };
+		B660EA851ED4833B00B24FB0 /* TextCellStoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B660EA841ED4833B00B24FB0 /* TextCellStoryCollectionViewCell.swift */; };
 		B667D1881E7AEA3F00747D23 /* PictureHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = B667D1871E7AEA3F00747D23 /* PictureHeader.xib */; };
 		B667D18A1E7AEA8C00747D23 /* PictureHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B667D1891E7AEA8C00747D23 /* PictureHeaderCollectionReusableView.swift */; };
 		B66A79441E6EC20E001A2861 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66A79431E6EC20E001A2861 /* AppDelegate.swift */; };
@@ -35,6 +38,10 @@
 
 /* Begin PBXFileReference section */
 		AA4E140A50FC9544679E4EA1 /* Pods-MYAlbum.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MYAlbum.release.xcconfig"; path = "Pods/Target Support Files/Pods-MYAlbum/Pods-MYAlbum.release.xcconfig"; sourceTree = "<group>"; };
+		B660EA7F1ED4823200B24FB0 /* SAMTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAMTextView.h; sourceTree = "<group>"; };
+		B660EA801ED4823200B24FB0 /* SAMTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SAMTextView.m; sourceTree = "<group>"; };
+		B660EA821ED4826100B24FB0 /* TextCellStory.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextCellStory.xib; sourceTree = "<group>"; };
+		B660EA841ED4833B00B24FB0 /* TextCellStoryCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextCellStoryCollectionViewCell.swift; sourceTree = "<group>"; };
 		B667D1871E7AEA3F00747D23 /* PictureHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PictureHeader.xib; sourceTree = "<group>"; };
 		B667D1891E7AEA8C00747D23 /* PictureHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PictureHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
 		B66A79401E6EC20E001A2861 /* MYAlbum.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MYAlbum.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -86,6 +93,15 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		B660EA7E1ED4823200B24FB0 /* SAMTextView */ = {
+			isa = PBXGroup;
+			children = (
+				B660EA7F1ED4823200B24FB0 /* SAMTextView.h */,
+				B660EA801ED4823200B24FB0 /* SAMTextView.m */,
+			);
+			path = SAMTextView;
+			sourceTree = "<group>";
+		};
 		B66A79371E6EC20D001A2861 = {
 			isa = PBXGroup;
 			children = (
@@ -127,12 +143,15 @@
 				B6E43F8B1E7BB971000106E6 /* FooterReusableView.xib */,
 				B678C5201ECEEA9A00D748F8 /* ImageViewCollectionViewCell.swift */,
 				B66ECA961ED066C500E2F780 /* ImagesUploadProgressViewController.swift */,
+				B660EA821ED4826100B24FB0 /* TextCellStory.xib */,
 				B66ECA9C1ED0700E00E2F780 /* MYAlbum-Bridging-Header.h */,
 				B66ECAA01ED074BC00E2F780 /* ListTableViewCell.swift */,
 				B66ECAA11ED074BC00E2F780 /* ListTableViewCell.xib */,
 				B66ECAA41ED075CA00E2F780 /* ListAllTableViewController.swift */,
+				B660EA7E1ED4823200B24FB0 /* SAMTextView */,
 				B66ECAA61ED078F600E2F780 /* StoryModel.swift */,
 				B68B7B041ED309F1007FB510 /* MYAlbumConstants.swift */,
+				B660EA841ED4833B00B24FB0 /* TextCellStoryCollectionViewCell.swift */,
 			);
 			path = MYAlbum;
 			sourceTree = "<group>";
@@ -210,6 +229,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B660EA831ED4826100B24FB0 /* TextCellStory.xib in Resources */,
 				B66A794E1E6EC20E001A2861 /* LaunchScreen.storyboard in Resources */,
 				B66A794B1E6EC20E001A2861 /* Assets.xcassets in Resources */,
 				B66A79491E6EC20E001A2861 /* Main.storyboard in Resources */,
@@ -279,6 +299,7 @@
 				B68B7AFF1ED2EBFD007FB510 /* UIColorExtensions.swift in Sources */,
 				B6E43F8C1E7BB971000106E6 /* FooterReusableView.swift in Sources */,
 				B66ECAA51ED075CA00E2F780 /* ListAllTableViewController.swift in Sources */,
+				B660EA811ED4823400B24FB0 /* SAMTextView.m in Sources */,
 				B67637511E6FE9BF0029808C /* ExamplePhoto.swift in Sources */,
 				B68B7B051ED309F1007FB510 /* MYAlbumConstants.swift in Sources */,
 				B66A79461E6EC20E001A2861 /* ViewController.swift in Sources */,
@@ -291,6 +312,7 @@
 				B68B7B011ED2EC96007FB510 /* StringExtensions.swift in Sources */,
 				B66ECA971ED066C500E2F780 /* ImagesUploadProgressViewController.swift in Sources */,
 				B66ECAA71ED078F600E2F780 /* StoryModel.swift in Sources */,
+				B660EA851ED4833B00B24FB0 /* TextCellStoryCollectionViewCell.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

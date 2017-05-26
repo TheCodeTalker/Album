@@ -10,6 +10,7 @@ import UIKit
 
 class ListTableViewCell: UITableViewCell {
 
+    @IBOutlet weak var visiualEffect: UIVisualEffectView!
     @IBOutlet weak var storyLabel: UILabel!
     @IBOutlet weak var storyImage: UIImageView!
     override func awakeFromNib() {

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="11762" systemVersion="15G31" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES">
+    <device id="retina4_7" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="raleway-light.ttf">
+            <string>Raleway-Light</string>
+        </array>
+        <array key="raleway-regular.ttf">
+            <string>Raleway-Regular</string>
+        </array>
+    </customFonts>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner"/>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="TextCell" id="BeI-bh-eVC" customClass="TextCellStoryCollectionViewCell" customModule="MYAlbum" customModuleProvider="target">
+            <rect key="frame" x="0.0" y="0.0" width="537" height="165"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
+                <rect key="frame" x="0.0" y="0.0" width="537" height="165"/>
+                <autoresizingMask key="autoresizingMask"/>
+                <subviews>
+                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="kNW-Kl-KDv">
+                        <rect key="frame" x="0.0" y="0.0" width="537" height="165"/>
+                        <subviews>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" tag="51" contentMode="scaleToFill" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="Vxv-rV-2pW" customClass="SAMTextView">
+                                <rect key="frame" x="8" y="40" width="521" height="37.5"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <color key="textColor" red="0.082352941176470587" green="0.094117647058823528" blue="0.10588235294117647" alpha="1" colorSpace="calibratedRGB"/>
+                                <fontDescription key="fontDescription" name="Raleway-Light" family="Raleway" pointSize="18"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="no" spellCheckingType="no"/>
+                            </textView>
+                            <textView clipsSubviews="YES" multipleTouchEnabled="YES" tag="52" contentMode="scaleToFill" verticalHuggingPriority="249" bounces="NO" scrollEnabled="NO" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" textAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="ULd-9U-rba" customClass="SAMTextView">
+                                <rect key="frame" x="8" y="77.5" width="521" height="47.5"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" name="Raleway-Regular" family="Raleway" pointSize="14"/>
+                                <textInputTraits key="textInputTraits" autocapitalizationType="sentences" autocorrectionType="no" spellCheckingType="no"/>
+                            </textView>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="Vxv-rV-2pW" firstAttribute="top" secondItem="kNW-Kl-KDv" secondAttribute="top" constant="40" id="0Mc-cC-eKZ"/>
+                            <constraint firstItem="ULd-9U-rba" firstAttribute="top" secondItem="Vxv-rV-2pW" secondAttribute="bottom" id="5H4-ic-SDr"/>
+                            <constraint firstAttribute="bottom" secondItem="ULd-9U-rba" secondAttribute="bottom" constant="40" id="Kdb-EZ-yRt"/>
+                            <constraint firstItem="ULd-9U-rba" firstAttribute="leading" secondItem="kNW-Kl-KDv" secondAttribute="leading" constant="8" id="cHX-Tp-0cx"/>
+                            <constraint firstItem="Vxv-rV-2pW" firstAttribute="leading" secondItem="kNW-Kl-KDv" secondAttribute="leading" constant="8" id="cb1-ob-mH9"/>
+                            <constraint firstAttribute="trailing" secondItem="Vxv-rV-2pW" secondAttribute="trailing" constant="8" id="l3m-eu-YSo"/>
+                            <constraint firstAttribute="trailing" secondItem="ULd-9U-rba" secondAttribute="trailing" constant="8" id="mkG-Pa-bFN"/>
+                        </constraints>
+                    </view>
+                </subviews>
+            </view>
+            <constraints>
+                <constraint firstItem="kNW-Kl-KDv" firstAttribute="leading" secondItem="BeI-bh-eVC" secondAttribute="leading" id="7kx-XD-dG1"/>
+                <constraint firstItem="kNW-Kl-KDv" firstAttribute="top" secondItem="BeI-bh-eVC" secondAttribute="top" id="ROt-pp-I8B"/>
+                <constraint firstAttribute="trailing" secondItem="kNW-Kl-KDv" secondAttribute="trailing" id="amu-3r-wF7"/>
+                <constraint firstAttribute="bottom" secondItem="kNW-Kl-KDv" secondAttribute="bottom" id="iTG-Xr-L1G"/>
+            </constraints>
+            <size key="customSize" width="537" height="165"/>
+            <connections>
+                <outlet property="myView" destination="kNW-Kl-KDv" id="FeC-Br-djA"/>
+                <outlet property="subTitleLabel" destination="ULd-9U-rba" id="IVa-tT-NRM"/>
+                <outlet property="titleLabel" destination="Vxv-rV-2pW" id="8pN-u3-G2p"/>
+            </connections>
+            <point key="canvasLocation" x="-40.5" y="-171.5"/>
+        </collectionViewCell>
+    </objects>
+</document>

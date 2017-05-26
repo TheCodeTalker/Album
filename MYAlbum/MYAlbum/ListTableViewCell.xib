@@ -19,7 +19,7 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="IMG_1162" translatesAutoresizingMaskIntoConstraints="NO" id="kXI-qU-tD6">
-                        <rect key="frame" x="8" y="8" width="304" height="184"/>
+                        <rect key="frame" x="0.0" y="3" width="320" height="196"/>
                     </imageView>
                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FsR-0M-Nyc">
                         <rect key="frame" x="8" y="142" width="304" height="30"/>
@@ -30,26 +30,67 @@
                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
+                    <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3wu-OD-B6q">
+                        <rect key="frame" x="0.0" y="3" width="320" height="196"/>
+                        <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="rFZ-jh-zso">
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="196"/>
+                            <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                            <subviews>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jgO-e6-iqa">
+                                    <rect key="frame" x="260" y="27" width="40" height="40"/>
+                                    <constraints>
+                                        <constraint firstAttribute="width" constant="40" id="OKN-LC-JMc"/>
+                                        <constraint firstAttribute="height" constant="40" id="X0R-to-THe"/>
+                                    </constraints>
+                                    <state key="normal" image="delete"/>
+                                </button>
+                                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OJI-ug-BUa">
+                                    <rect key="frame" x="260" y="107" width="40" height="40"/>
+                                    <constraints>
+                                        <constraint firstAttribute="height" constant="40" id="E0e-1L-gfn"/>
+                                        <constraint firstAttribute="width" constant="40" id="j5D-wL-Whh"/>
+                                    </constraints>
+                                    <state key="normal" image="delete"/>
+                                </button>
+                            </subviews>
+                            <constraints>
+                                <constraint firstAttribute="bottom" secondItem="OJI-ug-BUa" secondAttribute="bottom" constant="49" id="Pa5-w4-CHI"/>
+                                <constraint firstAttribute="trailing" secondItem="OJI-ug-BUa" secondAttribute="trailing" constant="20" id="ZrP-eY-CjS"/>
+                                <constraint firstItem="OJI-ug-BUa" firstAttribute="trailing" secondItem="jgO-e6-iqa" secondAttribute="trailing" id="h9M-4h-Kki"/>
+                                <constraint firstItem="OJI-ug-BUa" firstAttribute="top" secondItem="jgO-e6-iqa" secondAttribute="bottom" constant="40" id="qn7-VN-K3t"/>
+                                <constraint firstAttribute="trailing" secondItem="jgO-e6-iqa" secondAttribute="trailing" constant="20" id="tMb-TM-Bx2"/>
+                                <constraint firstItem="OJI-ug-BUa" firstAttribute="leading" secondItem="jgO-e6-iqa" secondAttribute="leading" id="yOF-8V-Kjg"/>
+                            </constraints>
+                        </view>
+                        <blurEffect style="light"/>
+                    </visualEffectView>
                 </subviews>
                 <constraints>
-                    <constraint firstItem="kXI-qU-tD6" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="topMargin" id="I41-Mr-ftu"/>
+                    <constraint firstItem="3wu-OD-B6q" firstAttribute="trailing" secondItem="kXI-qU-tD6" secondAttribute="trailing" id="4hX-P1-32D"/>
+                    <constraint firstItem="kXI-qU-tD6" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="Eal-CU-P3o"/>
+                    <constraint firstItem="3wu-OD-B6q" firstAttribute="top" secondItem="kXI-qU-tD6" secondAttribute="top" id="N3Y-zX-h8O"/>
+                    <constraint firstItem="3wu-OD-B6q" firstAttribute="width" secondItem="kXI-qU-tD6" secondAttribute="width" id="TWc-iH-hQe"/>
                     <constraint firstItem="FsR-0M-Nyc" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="Xzx-Mt-he6"/>
-                    <constraint firstAttribute="bottomMargin" secondItem="kXI-qU-tD6" secondAttribute="bottom" id="a1L-Na-m9U"/>
+                    <constraint firstItem="3wu-OD-B6q" firstAttribute="leading" secondItem="kXI-qU-tD6" secondAttribute="leading" id="YHt-Nl-fq7"/>
                     <constraint firstAttribute="trailingMargin" secondItem="FsR-0M-Nyc" secondAttribute="trailing" id="aZx-Ls-Ysh"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="kXI-qU-tD6" secondAttribute="trailing" id="adL-xt-18P"/>
-                    <constraint firstItem="kXI-qU-tD6" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="f3W-9z-3f4"/>
+                    <constraint firstAttribute="bottom" secondItem="kXI-qU-tD6" secondAttribute="bottom" id="ayp-VW-qF0"/>
+                    <constraint firstItem="kXI-qU-tD6" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="3" id="ckk-5m-CRI"/>
                     <constraint firstAttribute="bottomMargin" secondItem="FsR-0M-Nyc" secondAttribute="bottom" constant="20" id="fKO-kW-VSb"/>
+                    <constraint firstAttribute="trailing" secondItem="kXI-qU-tD6" secondAttribute="trailing" id="lMB-Fk-3qw"/>
+                    <constraint firstItem="3wu-OD-B6q" firstAttribute="height" secondItem="kXI-qU-tD6" secondAttribute="height" id="m88-l5-DCL"/>
                     <constraint firstItem="FsR-0M-Nyc" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="obs-7B-zam"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>
                 <outlet property="storyImage" destination="kXI-qU-tD6" id="RlJ-T5-XTv"/>
                 <outlet property="storyLabel" destination="FsR-0M-Nyc" id="f7Q-SJ-Y0k"/>
+                <outlet property="visiualEffect" destination="3wu-OD-B6q" id="X51-Hi-u14"/>
             </connections>
             <point key="canvasLocation" x="27" y="18"/>
         </tableViewCell>
     </objects>
     <resources>
         <image name="IMG_1162" width="5266" height="3511"/>
+        <image name="delete" width="30" height="30"/>
     </resources>
 </document>

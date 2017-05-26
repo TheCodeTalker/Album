@@ -22,6 +22,15 @@ class ListAllTableViewController: UIViewController {
         tableView.register(UINib(nibName: "ListTableViewCell", bundle: nil), forCellReuseIdentifier: "ListTableViewCell")
         let longpress = UILongPressGestureRecognizer(target: self, action: #selector(longPressGestureRecognized))
         self.tableView.addGestureRecognizer(longpress)
+        
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(self.respondToSwipeGesture))
+        swipeLeft.direction = UISwipeGestureRecognizerDirection.left
+        self.tableView.addGestureRecognizer(swipeLeft)
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(self.respondToSwipeGesture))
+        swipeRight.direction = UISwipeGestureRecognizerDirection.right
+        self.tableView.addGestureRecognizer(swipeRight)
+        
+        
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
         self.getAllStoryAPICall {
@@ -30,6 +39,48 @@ class ListAllTableViewController: UIViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
+    
+    func respondToSwipeGesture(gesture: UIGestureRecognizer) {
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+            switch swipeGesture.direction {
+            case UISwipeGestureRecognizerDirection.right:
+                if gesture.state == UIGestureRecognizerState.ended {
+                    let swipeLocation = gesture.location(in: self.tableView)
+                    if let swipedIndexPath = tableView.indexPathForRow(at: swipeLocation) {
+                        if let swipedCell = self.tableView.cellForRow(at: swipedIndexPath) as? ListTableViewCell{
+                             self.storyArray[swipedIndexPath.item].blurOrNot = true
+                            //self.tableView.reloadRows(at: [swipedIndexPath], with: UITableViewRowAnimation.left)
+                            swipedCell.visiualEffect.isHidden = true
+                        }
+                    }
+                }
+
+                print("Swiped right")
+            case UISwipeGestureRecognizerDirection.down:
+                print("Swiped down")
+            case UISwipeGestureRecognizerDirection.left:
+                
+                if gesture.state == UIGestureRecognizerState.ended {
+                    let swipeLocation = gesture.location(in: self.tableView)
+                    if let swipedIndexPath = tableView.indexPathForRow(at: swipeLocation) {
+                        if let swipedCell = self.tableView.cellForRow(at: swipedIndexPath) as? ListTableViewCell{
+                            swipedCell.visiualEffect.isHidden = false
+                            self.storyArray[swipedIndexPath.item].blurOrNot = false
+                          //  self.tableView.reloadRows(at: [swipedIndexPath], with: UITableViewRowAnimation.right)
+                        }
+                    }
+                }
+                
+                
+                print("Swiped left")
+            case UISwipeGestureRecognizerDirection.up:
+                print("Swiped up")
+            default:
+                break
+            }
+        }
+    }
+
     
     func snapshotOfCell(inputView: UIView) -> UIView {
         UIGraphicsBeginImageContextWithOptions(inputView.bounds.size, false, 0.0)
@@ -142,8 +193,7 @@ class ListAllTableViewController: UIViewController {
         
         var addstory = self.storyboard?.instantiateViewController(withIdentifier: "HomePage") as! ViewController
         self.navigationController?.present(addstory, animated: true, completion: nil)
-        
-        
+    
     }
     func getAllStoryAPICall(_ handler: ((Void) -> Void)?) {
         //TODO:- XCODE 8
@@ -179,7 +229,7 @@ class ListAllTableViewController: UIViewController {
                             
                             //let story_cover_photo_path = singleStory["story_cover_photo_path"] as! String
                             //let story_cover_photo_slice_code = singleStory["story_cover_photo_slice_code"] as!  String
-                            let story = StoryModel(writen_by: writen_by, story_id: story_id, story_cover_photo_slice_code: story_cover_photo_slice_code, story_cover_photo_path: story_cover_photo_path)
+                            let story = StoryModel(writen_by: writen_by, story_id: story_id, story_cover_photo_slice_code: story_cover_photo_slice_code, story_cover_photo_path: story_cover_photo_path,blurOrNot:false)
                             self.storyArray.append(story)
                             
                         }
@@ -248,8 +298,12 @@ extension ListAllTableViewController : UITableViewDelegate,UITableViewDataSource
         cell.storyImage.sd_setImage(with: URL(string: totalPath + urlImage[1]), placeholderImage: UIImage(named: ""))
         }
         cell.storyLabel.text = story.writen_by.capitalized
-     
-      //Configure the cell...
+       if  story.blurOrNot{
+        cell.visiualEffect.isHidden = false
+        }else{
+            cell.visiualEffect.isHidden = true
+        }
+        
      
      return cell
      }

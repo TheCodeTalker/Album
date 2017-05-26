@@ -5,6 +5,7 @@
     </device>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
+        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -104,8 +105,34 @@
                         </barButtonItem>
                     </navigationItem>
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <connections>
+                        <outlet property="keyboardView" destination="AC3-Uo-BJ4" id="Ugf-ya-Xn8"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="pcM-VW-tcp" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <view contentMode="scaleToFill" id="AC3-Uo-BJ4">
+                    <rect key="frame" x="0.0" y="0.0" width="371" height="40"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="QRb-sn-AfR">
+                            <rect key="frame" x="328" y="0.0" width="40" height="40"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="40" id="EZz-49-ec3"/>
+                                <constraint firstAttribute="width" constant="40" id="lTi-Qx-eQ1"/>
+                            </constraints>
+                            <state key="normal" title="Button" image="check"/>
+                            <connections>
+                                <action selector="doneClicked:" destination="9qf-Of-FMG" eventType="touchUpInside" id="LKF-iF-R2E"/>
+                            </connections>
+                        </button>
+                    </subviews>
+                    <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                    <constraints>
+                        <constraint firstAttribute="trailing" secondItem="QRb-sn-AfR" secondAttribute="trailing" constant="3" id="Z6C-xX-BOP"/>
+                        <constraint firstItem="QRb-sn-AfR" firstAttribute="top" secondItem="AC3-Uo-BJ4" secondAttribute="top" id="goo-wQ-no5"/>
+                        <constraint firstAttribute="bottom" secondItem="QRb-sn-AfR" secondAttribute="bottom" id="iqa-kD-r5V"/>
+                    </constraints>
+                </view>
             </objects>
             <point key="canvasLocation" x="1614" y="150"/>
         </scene>
@@ -114,6 +141,7 @@
             <objects>
                 <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="4s5-bW-53k" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="YGX-bD-UXe">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -139,7 +167,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="mfb-bo-hm0">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" showsVerticalScrollIndicator="NO" dataMode="prototypes" style="plain" rowHeight="44" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="mfb-bo-hm0">
                                 <rect key="frame" x="0.0" y="64" width="375" height="603"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                             </tableView>
@@ -165,7 +193,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="EqP-lm-Wes" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3084" y="143"/>
+            <point key="canvasLocation" x="3146" y="150"/>
         </scene>
         <!--Images Upload Progress View Controller-->
         <scene sceneID="5sm-xX-ehk">
@@ -278,6 +306,7 @@
         </scene>
     </scenes>
     <resources>
+        <image name="check" width="30" height="30"/>
         <image name="ui_cross" width="32" height="32"/>
     </resources>
 </document>
