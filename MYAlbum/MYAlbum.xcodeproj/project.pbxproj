@@ -11,6 +11,7 @@
 		B660EA811ED4823400B24FB0 /* SAMTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = B660EA801ED4823200B24FB0 /* SAMTextView.m */; };
 		B660EA831ED4826100B24FB0 /* TextCellStory.xib in Resources */ = {isa = PBXBuildFile; fileRef = B660EA821ED4826100B24FB0 /* TextCellStory.xib */; };
 		B660EA851ED4833B00B24FB0 /* TextCellStoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B660EA841ED4833B00B24FB0 /* TextCellStoryCollectionViewCell.swift */; };
+		B662D8351EDBFEAB009300C1 /* ImagesUploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B662D8341EDBFEAB009300C1 /* ImagesUploadViewController.swift */; };
 		B667D1881E7AEA3F00747D23 /* PictureHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = B667D1871E7AEA3F00747D23 /* PictureHeader.xib */; };
 		B667D18A1E7AEA8C00747D23 /* PictureHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B667D1891E7AEA8C00747D23 /* PictureHeaderCollectionReusableView.swift */; };
 		B66A79441E6EC20E001A2861 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B66A79431E6EC20E001A2861 /* AppDelegate.swift */; };
@@ -29,6 +30,14 @@
 		B67637511E6FE9BF0029808C /* ExamplePhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = B67637501E6FE9BF0029808C /* ExamplePhoto.swift */; };
 		B678C51F1ECEE94200D748F8 /* ImageCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = B678C51E1ECEE94200D748F8 /* ImageCollectionViewCell.xib */; };
 		B678C5211ECEEA9A00D748F8 /* ImageViewCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B678C5201ECEEA9A00D748F8 /* ImageViewCollectionViewCell.swift */; };
+		B687F9381ED95FBC00B0B0FA /* raleway-bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B687F9301ED95FBC00B0B0FA /* raleway-bold.ttf */; };
+		B687F9391ED95FBC00B0B0FA /* raleway-extrabold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B687F9311ED95FBC00B0B0FA /* raleway-extrabold.ttf */; };
+		B687F93A1ED95FBC00B0B0FA /* raleway-extralight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B687F9321ED95FBC00B0B0FA /* raleway-extralight.ttf */; };
+		B687F93B1ED95FBC00B0B0FA /* raleway-light.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B687F9331ED95FBC00B0B0FA /* raleway-light.ttf */; };
+		B687F93C1ED95FBC00B0B0FA /* raleway-medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B687F9341ED95FBC00B0B0FA /* raleway-medium.ttf */; };
+		B687F93D1ED95FBC00B0B0FA /* raleway-regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B687F9351ED95FBC00B0B0FA /* raleway-regular.ttf */; };
+		B687F93E1ED95FBC00B0B0FA /* raleway-semibold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B687F9361ED95FBC00B0B0FA /* raleway-semibold.ttf */; };
+		B687F93F1ED95FBC00B0B0FA /* raleway-thin.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B687F9371ED95FBC00B0B0FA /* raleway-thin.ttf */; };
 		B68B7AFF1ED2EBFD007FB510 /* UIColorExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68B7AFE1ED2EBFD007FB510 /* UIColorExtensions.swift */; };
 		B68B7B011ED2EC96007FB510 /* StringExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68B7B001ED2EC96007FB510 /* StringExtensions.swift */; };
 		B68B7B051ED309F1007FB510 /* MYAlbumConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = B68B7B041ED309F1007FB510 /* MYAlbumConstants.swift */; };
@@ -42,6 +51,7 @@
 		B660EA801ED4823200B24FB0 /* SAMTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SAMTextView.m; sourceTree = "<group>"; };
 		B660EA821ED4826100B24FB0 /* TextCellStory.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextCellStory.xib; sourceTree = "<group>"; };
 		B660EA841ED4833B00B24FB0 /* TextCellStoryCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextCellStoryCollectionViewCell.swift; sourceTree = "<group>"; };
+		B662D8341EDBFEAB009300C1 /* ImagesUploadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagesUploadViewController.swift; sourceTree = "<group>"; };
 		B667D1871E7AEA3F00747D23 /* PictureHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PictureHeader.xib; sourceTree = "<group>"; };
 		B667D1891E7AEA8C00747D23 /* PictureHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PictureHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
 		B66A79401E6EC20E001A2861 /* MYAlbum.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MYAlbum.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -64,6 +74,14 @@
 		B67637501E6FE9BF0029808C /* ExamplePhoto.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExamplePhoto.swift; sourceTree = "<group>"; };
 		B678C51E1ECEE94200D748F8 /* ImageCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ImageCollectionViewCell.xib; sourceTree = "<group>"; };
 		B678C5201ECEEA9A00D748F8 /* ImageViewCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageViewCollectionViewCell.swift; sourceTree = "<group>"; };
+		B687F9301ED95FBC00B0B0FA /* raleway-bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "raleway-bold.ttf"; path = "../raleway-bold.ttf"; sourceTree = "<group>"; };
+		B687F9311ED95FBC00B0B0FA /* raleway-extrabold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "raleway-extrabold.ttf"; path = "../raleway-extrabold.ttf"; sourceTree = "<group>"; };
+		B687F9321ED95FBC00B0B0FA /* raleway-extralight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "raleway-extralight.ttf"; path = "../raleway-extralight.ttf"; sourceTree = "<group>"; };
+		B687F9331ED95FBC00B0B0FA /* raleway-light.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "raleway-light.ttf"; path = "../raleway-light.ttf"; sourceTree = "<group>"; };
+		B687F9341ED95FBC00B0B0FA /* raleway-medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "raleway-medium.ttf"; path = "../raleway-medium.ttf"; sourceTree = "<group>"; };
+		B687F9351ED95FBC00B0B0FA /* raleway-regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "raleway-regular.ttf"; path = "../raleway-regular.ttf"; sourceTree = "<group>"; };
+		B687F9361ED95FBC00B0B0FA /* raleway-semibold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "raleway-semibold.ttf"; path = "../raleway-semibold.ttf"; sourceTree = "<group>"; };
+		B687F9371ED95FBC00B0B0FA /* raleway-thin.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; name = "raleway-thin.ttf"; path = "../raleway-thin.ttf"; sourceTree = "<group>"; };
 		B68B7AFE1ED2EBFD007FB510 /* UIColorExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColorExtensions.swift; sourceTree = "<group>"; };
 		B68B7B001ED2EC96007FB510 /* StringExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringExtensions.swift; sourceTree = "<group>"; };
 		B68B7B041ED309F1007FB510 /* MYAlbumConstants.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MYAlbumConstants.swift; sourceTree = "<group>"; };
@@ -123,6 +141,7 @@
 		B66A79421E6EC20E001A2861 /* MYAlbum */ = {
 			isa = PBXGroup;
 			children = (
+				B687F9401ED95FD600B0B0FA /* Font */,
 				B66A79431E6EC20E001A2861 /* AppDelegate.swift */,
 				B66ECA9D1ED0700F00E2F780 /* UIScrollView+EmptyDataSet.h */,
 				B66ECA9E1ED0700F00E2F780 /* UIScrollView+EmptyDataSet.m */,
@@ -152,8 +171,24 @@
 				B66ECAA61ED078F600E2F780 /* StoryModel.swift */,
 				B68B7B041ED309F1007FB510 /* MYAlbumConstants.swift */,
 				B660EA841ED4833B00B24FB0 /* TextCellStoryCollectionViewCell.swift */,
+				B662D8341EDBFEAB009300C1 /* ImagesUploadViewController.swift */,
 			);
 			path = MYAlbum;
+			sourceTree = "<group>";
+		};
+		B687F9401ED95FD600B0B0FA /* Font */ = {
+			isa = PBXGroup;
+			children = (
+				B687F9301ED95FBC00B0B0FA /* raleway-bold.ttf */,
+				B687F9311ED95FBC00B0B0FA /* raleway-extrabold.ttf */,
+				B687F9321ED95FBC00B0B0FA /* raleway-extralight.ttf */,
+				B687F9331ED95FBC00B0B0FA /* raleway-light.ttf */,
+				B687F9341ED95FBC00B0B0FA /* raleway-medium.ttf */,
+				B687F9351ED95FBC00B0B0FA /* raleway-regular.ttf */,
+				B687F9361ED95FBC00B0B0FA /* raleway-semibold.ttf */,
+				B687F9371ED95FBC00B0B0FA /* raleway-thin.ttf */,
+			);
+			name = Font;
 			sourceTree = "<group>";
 		};
 		FA12203A860282750DDC91C8 /* Pods */ = {
@@ -178,6 +213,7 @@
 				B66A793E1E6EC20E001A2861 /* Resources */,
 				0F270FEE9D7505957BD0F1F1 /* [CP] Embed Pods Frameworks */,
 				5777CEA729F18B0EBCABF713 /* [CP] Copy Pods Resources */,
+				B687F9411ED9937C00B0B0FA /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -229,6 +265,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B687F9381ED95FBC00B0B0FA /* raleway-bold.ttf in Resources */,
+				B687F9391ED95FBC00B0B0FA /* raleway-extrabold.ttf in Resources */,
+				B687F93A1ED95FBC00B0B0FA /* raleway-extralight.ttf in Resources */,
+				B687F93B1ED95FBC00B0B0FA /* raleway-light.ttf in Resources */,
+				B687F93C1ED95FBC00B0B0FA /* raleway-medium.ttf in Resources */,
+				B687F93D1ED95FBC00B0B0FA /* raleway-regular.ttf in Resources */,
+				B687F93E1ED95FBC00B0B0FA /* raleway-semibold.ttf in Resources */,
+				B687F93F1ED95FBC00B0B0FA /* raleway-thin.ttf in Resources */,
 				B660EA831ED4826100B24FB0 /* TextCellStory.xib in Resources */,
 				B66A794E1E6EC20E001A2861 /* LaunchScreen.storyboard in Resources */,
 				B66A794B1E6EC20E001A2861 /* Assets.xcassets in Resources */,
@@ -288,6 +332,19 @@
 			shellScript = "diff \"${PODS_ROOT}/../Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n";
 			showEnvVarsInLog = 0;
 		};
+		B687F9411ED9937C00B0B0FA /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Fabric/run\" f9190297ec3ba6fa2ffe6ac360c47e61e398aa26 b2b25dc3df60a6c811ad48b799dfb67ed23cb34ac249e8c2648dc9f50a5812fa";
+		};
 /* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
@@ -301,6 +358,7 @@
 				B66ECAA51ED075CA00E2F780 /* ListAllTableViewController.swift in Sources */,
 				B660EA811ED4823400B24FB0 /* SAMTextView.m in Sources */,
 				B67637511E6FE9BF0029808C /* ExamplePhoto.swift in Sources */,
+				B662D8351EDBFEAB009300C1 /* ImagesUploadViewController.swift in Sources */,
 				B68B7B051ED309F1007FB510 /* MYAlbumConstants.swift in Sources */,
 				B66A79461E6EC20E001A2861 /* ViewController.swift in Sources */,
 				B678C5211ECEEA9A00D748F8 /* ImageViewCollectionViewCell.swift in Sources */,

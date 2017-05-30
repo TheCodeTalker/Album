@@ -190,11 +190,15 @@ class ListAllTableViewController: UIViewController {
     
     
     @IBAction func addStory(_ sender: UIBarButtonItem) {
-        
-        var addstory = self.storyboard?.instantiateViewController(withIdentifier: "HomePage") as! ViewController
-        self.navigationController?.present(addstory, animated: true, completion: nil)
+        let addstory = self.storyboard?.instantiateViewController(withIdentifier: "HomePage") as! ViewController
+        let navigation = UINavigationController(rootViewController: addstory)
+        navigation.isNavigationBarHidden = false
+        addstory.creatingStory = true
+        addstory.upload = true
+        self.navigationController?.present(navigation, animated: true, completion: nil)
     
     }
+    
     func getAllStoryAPICall(_ handler: ((Void) -> Void)?) {
         //TODO:- XCODE 8
         let defaultFilterUrl = URLConstants.BaseURL + "allstories/10/10"

@@ -19,25 +19,25 @@
                 <autoresizingMask key="autoresizingMask"/>
                 <subviews>
                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="IMG_1162" translatesAutoresizingMaskIntoConstraints="NO" id="kXI-qU-tD6">
-                        <rect key="frame" x="0.0" y="3" width="320" height="196"/>
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="199"/>
                     </imageView>
-                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FsR-0M-Nyc">
-                        <rect key="frame" x="8" y="142" width="304" height="30"/>
+                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FsR-0M-Nyc">
+                        <rect key="frame" x="30" y="141" width="260" height="30"/>
                         <constraints>
                             <constraint firstAttribute="height" constant="30" id="EC9-ka-iMR"/>
                         </constraints>
-                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                        <fontDescription key="fontDescription" name="HelveticaNeue-Bold" family="Helvetica Neue" pointSize="26"/>
                         <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <nil key="highlightedColor"/>
                     </label>
-                    <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3wu-OD-B6q">
-                        <rect key="frame" x="0.0" y="3" width="320" height="196"/>
+                    <visualEffectView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="3wu-OD-B6q" userLabel="Visual Effect">
+                        <rect key="frame" x="0.0" y="0.0" width="320" height="199"/>
                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" id="rFZ-jh-zso">
-                            <rect key="frame" x="0.0" y="0.0" width="320" height="196"/>
+                            <rect key="frame" x="0.0" y="0.0" width="320" height="199"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                             <subviews>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="jgO-e6-iqa">
-                                    <rect key="frame" x="260" y="27" width="40" height="40"/>
+                                    <rect key="frame" x="260" y="30" width="40" height="40"/>
                                     <constraints>
                                         <constraint firstAttribute="width" constant="40" id="OKN-LC-JMc"/>
                                         <constraint firstAttribute="height" constant="40" id="X0R-to-THe"/>
@@ -45,7 +45,7 @@
                                     <state key="normal" image="delete"/>
                                 </button>
                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="OJI-ug-BUa">
-                                    <rect key="frame" x="260" y="107" width="40" height="40"/>
+                                    <rect key="frame" x="260" y="110" width="40" height="40"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="40" id="E0e-1L-gfn"/>
                                         <constraint firstAttribute="width" constant="40" id="j5D-wL-Whh"/>
@@ -62,23 +62,22 @@
                                 <constraint firstItem="OJI-ug-BUa" firstAttribute="leading" secondItem="jgO-e6-iqa" secondAttribute="leading" id="yOF-8V-Kjg"/>
                             </constraints>
                         </view>
-                        <blurEffect style="light"/>
+                        <blurEffect style="dark"/>
                     </visualEffectView>
                 </subviews>
                 <constraints>
                     <constraint firstItem="3wu-OD-B6q" firstAttribute="trailing" secondItem="kXI-qU-tD6" secondAttribute="trailing" id="4hX-P1-32D"/>
                     <constraint firstItem="kXI-qU-tD6" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leading" id="Eal-CU-P3o"/>
+                    <constraint firstItem="FsR-0M-Nyc" firstAttribute="width" secondItem="kXI-qU-tD6" secondAttribute="width" constant="-60" id="JBF-MM-9q6"/>
                     <constraint firstItem="3wu-OD-B6q" firstAttribute="top" secondItem="kXI-qU-tD6" secondAttribute="top" id="N3Y-zX-h8O"/>
                     <constraint firstItem="3wu-OD-B6q" firstAttribute="width" secondItem="kXI-qU-tD6" secondAttribute="width" id="TWc-iH-hQe"/>
                     <constraint firstItem="FsR-0M-Nyc" firstAttribute="centerX" secondItem="H2p-sc-9uM" secondAttribute="centerX" id="Xzx-Mt-he6"/>
                     <constraint firstItem="3wu-OD-B6q" firstAttribute="leading" secondItem="kXI-qU-tD6" secondAttribute="leading" id="YHt-Nl-fq7"/>
-                    <constraint firstAttribute="trailingMargin" secondItem="FsR-0M-Nyc" secondAttribute="trailing" id="aZx-Ls-Ysh"/>
                     <constraint firstAttribute="bottom" secondItem="kXI-qU-tD6" secondAttribute="bottom" id="ayp-VW-qF0"/>
-                    <constraint firstItem="kXI-qU-tD6" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" constant="3" id="ckk-5m-CRI"/>
+                    <constraint firstItem="kXI-qU-tD6" firstAttribute="top" secondItem="H2p-sc-9uM" secondAttribute="top" id="ckk-5m-CRI"/>
                     <constraint firstAttribute="bottomMargin" secondItem="FsR-0M-Nyc" secondAttribute="bottom" constant="20" id="fKO-kW-VSb"/>
                     <constraint firstAttribute="trailing" secondItem="kXI-qU-tD6" secondAttribute="trailing" id="lMB-Fk-3qw"/>
                     <constraint firstItem="3wu-OD-B6q" firstAttribute="height" secondItem="kXI-qU-tD6" secondAttribute="height" id="m88-l5-DCL"/>
-                    <constraint firstItem="FsR-0M-Nyc" firstAttribute="leading" secondItem="H2p-sc-9uM" secondAttribute="leadingMargin" id="obs-7B-zam"/>
                 </constraints>
             </tableViewCellContentView>
             <connections>

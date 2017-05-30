@@ -40,20 +40,20 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome ChitaRanjan" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aqS-91-DqF">
-                                <rect key="frame" x="16" y="90" width="343" height="26"/>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Welcome ChitaRanjan" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aqS-91-DqF">
+                                <rect key="frame" x="16" y="46" width="343" height="26"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="21"/>
                                 <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Let's get started! Create your first album and share your story." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hfE-OW-a7k">
-                                <rect key="frame" x="46" y="132" width="283" height="41"/>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Let's get started! Create your first album and share your story." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hfE-OW-a7k">
+                                <rect key="frame" x="46" y="88" width="283" height="41"/>
                                 <fontDescription key="fontDescription" type="system" weight="light" pointSize="17"/>
                                 <color key="textColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2kJ-JV-ln8">
-                                <rect key="frame" x="16" y="280" width="343" height="40"/>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="2kJ-JV-ln8">
+                                <rect key="frame" x="16" y="236" width="343" height="40"/>
                                 <color key="backgroundColor" red="0.24313725489999999" green="0.78039215689999997" blue="0.64705882349999999" alpha="1" colorSpace="calibratedRGB"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="40" id="M89-UG-uyI"/>
@@ -61,9 +61,6 @@
                                 <state key="normal" title="Start Creating Story">
                                     <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
-                                <connections>
-                                    <action selector="IbaOpenGallery:" destination="9qf-Of-FMG" eventType="touchUpInside" id="CLu-Xk-pbm"/>
-                                </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="o1O-R6-Epx">
                                 <rect key="frame" x="16" y="313" width="343" height="40"/>
@@ -100,11 +97,11 @@
                     <navigationItem key="navigationItem" id="Guj-k8-b77">
                         <barButtonItem key="leftBarButtonItem" systemItem="cancel" id="hS4-LH-Kle">
                             <connections>
-                                <action selector="cancelClicked:" destination="9qf-Of-FMG" id="2zY-8a-e22"/>
+                                <action selector="dismissViewClicked:" destination="9qf-Of-FMG" id="SEK-kx-K4p"/>
                             </connections>
                         </barButtonItem>
                     </navigationItem>
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
+                    <nil key="simulatedTopBarMetrics"/>
                     <connections>
                         <outlet property="keyboardView" destination="AC3-Uo-BJ4" id="Ugf-ya-Xn8"/>
                     </connections>
@@ -135,25 +132,6 @@
                 </view>
             </objects>
             <point key="canvasLocation" x="1614" y="150"/>
-        </scene>
-        <!--Navigation Controller-->
-        <scene sceneID="UFk-sO-R5c">
-            <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" navigationBarHidden="YES" id="4s5-bW-53k" sceneMemberID="viewController">
-                    <toolbarItems/>
-                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
-                    <navigationBar key="navigationBar" contentMode="scaleToFill" id="YGX-bD-UXe">
-                        <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
-                        <autoresizingMask key="autoresizingMask"/>
-                    </navigationBar>
-                    <nil name="viewControllers"/>
-                    <connections>
-                        <segue destination="9qf-Of-FMG" kind="relationship" relationship="rootViewController" id="was-0x-fU2"/>
-                    </connections>
-                </navigationController>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="g6S-2o-50c" userLabel="First Responder" sceneMemberID="firstResponder"/>
-            </objects>
-            <point key="canvasLocation" x="933.60000000000002" y="155.17241379310346"/>
         </scene>
         <!--List All Table View Controller-->
         <scene sceneID="2TM-O7-tQV">
@@ -195,10 +173,10 @@
             </objects>
             <point key="canvasLocation" x="3146" y="150"/>
         </scene>
-        <!--Images Upload Progress View Controller-->
+        <!--Images Upload View Controller-->
         <scene sceneID="5sm-xX-ehk">
             <objects>
-                <viewController storyboardIdentifier="ImagesUploadProgressViewController" id="xJs-aj-dDG" customClass="ImagesUploadProgressViewController" customModule="MYAlbum" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="ImagesUploadViewController" id="xJs-aj-dDG" customClass="ImagesUploadViewController" customModule="MYAlbum" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="G3A-0o-eBM"/>
                         <viewControllerLayoutGuide type="bottom" id="8ZQ-3B-7p6"/>
@@ -215,7 +193,7 @@
                                 </constraints>
                                 <state key="normal" image="ui_cross"/>
                                 <connections>
-                                    <action selector="closeProgress:" destination="xJs-aj-dDG" eventType="touchUpInside" id="1VU-sf-BGb"/>
+                                    <action selector="closeBtnClicked:" destination="xJs-aj-dDG" eventType="touchUpInside" id="UiD-zE-7WR"/>
                                 </connections>
                             </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="We are processing your upload, Please wait...." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="85A-1O-0My">
@@ -274,12 +252,12 @@
                         </constraints>
                     </view>
                     <connections>
-                        <outlet property="closeBtn" destination="kuA-PV-g7Y" id="s6z-af-NjV"/>
-                        <outlet property="countProgressLabel" destination="Wvz-ZH-dis" id="zSw-xe-vOv"/>
-                        <outlet property="falseUploadText" destination="R91-IJ-TxY" id="DHg-K3-CO3"/>
-                        <outlet property="percentageProgressLabel" destination="sS8-HR-0oA" id="KE6-xC-yQg"/>
-                        <outlet property="progressView" destination="1AZ-o7-RE2" id="FGX-fN-usg"/>
-                        <outlet property="uploadingText" destination="85A-1O-0My" id="Ftn-nq-dwI"/>
+                        <outlet property="closeBtn" destination="kuA-PV-g7Y" id="Ywk-90-avF"/>
+                        <outlet property="countProgressLabel" destination="Wvz-ZH-dis" id="TZD-hT-Rgz"/>
+                        <outlet property="falseUploadText" destination="R91-IJ-TxY" id="pCC-hp-qsK"/>
+                        <outlet property="percentageProgress" destination="sS8-HR-0oA" id="ACf-Ca-sPM"/>
+                        <outlet property="progressView" destination="1AZ-o7-RE2" id="3GM-Jz-7PR"/>
+                        <outlet property="uploadText" destination="85A-1O-0My" id="aXO-5S-BPh"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="uFg-Ve-FzI" userLabel="First Responder" sceneMemberID="firstResponder"/>

@@ -11,7 +11,9 @@ target 'MYAlbum' do
   pod 'SDWebImage'
   pod 'ReachabilitySwift', '~> 3'
   pod 'Letters'
-  pod 'GMImagePicker'
-  #pod 'DKImagePickerController'
-
+  # pod 'GMImagePicker'
+  pod 'DKImagePickerController'
+  pod 'NVActivityIndicatorView'
+  pod 'Fabric'
+  pod 'Crashlytics'
 end

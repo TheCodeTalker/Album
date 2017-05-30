@@ -38,6 +38,65 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
     
     // TODO: shouldInvalidateLayoutForBoundsChange
     
+    open override func shouldInvalidateLayout(forBoundsChange newBounds: CGRect) -> Bool {
+        if let local = defaults.object(forKey: "partition") as? partitionTypeLayout{
+            //containSameElements(local, localPartition)
+            if compareElement(local, self.localPartition){
+                return false
+            }else{
+                return true
+            }
+        }
+        return true
+        }
+
+    
+    func compareElement(_ array1:partitionTypeLayout,_ array2 : partitionTypeLayout) -> Bool {
+                guard array1.count == array2.count else {
+                    return false
+        }
+        
+        //return array1 == array2
+        
+        for (index,element) in array1.enumerated(){
+            if element.count == array2[index].count{
+                var d2Array = array2[index]
+                
+                for(index1,element1) in element.enumerated(){
+                    var d1Array = d2Array[index1]
+                    if element1.count != d2Array[index1].count{
+                     return false
+                    }
+                        for (index2,element2) in element1.enumerated(){
+                            
+                            if element2 != d1Array[index2]{
+                                return false
+                            }
+                            
+                        }
+                        
+                    
+                }
+            }
+            else{
+                return false
+            }
+            
+        }
+        
+        return true
+        
+        
+    }
+    
+//    func containSameElements<T: Comparable>(_ array1: [T], _ array2: [T]) -> Bool {
+//        guard array1.count == array2.count else {
+//            return false // No need to sorting if they already have different counts
+//        }
+//        
+//        return array1.sorted() == array2.sorted()
+//    }
+    
     // MARK: - UICollectionViewLayout
     override open func prepare() {
         resetItemFrames()
