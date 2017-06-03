@@ -8,6 +8,10 @@
 
 import UIKit
 
+protocol SetPartitionAfterInsideUpload : class {
+     func setPartitionAfterInsideUpload()
+}
+
 open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
     /// The ideal row height of items in the grid
     open var rowHeight: CGFloat = 100 {
@@ -15,6 +19,7 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
             invalidateLayout()
         }
     }
+    weak var setPartitionDelegate:SetPartitionAfterInsideUpload?
     
     var isNested = false
     
@@ -35,6 +40,7 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
     fileprivate var itemFrames = [[CGRect]](), itemOriginYs = [[CGFloat]]()
     fileprivate var contentSize = CGSize.zero
     let defaults = UserDefaults.standard
+    var numberOfRows = 0
     
     // TODO: shouldInvalidateLayoutForBoundsChange
     
@@ -89,13 +95,25 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
         
     }
     
-//    func containSameElements<T: Comparable>(_ array1: [T], _ array2: [T]) -> Bool {
-//        guard array1.count == array2.count else {
-//            return false // No need to sorting if they already have different counts
-//        }
-//        
-//        return array1.sorted() == array2.sorted()
-//    }
+    
+    func weightsForItemsInSection(count:Int,withInitialIndex index:Int) -> [Float] {
+        
+        var  width  = [Float]()
+        
+        if let collectionView = self.collectionView {
+        let maxWidth = Float(scrollDirection == .vertical ? contentSize.width : contentSize.height)
+        for i in (index ..< count) {
+            let itemSize = self.sizeForItemAtIndexPath(IndexPath(item: i, section: 0)),
+            ratio = self.scrollDirection == .vertical ?
+                itemSize.width/itemSize.height :
+                itemSize.height/itemSize.width
+            width.append(min(Float(ratio*self.rowHeight), Float(maxWidth)))
+            
+        }
+        }
+        return width
+        
+    }
     
     // MARK: - UICollectionViewLayout
     override open func prepare() {
@@ -104,30 +122,111 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
         
         if let collectionView = self.collectionView {
             
-            var  width  = [Float]()
-            let maxWidth = Float(scrollDirection == .vertical ? contentSize.width : contentSize.height)
-            for i in (0..<collectionView.numberOfItems(inSection: 0)) {
-                let itemSize = self.sizeForItemAtIndexPath(IndexPath(item: i, section: 0)),
-                ratio = self.scrollDirection == .vertical ?
-                    itemSize.width/itemSize.height :
-                    itemSize.height/itemSize.width
-                width.append(min(Float(ratio*self.rowHeight), Float(maxWidth)))
-                
-            }
-           
-            // parition widths
-            if (localPartition.count > 0){
+            guard  let  totalItems = self.collectionView?.numberOfItems(inSection: 0) else{ return }
             
-            }else{
-                _ = partition(width, max: Float(maxWidth))
-                
+            if let isViewStory = defaults.object(forKey: "isViewStory") as? Bool{
+                if isViewStory{
+                    if (self.collectionView?.numberOfItems(inSection: 0))! >  0{
+                        if let local = defaults.object(forKey: "partition") as? partitionTypeLayout{
+                            localPartition = local
+                            
+                        }
+                        defaults.set(false, forKey: "isViewStory")
+                    }
+                    
+                }else{
+                    if let delete = defaults.object(forKey: "deletedAllItems") as? Bool, delete == false , self.localPartition.count <= 0{
+                        
+                        
+                        
+                        var  width  = [Float]()
+                        let maxWidth = Float(scrollDirection == .vertical ? contentSize.width : contentSize.height)
+                        for i in (0..<collectionView.numberOfItems(inSection: 0)) {
+                            let itemSize = self.sizeForItemAtIndexPath(IndexPath(item: i, section: 0)),
+                            ratio = self.scrollDirection == .vertical ?
+                                itemSize.width/itemSize.height :
+                                itemSize.height/itemSize.width
+                            width.append(min(Float(ratio*self.rowHeight), Float(maxWidth)))
+                            
+                        }
+                        
+                        // parition widths
+                      
+                           var local = partition(width, max: Float(maxWidth))
+                            UserDefaults.standard.set(local, forKey: "partition")
+                  
+                       // if let local = defaults.object(forKey: "partition") as? partitionTypeLayout{
+                            localPartition = local
+                        //}
+
+                        
+                        
+    
+                    }else{
+                        
+                       if let addedMorePhotos  = defaults.object(forKey: "addedMorePhotos") as? Int , addedMorePhotos > 0{
+                            if let local = defaults.object(forKey: "partition") as? partitionTypeLayout{
+                                localPartition = local
+                            }
+                        
+                        
+                            let newItems = defaults.object(forKey: "addedMorePhotos") as! Int
+                            
+                            let numberOfNewItems = totalItems - newItems
+                        
+                        
+                        var  width  = [Float]()
+                        let maxWidth = Float(scrollDirection == .vertical ? contentSize.width : contentSize.height)
+                        for i in (numberOfNewItems ..< totalItems) {
+                            let itemSize = self.sizeForItemAtIndexPath(IndexPath(item: i, section: 0)),
+                            ratio = self.scrollDirection == .vertical ?
+                                itemSize.width/itemSize.height :
+                                itemSize.height/itemSize.width
+                            width.append(min(Float(ratio*self.rowHeight), Float(maxWidth)))
+                            
+                        }
+                        
+                        // parition widths
+                        
+                        var local = partition(width, max: Float(maxWidth))
+                        
+                        let initialCount = localPartition.count
+                        self.localPartition.append(contentsOf: local)
+                        
+                        for i in initialCount ..< (initialCount + local.count) {
+                            var destPartArray = self.localPartition[i]
+                            for j in 0 ..< destPartArray.count{
+                                var colArray = destPartArray[j]
+                                for k in 0 ..< colArray.count{
+                                    colArray[k] = "\(i)-\(j)-\(k)"
+                                }
+                                destPartArray[j] = colArray
+                                
+                            }
+                            self.localPartition[i] = destPartArray
+                        }
+
+                        UserDefaults.standard.set(0, forKey: "addedMorePhotos")
+                        UserDefaults.standard.set(self.localPartition, forKey: "partition")
+                       
+                     //   localPartition = local
+                    
+                        }else{
+                            if let local = defaults.object(forKey: "partition") as? partitionTypeLayout{
+                                localPartition = local
+                                
+                            }
+                        }
+                        
+                    }
+                    
+                  
+                        
+
+                }
             }
-            if let local = defaults.object(forKey: "partition") as? partitionTypeLayout{
-                localPartition = local
-            }
-            //UserDefaults.standard.set(partitions, forKey: "partition")
             
-            
+            self.setPartitionDelegate?.setPartitionAfterInsideUpload()
             
             
             
@@ -166,6 +265,22 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
             //CGPoint sectionOffset
            
         }
+    }
+    
+    
+    
+    
+    func totalItemSizeForSection(count:Int,preferredRow preferredRowSize:CGFloat,withInitailIndex index:Int) -> CGFloat {
+        var totalItemSize = CGFloat(0)
+        for i in index ..< count{
+            let preferredSize =  self.sizeForItemAtIndexPath(IndexPath(item: i, section: 0))
+            totalItemSize += (preferredSize.width / preferredSize.height) * preferredRowSize
+            
+        }
+        
+        return totalItemSize
+
+        
     }
     
     
@@ -402,72 +517,97 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
     
     
     
-    fileprivate func collectionView(_ collectionView:UICollectionView, framesForItemsInSection section:Int, updateContentSize contentSize:inout CGSize) -> ([CGRect], [CGFloat]) {
-        
-        var  width  = [Float]()
-        let maxWidth = Float(scrollDirection == .vertical ? contentSize.width : contentSize.height)
-        for i in (0..<collectionView.numberOfItems(inSection: section)) {
-            let itemSize = self.sizeForItemAtIndexPath(IndexPath(item: i, section: section)),
-            ratio = self.scrollDirection == .vertical ?
-                itemSize.width/itemSize.height :
-                itemSize.height/itemSize.width
-            width.append(min(Float(ratio*self.rowHeight), Float(maxWidth)))
-            
-        }
-        defaults.removeObject(forKey: "partition")
-        defaults.synchronize()
-
-        
-        
-        // parition widths
-        let partitions = partition(width, max: Float(maxWidth))
-        
-        let minimumInteritemSpacing = minimumInteritemSpacingForSection(section),
-        minimumLineSpacing = minimumLineSpacingForSection(section),
-        inset = insetForSection(section)
-        var framesInSection = [CGRect](), originYsInSection = [CGFloat](),
-        origin = scrollDirection == .vertical ?
-            CGPoint(x: inset.left, y: contentSize.height+inset.top) :
-            CGPoint(x: contentSize.width+inset.left, y: inset.top)
-        
-        for row in partitions {
-            // contentWidth/summedWidth
-            let innerMargin = Float(CGFloat(row.count-1)*minimumInteritemSpacing),
-            outterMargin = scrollDirection == .vertical ?
-                Float(inset.left+inset.right) :
-                Float(inset.top+inset.bottom),
-            contentWidth = maxWidth - outterMargin - innerMargin,
-            widthRatio = CGFloat(contentWidth/row.reduce(0, +)),
-            heightRatio = enforcesRowHeight ? 1 : widthRatio
-            for width in row {
-                let size = scrollDirection == .vertical ?
-                    CGSize(width: CGFloat(width)*widthRatio, height: rowHeight*heightRatio) :
-                    CGSize(width: rowHeight*heightRatio, height: CGFloat(width)*widthRatio)
-                let frame = CGRect(origin: origin, size: size)
-                framesInSection.append(frame)
-                if scrollDirection == .vertical {
-                    origin = CGPoint(x: origin.x+frame.width+minimumInteritemSpacing, y: origin.y)
-                    originYsInSection.append(origin.y)
-                } else {
-                    origin = CGPoint(x: origin.x, y: origin.y+frame.height+minimumInteritemSpacing)
-                    originYsInSection.append(origin.x)
-                }
-            }
-            if scrollDirection == .vertical {
-                origin = CGPoint(x: inset.left, y: origin.y+framesInSection.last!.height+minimumLineSpacing)
-            } else {
-                origin = CGPoint(x: origin.x+framesInSection.last!.width+minimumLineSpacing, y: inset.top)
-            }
-        }
-        
-        if scrollDirection == .vertical {
-            contentSize = CGSize(width: contentSize.width, height: origin.y+inset.bottom)
-        } else {
-            contentSize = CGSize(width: origin.x+inset.right, height: contentSize.height)
-        }
-        
-        return (framesInSection, originYsInSection)
+//    fileprivate func collectionView(_ collectionView:UICollectionView, framesForItemsInSection section:Int, updateContentSize contentSize:inout CGSize) -> ([CGRect], [CGFloat]) {
+//        
+//        var  width  = [Float]()
+//        let maxWidth = Float(scrollDirection == .vertical ? contentSize.width : contentSize.height)
+//        for i in (0..<collectionView.numberOfItems(inSection: section)) {
+//            let itemSize = self.sizeForItemAtIndexPath(IndexPath(item: i, section: section)),
+//            ratio = self.scrollDirection == .vertical ?
+//                itemSize.width/itemSize.height :
+//                itemSize.height/itemSize.width
+//            width.append(min(Float(ratio*self.rowHeight), Float(maxWidth)))
+//            
+//        }
+//        
+//        defaults.removeObject(forKey: "partition")
+//        defaults.synchronize()
+//
+//        
+//        
+//        // parition widths
+//        let partitions = partition(width, max: Float(maxWidth))
+//        
+//        let minimumInteritemSpacing = minimumInteritemSpacingForSection(section),
+//        minimumLineSpacing = minimumLineSpacingForSection(section),
+//        inset = insetForSection(section)
+//        var framesInSection = [CGRect](), originYsInSection = [CGFloat](),
+//        origin = scrollDirection == .vertical ?
+//            CGPoint(x: inset.left, y: contentSize.height+inset.top) :
+//            CGPoint(x: contentSize.width+inset.left, y: inset.top)
+//        
+//        for row in partitions {
+//            // contentWidth/summedWidth
+//            let innerMargin = Float(CGFloat(row.count-1)*minimumInteritemSpacing),
+//            outterMargin = scrollDirection == .vertical ?
+//                Float(inset.left+inset.right) :
+//                Float(inset.top+inset.bottom),
+//            contentWidth = maxWidth - outterMargin - innerMargin,
+//            widthRatio = CGFloat(contentWidth/row.reduce(0, +)),
+//            heightRatio = enforcesRowHeight ? 1 : widthRatio
+//            for width in row {
+//                let size = scrollDirection == .vertical ?
+//                    CGSize(width: CGFloat(width)*widthRatio, height: rowHeight*heightRatio) :
+//                    CGSize(width: rowHeight*heightRatio, height: CGFloat(width)*widthRatio)
+//                let frame = CGRect(origin: origin, size: size)
+//                framesInSection.append(frame)
+//                if scrollDirection == .vertical {
+//                    origin = CGPoint(x: origin.x+frame.width+minimumInteritemSpacing, y: origin.y)
+//                    originYsInSection.append(origin.y)
+//                } else {
+//                    origin = CGPoint(x: origin.x, y: origin.y+frame.height+minimumInteritemSpacing)
+//                    originYsInSection.append(origin.x)
+//                }
+//            }
+//            if scrollDirection == .vertical {
+//                origin = CGPoint(x: inset.left, y: origin.y+framesInSection.last!.height+minimumLineSpacing)
+//            } else {
+//                origin = CGPoint(x: origin.x+framesInSection.last!.width+minimumLineSpacing, y: inset.top)
+//            }
+//        }
+//        
+//        if scrollDirection == .vertical {
+//            contentSize = CGSize(width: contentSize.width, height: origin.y+inset.bottom)
+//        } else {
+//            contentSize = CGSize(width: origin.x+inset.right, height: contentSize.height)
+//        }
+//        
+//        return (framesInSection, originYsInSection)
+//    }
+    
+    
+    
+    func viewPortWidth() -> CGFloat {
+        return (self.collectionView?.frame.width)! - self.collectionView!.contentInset.left - self.collectionView!.contentInset.right
     }
+    
+    func viewPortAvailableSize1() -> CGFloat {
+        var availableSize = CGFloat(0)
+        if (scrollDirection == .vertical)  {
+            availableSize = self.viewPortWidth() - self.sectionInset.left - self.sectionInset.right
+        }
+        else {
+            availableSize = self.viewPortHeight() - self.sectionInset.top - self.sectionInset.bottom
+        }
+        
+        return availableSize;
+    }
+    
+    
+    func viewPortHeight() -> CGFloat{
+        return (self.collectionView?.frame.height)! - self.collectionView!.contentInset.top - self.collectionView!.contentInset.bottom
+    }
+
     
     
     func viewPortAvailableSize() -> CGSize{
@@ -557,8 +697,9 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
     }
     
     // parition the widths in to rows using dynamic programming O(n^2)
-    fileprivate func partition(_ values: [Float], max:Float) -> [[Float]] {
+    fileprivate func partition(_ values: [Float], max:Float) -> Array<Array<Array<String>>> {
         let numValues = values.count
+        var array = Array<Array<Array<String>>>()
         if numValues == 0 {
             return []
         }
@@ -601,11 +742,8 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
         
         // if let local : NSMutableArray = defaults.object(forKey: "partition") as? NSMutableArray{
         
-        if let partion : NSArray = UserDefaults.standard.object(forKey: "partition") as? NSArray{
-            
-        }else{
-            
-            var array = Array<Array<Array<String>>>()
+    
+          
             var insideArray = Array<Array<String>>()
             
             for (index1,value) in partitions.enumerated(){
@@ -620,31 +758,9 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
                 }
                 
                 array.append(insideArray)
-            }
-            
-            
-            
-            
-            
-            
-            //            var currentAnswer = NSMutableArray()
-            //            for (index1,value) in partitions.enumerated(){
-            //                var insideArray : [Float] = value as! [Float]
-            //                // print("\(index1),,\(value)")
-            //                var arrayInsideArray = NSMutableArray()
-            //
-            //                for (index,value) in insideArray.enumerated(){
-            //                    let placeHolder = "\(index1)-\(index)-\(0)"
-            //                    let element = NSArray(object: placeHolder)
-            //                    arrayInsideArray.add(element)
-            //                }
-            //
-            //                currentAnswer.add(arrayInsideArray)
-            //            }
-            
-            
-            UserDefaults.standard.set(array, forKey: "partition")
-            // currentAnswer.addObjects(from: arrayObj as! [Any])
+       
+           // UserDefaults.standard.set(array, forKey: "partition")
+        
             
         }
         
@@ -652,7 +768,7 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
         
         
         
-        return partitions
+        return array
     }
     
     // traceback solution

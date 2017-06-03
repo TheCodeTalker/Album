@@ -19,6 +19,11 @@ class ListAllTableViewController: UIViewController {
         super.viewDidLoad()
         self.tableView.delegate = self
         self.tableView.dataSource = self
+        
+        self.tableView.emptyDataSetSource = self
+        self.tableView.emptyDataSetDelegate = self
+        
+        
         tableView.register(UINib(nibName: "ListTableViewCell", bundle: nil), forCellReuseIdentifier: "ListTableViewCell")
         let longpress = UILongPressGestureRecognizer(target: self, action: #selector(longPressGestureRecognized))
         self.tableView.addGestureRecognizer(longpress)
@@ -39,6 +44,54 @@ class ListAllTableViewController: UIViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
+    
+    func title(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
+      
+        let str = "Server Is Not Reachable"
+        let attributes = [
+          //  NSFontAttributeName            : UIFont(name: "raleway-Bold", size: 15)!,
+            NSForegroundColorAttributeName : UIColor(hexString:"15181b")
+        ]
+        
+        
+        return NSAttributedString(string: str, attributes: attributes)
+        
+    }
+    
+
+    
+    func buttonTitle(forEmptyDataSet scrollView: UIScrollView, for state: UIControlState) -> NSAttributedString? {
+        
+        
+        let str2  = "Refresh"
+        let attributes = [
+            //NSFontAttributeName            : UIFont(name: "raleway-semiBold", size: 15)!,
+            NSForegroundColorAttributeName : UIColor(hexString:"FD595D")
+        ]
+        
+        //let attrs = [NSFontAttributeName: UIFont.preferredFont(forTextStyle: UIFontTextStyle.body)]
+        return NSAttributedString(string: str2, attributes: attributes)
+    }
+    
+    func emptyDataSet(_ scrollView: UIScrollView, didTap button: UIButton) {
+        
+        self.getAllStoryAPICall {
+        }
+        
+        
+    }
+    
+    func image(forEmptyDataSet scrollView: UIScrollView) -> UIImage? {
+       
+        return UIImage(named: "Swap-white")
+    }
+    
+    func backgroundColor(forEmptyDataSet scrollView: UIScrollView) -> UIColor? {
+      
+        return UIColor.white
+    }
+
+
     
     func respondToSwipeGesture(gesture: UIGestureRecognizer) {
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
@@ -271,6 +324,10 @@ class ListAllTableViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
 
+    
+}
+
+extension ListAllTableViewController: DZNEmptyDataSetSource,DZNEmptyDataSetDelegate{
     
 }
 

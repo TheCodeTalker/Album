@@ -168,3 +168,16 @@ extension UIImage {
     }
 }
 
+
+extension Optional {
+    func or(_ defaultValue: Wrapped) -> Wrapped {
+        if self == nil{
+            return defaultValue
+        }
+        else if self is NSNull{
+            return defaultValue
+        }else{
+            return self!
+        }
+    }
+}
