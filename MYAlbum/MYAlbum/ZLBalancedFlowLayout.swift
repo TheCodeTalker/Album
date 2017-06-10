@@ -96,6 +96,10 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
     }
     
     
+        
+    
+    
+    
     func weightsForItemsInSection(count:Int,withInitialIndex index:Int) -> [Float] {
         
         var  width  = [Float]()
@@ -159,8 +163,7 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
                             localPartition = local
                         //}
 
-                        
-                        
+               
     
                     }else{
                         

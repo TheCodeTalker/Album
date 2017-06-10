@@ -12,9 +12,14 @@ class FooterReusableView: UICollectionReusableView {
 
     @IBOutlet weak var iboOwnerImg: UIImageView!
     @IBOutlet weak var iboOwnerLabel: UILabel!
+    var delegate:autoScrollDelegate! = nil
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
     }
     
+    @IBAction func scrollUpClicked(_ sender: UIButton) {
+        
+        delegate.autoScrollToTop()
+    }
 }

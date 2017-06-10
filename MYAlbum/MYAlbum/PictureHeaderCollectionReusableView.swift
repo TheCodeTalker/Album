@@ -8,6 +8,12 @@
 
 import UIKit
 
+protocol autoScrollDelegate{
+    func autoScroll()
+    func autoScrollToTop()
+ //   func saveDescriptionDidFinish(_ controller:TextViewController,title:String,subtitle:String,indexToUpdate:Int)
+}
+
 class PictureHeaderCollectionReusableView: UICollectionReusableView {
     let  kParallaxDeltaFactor :CGFloat = 0.5
     @IBOutlet weak var iboHeaderScroll: UIScrollView!
@@ -15,7 +21,7 @@ class PictureHeaderCollectionReusableView: UICollectionReusableView {
     @IBOutlet weak var iboTitle: UITextField!
     @IBOutlet weak var iboScrollDownBrn: UIButton!
     @IBOutlet weak var iboHeaderImage: UIImageView!
-    
+    var delegate:autoScrollDelegate! = nil
 //    - (void)layoutHeaderViewForScrollViewOffset:(CGPoint)offset
 //    {
 //    CGRect frame = self.imageScrollView.frame;
@@ -46,6 +52,12 @@ class PictureHeaderCollectionReusableView: UICollectionReusableView {
         self.iboHeaderImage.autoresizingMask = UIViewAutoresizing.flexibleHeight
         //[self.headerImageView setClipsToBounds:YES];
         //[self.headerImageView setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
+    }
+    
+    @IBAction func autoScrollBtn(_ sender: UIButton) {
+        delegate.autoScroll()
+        
+        
     }
     
 func layoutHeaderViewForScrollViewOffset(offset:CGPoint) {

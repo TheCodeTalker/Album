@@ -14,6 +14,11 @@ class ListAllTableViewController: UIViewController {
 
     @IBOutlet weak var tableView: UITableView!
     var allStoryArray = [[String: AnyObject]]()
+    lazy var refreshControl: UIRefreshControl = {
+        let refreshControl = UIRefreshControl()
+        refreshControl.addTarget(self, action: #selector(handleRefresh(refreshControl:)), for: UIControlEvents.valueChanged)
+        return refreshControl
+    }()
     var storyArray = [StoryModel]()
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -35,6 +40,8 @@ class ListAllTableViewController: UIViewController {
         swipeRight.direction = UISwipeGestureRecognizerDirection.right
         self.tableView.addGestureRecognizer(swipeRight)
         
+        self.tableView.addSubview(self.refreshControl)
+        
         
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -43,6 +50,13 @@ class ListAllTableViewController: UIViewController {
         }
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
+    }
+    func handleRefresh(refreshControl: UIRefreshControl) {
+        self.allStoryArray.removeAll(keepingCapacity: true)
+        self.storyArray.removeAll(keepingCapacity: true)
+        self.getAllStoryAPICall {
+             refreshControl.endRefreshing()
+        }
     }
     
     func title(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
@@ -254,7 +268,7 @@ class ListAllTableViewController: UIViewController {
     
     func getAllStoryAPICall(_ handler: ((Void) -> Void)?) {
         //TODO:- XCODE 8
-        let defaultFilterUrl = URLConstants.BaseURL + "allstories/10/10"
+        let defaultFilterUrl = URLConstants.BaseURL + "allstories/0/1000"
        
         Alamofire.request(defaultFilterUrl, method: .get, parameters: nil, encoding: URLEncoding.default, headers: nil).responseJSON { (response:DataResponse<Any>) in
             switch response.result {
@@ -291,8 +305,10 @@ class ListAllTableViewController: UIViewController {
                             
                         }
                         //let = allStoryArray
-                       
-                       self.tableView.reloadData()
+                    DispatchQueue.main.async {
+                         self.tableView.reloadData()
+                    }
+                    
                         //self.collectionView.reloadData()
                         //     waitView!.removeFromSuperview()
                     }

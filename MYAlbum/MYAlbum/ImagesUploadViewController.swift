@@ -99,10 +99,14 @@ class ImagesUploadViewController: UIViewController {
                         self.uploadData[0].removeValue(forKey: "data")
                         //self.uploadData[0].updateValue(data as AnyObject, forKey: "data")
                         self.uploadData[0].updateValue(sizeImage, forKey: "original_size")
-                        self.uploadData[0].updateValue("Image", forKey: "type")
+                        self.uploadData[0].updateValue("img", forKey: "type")
                         self.uploadData[0].updateValue((dataArray.first?["photo_id"]!)!, forKey: "photo_id")
-                        
+                        if self.uploadData.count == 0{
+                            
+                        }else{
                         self.uploadOtherThenCoverPhoto()
+                        }
+                        
                         
                         // uploadData[0].updateValue(<#T##value: Value##Value#>, forKey: <#T##Hashable#>)
                         
@@ -144,7 +148,7 @@ class ImagesUploadViewController: UIViewController {
                             let urlName  =  element["video_url"] as! URL
                             fName = "\(urlName)"
                             mimeType = "video/mp4"
-                        }else if type == "Image" {
+                        }else if type == "img" {
                             let urlName  =  element["item_url"] as! String
                             fName = "\(urlName)"
                             mimeType = "image/jpeg"
@@ -190,6 +194,8 @@ class ImagesUploadViewController: UIViewController {
                                 self.uploadData[tempIndex].updateValue(element["photo_path"]!, forKey: "item_url")
                                 self.uploadData[tempIndex].updateValue("", forKey: "cover")
                                 self.uploadData[tempIndex].updateValue(element["color_codes"], forKey: "hexCode")
+                                self.uploadData[tempIndex].updateValue(element["photo_id"]!, forKey: "photo_id")
+                                
                                 // let height = element["imgHeight"] as! CGFloat
                                 //let width = CGFloat(375 - 10)
                                 // let sizeImage = CGSize(width: width, height: height)
@@ -215,7 +221,7 @@ class ImagesUploadViewController: UIViewController {
                                 self.uploadData[tempIndex].removeValue(forKey: "data")
                                 //self.uploadData[0].updateValue(data as AnyObject, forKey: "data")
                                 self.uploadData[tempIndex].updateValue(sizeImage, forKey: "original_size")
-                                self.uploadData[tempIndex].updateValue("Image", forKey: "type")
+                                self.uploadData[tempIndex].updateValue("img", forKey: "type")
                                 self.uploadData[tempIndex].updateValue(element["photo_id"]!, forKey: "photo_id")
                                 
                             }
@@ -232,6 +238,30 @@ class ImagesUploadViewController: UIViewController {
                         
                         
                     case .failure(let error):
+                        let alert = UIAlertController(title: "Error", message: error.localizedDescription, preferredStyle: UIAlertControllerStyle.alert)
+                       
+                        self.present(alert, animated: true, completion: nil)
+                        
+                        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { action in
+                            switch action.style{
+                            case .default:
+                        self.dismiss(animated: true, completion: nil)
+                                break
+                               
+                                
+                            case .cancel:
+                                self.dismiss(animated: true, completion: nil)
+                                print("cancel")
+                                
+                            case .destructive:
+                                self.dismiss(animated: true, completion: nil)
+                                print("destructive")
+                            }
+                        }))
+
+                        
+                        //AlertView.showAlert(self, title: "Error", message: error.localizedDescription as AnyObject)
+                        
                         print("Request failed with error: \(error)")
                         }
                         

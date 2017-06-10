@@ -7,8 +7,8 @@ struct AppColors {
 }
 struct URLConstants {
     
-    static let BaseURL: String                      = "http://192.168.1.41:8000/"
-    static let imgDomain : String                   = "http://192.168.1.41/album/"
+    static let BaseURL: String                      = "http://192.168.1.78:8005/"
+    static let imgDomain : String                   = "http://192.168.1.78/album/"
     
 }
 
