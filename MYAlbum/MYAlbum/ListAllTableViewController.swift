@@ -46,16 +46,45 @@ class ListAllTableViewController: UIViewController {
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
         self.getAllStoryAPICall {
-            
+            DispatchQueue.main.async {
+                //refreshControl.endRefreshing()
+                self.tableView.reloadData()
+            }
+
         }
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
+    
+    
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.navigationBar.isHidden = false
+
+        self.navigationController?.isNavigationBarHidden = false
+        self.navigationController?.setNavigationBarHidden(false, animated: false)
+        //self.navigationController?.navigationItem.leftBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: UIBarButtonItem., target: <#T##Any?#>, action: <#T##Selector?#>)
+        //self.navigationController?.navigationBar.tintColor = UIColor.
+        //self.navigationController?.navigationBar.barTintColor = UIColor.clear
+        self.navigationItem.setRightBarButton(UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addStory(_:))), animated: true)
+            //UIBarButtonItem.init(image:, style:UIBarButtonItemStyle.Plain, target: self, action: Selector("back"))
+
+
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        self.navigationController?.navigationBar.isHidden = true
+        
+        self.navigationController?.isNavigationBarHidden = true
+        self.navigationController?.setNavigationBarHidden(true, animated: false)
+
+    }
     func handleRefresh(refreshControl: UIRefreshControl) {
-        self.allStoryArray.removeAll(keepingCapacity: true)
-        self.storyArray.removeAll(keepingCapacity: true)
-        self.getAllStoryAPICall {
-             refreshControl.endRefreshing()
+               self.getAllStoryAPICall {
+            
+            DispatchQueue.main.async {
+                 refreshControl.endRefreshing()
+                self.tableView.reloadData()
+            }
         }
     }
     
@@ -90,6 +119,9 @@ class ListAllTableViewController: UIViewController {
     func emptyDataSet(_ scrollView: UIScrollView, didTap button: UIButton) {
         
         self.getAllStoryAPICall {
+            DispatchQueue.main.async {
+                self.tableView.reloadData()
+            }
         }
         
         
@@ -280,9 +312,12 @@ class ListAllTableViewController: UIViewController {
                 print("postURL is :", (defaultFilterUrl), "response is: \(response)", "error code is \(errorCode)")
                 let compareCode: NSNumber = 0
                 if errorCode as! NSNumber == compareCode{
+                    self.allStoryArray.removeAll(keepingCapacity: true)
+                    self.storyArray.removeAll(keepingCapacity: true)
                 if(self.allStoryArray.count == 0){
                         //self.loading = true
                         print(self.allStoryArray.count)
+                    
                         self.allStoryArray = (response.value(forKey: "results") as? [[String: AnyObject]])!
                         //self.allHomesArray = (response.valueForKey("results") as? NSMutableArray)!
                         for i in 0 ..< self.allStoryArray.count{
@@ -305,9 +340,7 @@ class ListAllTableViewController: UIViewController {
                             
                         }
                         //let = allStoryArray
-                    DispatchQueue.main.async {
-                         self.tableView.reloadData()
-                    }
+                    
                     
                         //self.collectionView.reloadData()
                         //     waitView!.removeFromSuperview()
@@ -360,7 +393,11 @@ extension ListAllTableViewController : UITableViewDelegate,UITableViewDataSource
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
+        if storyArray.count == 0{
+            return 0
+        }
         return storyArray.count
+        
     }
     
     
@@ -386,7 +423,7 @@ extension ListAllTableViewController : UITableViewDelegate,UITableViewDataSource
      }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 200
+        return 320
     }
  
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

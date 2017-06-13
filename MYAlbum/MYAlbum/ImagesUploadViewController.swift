@@ -27,6 +27,8 @@ class ImagesUploadViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+    
+        
         elemntCount = Int64(self.uploadData.count)
         
         if let local  = defaults.object(forKey: "partition") as? Array<Array<Array<String>>>{

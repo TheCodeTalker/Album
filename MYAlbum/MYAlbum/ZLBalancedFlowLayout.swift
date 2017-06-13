@@ -322,7 +322,7 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
 //                    
 //                }
                 for item in lowerIndex..<upperIndex {
-                    layoutAttributes.append(self.layoutAttributesForItem(at: IndexPath(item: item, section: section)))
+                    layoutAttributes.append(self.layoutAttributesForItem(at: IndexPath(item: item, section: section))!)
                 }
                 
                 
@@ -331,13 +331,13 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
         return layoutAttributes
     }
     
-    override open func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes! {
+    override open func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         let attributes = super.layoutAttributesForItem(at: indexPath)
         attributes?.frame = itemFrames[indexPath.section][indexPath.row]
         return attributes
     }
     
-    override open func layoutAttributesForSupplementaryView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes! {
+    override open func layoutAttributesForSupplementaryView(ofKind elementKind: String, at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
         let attributes = UICollectionViewLayoutAttributes(forSupplementaryViewOfKind: elementKind, with: indexPath)
         
         switch (elementKind) {

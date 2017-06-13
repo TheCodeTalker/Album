@@ -166,13 +166,7 @@
                             <constraint firstItem="mfb-bo-hm0" firstAttribute="top" secondItem="hHR-J0-MQt" secondAttribute="bottom" id="gf2-7w-pUq"/>
                         </constraints>
                     </view>
-                    <navigationItem key="navigationItem" id="NCH-HC-YOh">
-                        <barButtonItem key="rightBarButtonItem" systemItem="add" id="8Gl-sP-9dM">
-                            <connections>
-                                <action selector="addStory:" destination="3yR-WW-yHy" id="eS0-Fw-DfT"/>
-                            </connections>
-                        </barButtonItem>
-                    </navigationItem>
+                    <navigationItem key="navigationItem" id="NCH-HC-YOh"/>
                     <connections>
                         <outlet property="tableView" destination="mfb-bo-hm0" id="1nE-kw-Nee"/>
                     </connections>

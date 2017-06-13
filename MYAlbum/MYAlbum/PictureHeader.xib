@@ -34,7 +34,7 @@
                             <rect key="frame" x="0.0" y="0.0" width="422" height="490"/>
                         </imageView>
                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="M5B-0b-lIg">
-                            <rect key="frame" x="181" y="369.5" width="60" height="60.5"/>
+                            <rect key="frame" x="181" y="387.5" width="80" height="80.5"/>
                             <constraints>
                                 <constraint firstAttribute="width" secondItem="M5B-0b-lIg" secondAttribute="height" multiplier="1:1" id="2Um-pS-JKn"/>
                             </constraints>
@@ -53,13 +53,13 @@
                                     </constraints>
                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <fontDescription key="fontDescription" name="Raleway-Light" family="Raleway" pointSize="26"/>
-                                    <textInputTraits key="textInputTraits" autocapitalizationType="words"/>
+                                    <textInputTraits key="textInputTraits" autocapitalizationType="words" returnKeyType="done"/>
                                 </textField>
                                 <textField opaque="NO" clipsSubviews="YES" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" placeholder="Enter your subtitle here" textAlignment="center" minimumFontSize="15" translatesAutoresizingMaskIntoConstraints="NO" id="QCy-iO-y4u">
                                     <rect key="frame" x="0.0" y="56" width="403" height="18"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <fontDescription key="fontDescription" name="Raleway-Regular" family="Raleway" pointSize="15"/>
-                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
+                                    <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done"/>
                                 </textField>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
@@ -79,22 +79,22 @@
                         <constraint firstItem="HJv-D4-AKe" firstAttribute="centerX" secondItem="Sdc-wu-W75" secondAttribute="centerX" id="5pD-W7-3hs"/>
                         <constraint firstAttribute="trailing" secondItem="HJv-D4-AKe" secondAttribute="trailing" id="8Ao-UF-MN6"/>
                         <constraint firstItem="HJv-D4-AKe" firstAttribute="top" secondItem="Sdc-wu-W75" secondAttribute="top" id="Bo9-Jb-ya8"/>
-                        <constraint firstItem="M5B-0b-lIg" firstAttribute="width" secondItem="Sdc-wu-W75" secondAttribute="width" multiplier="1:7" id="D0g-lI-hE4"/>
+                        <constraint firstItem="M5B-0b-lIg" firstAttribute="width" secondItem="Sdc-wu-W75" secondAttribute="width" multiplier="1:7" constant="19.714285714285715" id="D0g-lI-hE4"/>
                         <constraint firstAttribute="trailing" secondItem="uMc-vn-R9m" secondAttribute="trailing" constant="8" id="GpQ-ni-yy9"/>
                         <constraint firstItem="HJv-D4-AKe" firstAttribute="leading" secondItem="Sdc-wu-W75" secondAttribute="leading" id="IaV-oU-1ud"/>
                         <constraint firstItem="HJv-D4-AKe" firstAttribute="centerY" secondItem="Sdc-wu-W75" secondAttribute="centerY" id="f3O-Ub-7Yj"/>
                         <constraint firstItem="xby-l8-3Nu" firstAttribute="height" secondItem="Sdc-wu-W75" secondAttribute="height" id="fr6-jc-q92"/>
                         <constraint firstItem="uMc-vn-R9m" firstAttribute="leading" secondItem="Sdc-wu-W75" secondAttribute="leading" constant="11" id="gO6-xn-Aqq"/>
-                        <constraint firstItem="M5B-0b-lIg" firstAttribute="top" secondItem="uMc-vn-R9m" secondAttribute="bottom" constant="8" id="gsA-T0-7tU"/>
+                        <constraint firstItem="M5B-0b-lIg" firstAttribute="top" secondItem="uMc-vn-R9m" secondAttribute="bottom" constant="26" id="gsA-T0-7tU"/>
                         <constraint firstAttribute="bottom" secondItem="HJv-D4-AKe" secondAttribute="bottom" id="odO-gc-4A4"/>
-                        <constraint firstItem="M5B-0b-lIg" firstAttribute="centerX" secondItem="Sdc-wu-W75" secondAttribute="centerX" id="pIi-7n-Nsh"/>
+                        <constraint firstItem="M5B-0b-lIg" firstAttribute="centerX" secondItem="Sdc-wu-W75" secondAttribute="centerX" constant="10" id="pIi-7n-Nsh"/>
                         <constraint firstItem="xby-l8-3Nu" firstAttribute="width" secondItem="Sdc-wu-W75" secondAttribute="width" id="rgR-9Y-QNL"/>
                         <constraint firstItem="xby-l8-3Nu" firstAttribute="centerY" secondItem="Sdc-wu-W75" secondAttribute="centerY" id="xch-ZD-Uut"/>
                     </constraints>
                 </scrollView>
             </subviews>
             <constraints>
-                <constraint firstAttribute="bottom" secondItem="M5B-0b-lIg" secondAttribute="bottom" constant="60" id="PJq-s7-faU"/>
+                <constraint firstAttribute="bottom" secondItem="M5B-0b-lIg" secondAttribute="bottom" constant="22" id="PJq-s7-faU"/>
                 <constraint firstAttribute="bottom" secondItem="Sdc-wu-W75" secondAttribute="bottom" id="UxH-3A-sKI"/>
                 <constraint firstItem="Sdc-wu-W75" firstAttribute="top" secondItem="Rgu-Ok-zuy" secondAttribute="top" id="gzU-XC-cdf"/>
                 <constraint firstAttribute="trailing" secondItem="Sdc-wu-W75" secondAttribute="trailing" id="iQ3-5c-1jA"/>

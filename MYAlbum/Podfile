@@ -16,4 +16,5 @@ target 'MYAlbum' do
   pod 'NVActivityIndicatorView'
   pod 'Fabric'
   pod 'Crashlytics'
+
 end

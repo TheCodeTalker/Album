@@ -19,8 +19,13 @@ import NVActivityIndicatorView
 let SCREENHEIGHT = UIScreen.main.bounds.height
 let SCREENWIDTH = UIScreen.main.bounds.width
 
-class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UICollectionViewDelegateFlowLayout,NVActivityIndicatorViewable,SetPartitionAfterInsideUpload,SaveDescriptionDelegate,autoScrollDelegate {
+class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigationControllerDelegate,UICollectionViewDelegateFlowLayout,NVActivityIndicatorViewable,SetPartitionAfterInsideUpload,SaveDescriptionDelegate,autoScrollDelegate,UITextFieldDelegate {
     
+    let MAX : UInt32 = 999999999
+    let MIN : UInt32 = 1
+    let TXTMAX : UInt64 = 99999999999999
+    let TXTMIN : UInt64 = 1
+
     
     @IBOutlet var keyboardView: UIView!
    lazy  var collectionView :UICollectionView = {
@@ -32,7 +37,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         layout.minimumLineSpacing = 2
         layout.minimumInteritemSpacing = 2
         
-        var collectionView = UICollectionView(frame: CGRect(x: self.view.frame.origin.x, y: self.view.frame.origin.y + 64, width: self.view.frame.width, height: self.view.frame.height), collectionViewLayout: layout)
+        var collectionView = UICollectionView(frame: CGRect(x: self.view.frame.origin.x, y: self.view.frame.origin.y, width: self.view.frame.width, height: self.view.frame.height), collectionViewLayout: layout)
         collectionView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
         collectionView.delegate = self
         collectionView.dataSource  = self
@@ -48,6 +53,13 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     
     var editTurnOn = false
     var upload = false
+    
+    lazy var singleTap: UITapGestureRecognizer = {
+        var singleTap = UITapGestureRecognizer(target: self, action: #selector(ViewController.uploadCoverImageBtnAction))
+        singleTap.numberOfTapsRequired = 1
+        return singleTap
+        
+    }()
     
     
     // after upload collection view scroll
@@ -79,10 +91,18 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         var upload = UIBarButtonItem.init(image: UIImage(named: "img-album"), landscapeImagePhone: UIImage(named: "img-album"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(morePhotoUpload))
         return upload
     }()
+    
     lazy var addTextButton:UIBarButtonItem = {
         var upload = UIBarButtonItem.init(image: UIImage(named: "typ-cursor"), landscapeImagePhone: UIImage(named: "typ-cursor"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(addTextCell))
         return upload
     }()
+    
+    lazy var leftAlign:UIBarButtonItem = {
+        var upload = UIBarButtonItem.init(image: UIImage(named: "typ-cursor"), landscapeImagePhone: UIImage(named: "typ-cursor"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(addTextCell))
+        return upload
+    }()
+    
+    
     
     lazy var backBarButton:UIBarButtonItem = {
         var upload = UIBarButtonItem.init(image: UIImage(named: "ios-previous"), landscapeImagePhone: UIImage(named: "ios-previous"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(ViewController.cancelClicked))
@@ -110,7 +130,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     
     
     lazy var coverBarButton:UIBarButtonItem = {
-        var upload = UIBarButtonItem.init(image: UIImage(named: "profile"), landscapeImagePhone: UIImage(named: "profile"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(ViewController.dontDoAnything))
+        var upload = UIBarButtonItem.init(image: UIImage(named: "profile-1"), landscapeImagePhone: UIImage(named: "profile-1"), style: UIBarButtonItemStyle.plain, target: self, action: #selector(ViewController.setCoverPhoto(_:)))
         return upload
     }()
     
@@ -154,12 +174,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         return upload
     }()
     
-    
-    
-    
-    
-
-    
+  
     
 
     
@@ -199,7 +214,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     var draggingIndexPath: IndexPath?
     var frameOfDragingIndexPath : CGPoint?
     var draggingView: UIView?
-    var coverdata : Data = Data.init()
+    var coverdata : UIImage?
     var dragOffset = CGPoint.zero
     var longPressGesture : UILongPressGestureRecognizer?
     fileprivate var images = [UIImage](), needsResetLayout = false
@@ -222,12 +237,16 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     var isViewStory = false
     var reloadHeaderView = true
     
+    var storyTitle  = ""
+    var storySubtitle = ""
+    
     //var pickerController: GMImagePickerCon!
     //  var assets: [DKAsset]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+       
         
         selectedItemIndex = -1
        editingTextFieldIndex = -1
@@ -245,7 +264,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         if !isViewStory{
             
             if storyId == ""{
-                storyId = "44"
+                storyId = String(randomNumber())
             }else{
                 isViewStory = false
                 editTurnOn = false
@@ -253,8 +272,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                     // self.collectionView.collectionViewLayout.invalidateLayout()
                     
                     runOnMainThread {
-                        
-                        
+                   
                         self.swapView = UIView(frame: CGRect.zero)
                         self.swapImageView = UIImageView(image: UIImage(named: "Swap-white"))
                         
@@ -290,7 +308,114 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         self.creatingStory = false
         self.editTurnOn = false
         self.upload = false
+        NotificationCenter.default.removeObserver(self)
+    }
+    
+    func setCoverPhoto(_ sender: UIBarButtonItem)  {
+        let alertView = UIAlertController(title: "Cover photo", message: "Do you want to use this photo as the cover photo of your album.", preferredStyle: .alert)
+        let action = UIAlertAction(title: "Yes", style: .default, handler: { (alert) in
+            
+            if let headerAttributes =  self.collectionView.collectionViewLayout.layoutAttributesForItem(at: IndexPath(item: 0, section: 0)){
+                
+                
+                let data = self.collectionArray[self.selectedItemIndex]
+                if let story_cover_photo_path =  data["item_url"] as? String
+                {
+                    self.story_cover_photo_path = story_cover_photo_path
+                    
+                    var url = story_cover_photo_path
+                    var urlImage = url.components(separatedBy: "album")
+                    let totalPath = URLConstants.imgDomain
+                    if urlImage.count == 2 {
+                        let second = urlImage[1]
+                        url = totalPath + second
+                    }else{
+                        if let first = urlImage.first{
+                            url = totalPath + first
+                        }
+                        
+                    }
+                    //url = totalPath + (urlImage?[1])!
+                    var version = url.components(separatedBy: "compressed")
+                    
+                    var afterAppending  = url.components(separatedBy: "compressed")
+                    var widthImage = (version.first)! + "480" + (afterAppending[1])
+                    
+                    DispatchQueue.global(qos: .background).async {
+
+                        self.headerView?.iboHeaderImage.sd_setImage(with: URL(string: widthImage), placeholderImage: UIImage(named: ""), options: SDWebImageOptions.progressiveDownload, completed: { (image, data, error, finished) in
+                            
+                            
+                            guard let image = image else { return  }
+                            print("Image loaded!")
+                            self.headerView?.iboHeaderImage.contentMode = UIViewContentMode.scaleAspectFill
+                            self.headerView?.iboHeaderImage.image = image
+                            self.coverdata = image
+                            
+                            DispatchQueue.main.async {
+                                self.collectionView.reloadData()
+                                self.collectionView.setContentOffset(CGPoint(x: 0, y: (headerAttributes.frame.origin.x)), animated: true)                            }
+                            
+                            
+                        })
+                        
+                    }
+                    
+//                    if let data = UIImagePNGRepresentation(imageCell.imageViewToShow)!{
+//                        self.coverdata = data
+//                    }
+                    
+                }
+                
+                self.collectionView.setContentOffset(CGPoint(x: 0, y: (headerAttributes.frame.origin.x)), animated: true)
+            }
+
+            
+            
+            
+        })
+        let cancel = UIAlertAction(title: "Cancel", style: .default, handler: { (alert) in
+            
+        })
+        alertView.addAction(action)
+        alertView.addAction(cancel)
+        self.present(alertView, animated: true, completion: nil)
+    }
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
         
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        if textField.tag == 98{
+            if textField.hasText{
+                storySubtitle = textField.text!
+            }
+            
+        }
+        else if textField.tag == 99{
+            if textField.hasText {
+            storyTitle = textField.text!
+            }
+            
+        }
+    }
+    
+    
+    func randomNumber() -> Int
+    {
+        var random_number = Int(arc4random_uniform(MAX) + MIN)
+        print ("random = ", random_number);
+        return random_number
+    }
+    func generateTextId() -> String{
+        var rnd : UInt64 = TXTMIN
+
+         arc4random_buf(&rnd, MemoryLayout.size(ofValue: rnd))
+        
+       // var random_number = String(arc4random_uniform(TXTMAX) + TXTMIN)
+        //print ("random TextId = ", random_number);
+        return  String(rnd % TXTMAX)
     }
     
     func addTitleToTextCell()  {
@@ -343,23 +468,33 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     func setUI() {
         
         self.fixedSpace.width = 20
-        self.navigationController?.navigationBar.isHidden = false
-        self.navigationController?.isNavigationBarHidden = false
-       // self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(), for: UIBarMetrics.default)
-       // self.navigationController?.navigationBar.shadowImage = UIImage.init()
-        self.navigationController?.navigationBar.isTranslucent = true
-        self.navigationController?.navigationBar.backgroundColor = UIColor.white
-      //  self.navigationController?.navigationBar.alpha = 0
+        DispatchQueue.main.async {
+            self.navigationController?.navigationBar.isHidden = true
+            self.navigationController?.navigationBar.isHidden = false
+            self.navigationController?.isNavigationBarHidden = true
+            self.navigationController?.isNavigationBarHidden = false
+            self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(), for: UIBarMetrics.default)
+            self.navigationController?.navigationBar.shadowImage = UIImage.init()
+            self.navigationController?.navigationBar.isTranslucent = true
+            self.navigationController?.navigationBar.backgroundColor = UIColor.clear
+            self.navigationController?.navigationBar.alpha = 1
+            
+            self.navigationController?.setNavigationBarHidden(false, animated: true)
+            self.navigationItem.setLeftBarButton(self.backBarButton, animated: true)
+            self.navigationItem.leftBarButtonItem?.isEnabled = true
+            self.navigationItem.setHidesBackButton(false, animated: true)
+            self.navigationItem.setRightBarButtonItems([self.moreButton,self.shareButton,self.editButton], animated: true)
+            self.navigationController?.navigationBar.tintColor = UIColor.white
+            self.setNeedsStatusBarAppearanceUpdate()
+            
+            self.navigationController?.navigationBar.barTintColor = UIColor.white
+        }
         
-        self.navigationController?.setNavigationBarHidden(false, animated: true)
-        self.navigationItem.setLeftBarButton(backBarButton, animated: true)
-        self.navigationItem.leftBarButtonItem?.isEnabled = true
-        self.navigationItem.setHidesBackButton(false, animated: true)
-        self.navigationItem.setRightBarButtonItems([moreButton,shareButton,editButton], animated: true)
-        self.navigationController?.navigationBar.tintColor = UIColor.black
-        self.setNeedsStatusBarAppearanceUpdate()
         
       //  self.collectionView.removeGestureRecognizer(<#T##gestureRecognizer: UIGestureRecognizer##UIGestureRecognizer#>)
+        
+       // self.navigationController?.setNavigationBarHidden(false, animated: true)
+        
         
         //self.navigationController setNavigationBarHidden:NO];
         
@@ -397,7 +532,6 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         
     }
     
-    
     func setNavigationBarForViewMode() {
         self.editToolBar.removeFromSuperview()
         self.title = ""
@@ -406,7 +540,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         self.navigationItem.setLeftBarButton(backBarButton, animated: true)
         self.navigationController?.setNavigationBarHidden(false, animated: true)
         self.navigationItem.setRightBarButtonItems([moreButton,shareButton,editButton], animated: false)
-        self.navigationController?.navigationBar.tintColor = UIColor.black
+        self.navigationController?.navigationBar.tintColor = UIColor.white
         //[self.navigationItem setLeftBarButtonItems:[NSArray arrayWithObjects:backBarButton, nil]];
         //[self.navigationItem setHidesBackButton:NO];
        // [self.navigationItem setRightBarButtonItems:[NSArray arrayWithObjects:moreButton, shareButton, editButton, nil]];
@@ -478,6 +612,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
             id.append(element_id)
         }
         
+        let singleArray = self.getSingletonArray()
         
         var storyJsonDictonary  = [[AnyHashable:Any]]()
         var gridHeight = 0
@@ -495,7 +630,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
            var itemsDict = [[AnyHashable:Any]]()
             
             
-            let parant = element[0].first
+            var parant = element[0].first
             for(index1,element1) in element.enumerated(){
                 
                
@@ -503,31 +638,99 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                 var widthForLeft = CGFloat(0)
             
                 for(index2,element2) in element1.enumerated(){
+                    if element1.count > 1 && index2 > 0{
+                        parant = element1.first
+                    }
                     var items = [AnyHashable:Any]()
                     let frame = self.giveFramesFrame(index: countNoOfElement, framesFrame: frmaes)
                     let type = self.giveKeyForValue(key: "type", index: countNoOfElement)
                     let original_size = self.giveKeyForValue(key: "original_size", index: countNoOfElement)
                     let url = self.giveKeyForValue(key: "item_url", index: countNoOfElement) as? String ?? ""
-                    let image_Path = URLConstants.imgDomain + url
+                    var image_Path = ""
+                    if url.contains("http"){
+                    image_Path = url
+                    }else{
+                        image_Path = URLConstants.imgDomain + url
+                    }
+                    
                    // let original_height = self.giveKeyForValue(key: "dh", index: countNoOfElement)
-                    let width_CGFloat = CGFloat((original_size as! CGSize).width)
-                    let height_CGFloat = CGFloat((original_size as! CGSize).height)
-                    var factor = width_CGFloat / height_CGFloat
-                    let color = self.giveKeyForValue(key: "hexCode", index: countNoOfElement)
+                    guard let typeElement = type as? String else {
+                        return
+                    }
+                     var width_CGFloat  = CGFloat.init()
+                    var height_CGFloat = CGFloat.init()
+                     var factor  = CGFloat.init()
+                    
+                    if typeElement == "Text"{
+                       width_CGFloat = SCREENWIDTH
+                        
+                        height_CGFloat = (CGSizeFromString(original_size as! String).height)
+                    }else if  typeElement == "Video"{
+                        
+                        width_CGFloat = CGFloat((original_size as! CGSize).width)
+                        height_CGFloat = CGFloat((original_size as! CGSize).height)
+                        factor  = width_CGFloat / height_CGFloat
+
+                        
+                        
+                        }else{
+                            width_CGFloat = CGFloat((original_size as! CGSize).width)
+                            height_CGFloat = CGFloat((original_size as! CGSize).height)
+                            factor  = width_CGFloat / height_CGFloat
+
+                        }
+                    
+                    
+                   
+                   
+                   
                     
                     if  index1 == 0 && index2 == 0 {
-                        items.updateValue(0, forKey: "left")
-                        items.updateValue(0, forKey: "top")
-                        items.updateValue(id[countNoOfElement], forKey: "id")
-                        items.updateValue(image_Path, forKey: "imagePath")
-                        items.updateValue(frame.size.width, forKey: "width")
-                        items.updateValue(frame.size.height, forKey: "height")
-                        items.updateValue(type as! String, forKey: "type")
-                        items.updateValue("\(width_CGFloat)", forKey: "dw")
-                        items.updateValue("\(height_CGFloat)", forKey: "dh")
-                        items.updateValue("\(factor)", forKey: "factor")
-                        items.updateValue(color, forKey: "color")
-                        items.updateValue("", forKey: "below")
+                       
+                        if typeElement == "Text"{
+                            items.updateValue(0, forKey: "left")
+                            items.updateValue(0, forKey: "top")
+                            items.updateValue(id[countNoOfElement], forKey: "id")
+                            items.updateValue(id[countNoOfElement], forKey: "imagePath")
+                            items.updateValue(frame.size.width, forKey: "width")
+                            items.updateValue(frame.size.height, forKey: "height")
+                            items.updateValue("txt", forKey: "type")
+                            items.updateValue("\(width_CGFloat)", forKey: "dw")
+                            items.updateValue("\(height_CGFloat)", forKey: "dh")
+                           // items.updateValue("\(factor)", forKey: "factor")
+                           // items.updateValue(color, forKey: "color")
+                            items.updateValue("", forKey: "below")
+
+                            
+                        }else{
+                            
+                           
+                                
+                              
+                                
+                          
+                                
+                                items.updateValue(0, forKey: "left")
+                                items.updateValue(0, forKey: "top")
+                                items.updateValue(id[countNoOfElement], forKey: "id")
+                                items.updateValue(image_Path, forKey: "imagePath")
+                                items.updateValue(frame.size.width, forKey: "width")
+                                items.updateValue(frame.size.height, forKey: "height")
+                                items.updateValue(type, forKey: "type")
+                                items.updateValue("\(width_CGFloat)", forKey: "dw")
+                                items.updateValue("\(height_CGFloat)", forKey: "dh")
+                                items.updateValue("\(factor)", forKey: "factor")
+                             if typeElement != "video"{
+                                let color = self.giveKeyForValue(key: "hexCode", index: countNoOfElement)
+                                items.updateValue(color, forKey: "color")
+                            }
+                                items.updateValue("", forKey: "below")
+
+                          
+                            
+
+                            
+                        }
                         
                         
                     }else{
@@ -550,14 +753,21 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                         items.updateValue("\(width_CGFloat)", forKey: "dw")
                         items.updateValue("\(height_CGFloat)", forKey: "dh")
                         items.updateValue(factor, forKey: "factor")
+                        if typeElement != "video"{
+                         let color = self.giveKeyForValue(key: "hexCode", index: countNoOfElement)
                         items.updateValue(color, forKey: "color")
+                        }
                         items.updateValue("", forKey: "below")
                         
                         break
                         
                        case .BOTTOM(let postion):
                         
-                        let photo_id = self.giveKeyForValue(key: "photo_id", index: countNoOfElement - 1)
+                        
+                        let index = singleArray.index(of: parant!)
+                        print(index)
+                        //let ph = self.giveKeyForValue(key: "photo_id", index: index)
+                        let photo_id = self.giveKeyForValue(key: "photo_id", index: index!)
                         
                         heightForTop += frame.size.height
                         
@@ -571,7 +781,10 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                         items.updateValue("\(width_CGFloat)", forKey: "dw")
                         items.updateValue("\(height_CGFloat)", forKey: "dh")
                         items.updateValue(factor, forKey: "factor")
+                        if typeElement != "video"{
+                         let color = self.giveKeyForValue(key: "hexCode", index: countNoOfElement)
                         items.updateValue(color, forKey: "color")
+                        }
                         items.updateValue(photo_id as! String, forKey: "below")
 
                   
@@ -630,11 +843,15 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         
     }
     
+    func uploadCoverImageBtnAction() {
+        
+    }
+    
     
     func appendStroyIdAnddetails(Params: inout [String:String]) {
-        //print(Params)
-        //var storyData = [String:String]()
         for (index,element) in self.collectionArray.enumerated(){
+            if (element["type"] as! String) != "Text"{
+            
             Params.updateValue(element["photo_id"] as! String, forKey: "story_photo[\(index)][photo_id]")
             let  imgurl = element["item_url"] as! String
             let totalPath = URLConstants.imgDomain
@@ -652,11 +869,13 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
             }
             
             
-
-            
-            
             Params.updateValue(url , forKey: "story_photo[\(index)][photo_path]")
-            Params.updateValue(element["hexCode"] as! String, forKey: "story_photo[\(index)][color_codes]")
+            if (element["type"] as! String) != "Video"{
+                Params.updateValue(element["hexCode"] as! String, forKey: "story_photo[\(index)][color_codes]")
+                }
+            
+        }
+        
            // print(Params)
         }
         
@@ -745,7 +964,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         self.collectionView.addGestureRecognizer(self.longPressGesture!)
         editTurnOn = true
         isViewStory = false
-      // self.collectionView.scrollToItem(at: IndexPath(item: scrollToPostionAfterUpload, section: 0), at: .centeredVertically, animated: true)
+      self.collectionView.scrollToItem(at: IndexPath(item: scrollToPostionAfterUpload, section: 0), at: .centeredVertically, animated: true)
         
        
         
@@ -765,7 +984,10 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     
     @IBAction func doneClicked(_ sender: UIButton) {
         
+        
+        
         sender.resignFirstResponder()
+        self.view.endEditing(true)
         
        }
     
@@ -833,8 +1055,13 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         textDict.updateValue("Text", forKey: "type")
         textDict.updateValue(NSStringFromCGSize(txtSize), forKey: "item_size")
         textDict.updateValue(NSStringFromCGSize(txtSize), forKey: "original_size")
+        let generatedId = generateTextId()
+        textDict.updateValue(generatedId, forKey: "id")
+        textDict.updateValue(generatedId, forKey: "photo_id")
+        textDict.updateValue(generatedId, forKey: "imagePath")
         textDict.updateValue("#FFFFFF", forKey: "backgroundColor")
         textDict.updateValue("#000000", forKey: "textColor")
+        
         textDict.updateValue(1, forKey: "textAlignment")
         textDict.updateValue(false, forKey: "cover")
         textDict.updateValue("", forKey: "title")
@@ -845,6 +1072,8 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         
         editingTextFieldIndex = indexOfNewItem!
         selectedItemIndex = indexOfNewItem!
+        
+        
         
         
         self.collectionView.performBatchUpdates({
@@ -889,10 +1118,23 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         }
         
         self.editToolBar.items = [uploadMorePhotoButton,addTextButton]
+        
         if !editToolBar.isDescendant(of: self.view){
-        self.view.addSubview(self.editToolBar)
+            self.view.addSubview(self.editToolBar)
+            
+            
+        UIView.animate(withDuration: 2, delay: 1, usingSpringWithDamping: 0, initialSpringVelocity: 0.1, options: .curveEaseOut, animations: {
+            
+            }, completion: nil)
+            
+        
         }
         
+        
+        
+    }
+    
+    func editToolbarConfigurationForTextAlignment() {
         
         
     }
@@ -923,6 +1165,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
             let colorButtonText = UIButton.init(frame: CGRect(x: xCoordinate, y: 15, width: 30, height: 30))
             colorButtonText.layer.cornerRadius = 15
             colorButtonText.tag = i
+            colorButtonText.backgroundColor = UIColor(hexString: hexCode)
             colorButtonText.addTarget(self, action: #selector(setBackgroundColorForTextCell), for: UIControlEvents.touchUpInside)
             xCoordinate += 40
             self.scrollViewForColors.addSubview(colorButtonText)
@@ -961,7 +1204,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                 
             }else{
                 
-                self.editToolBar.items = [coverBarButton,flexibleSpace,shapeBarButton,flexibleSpace,deleteBarButton]
+                self.editToolBar.items = [coverBarButton,flexibleSpace,shapeBarButton,deleteBarButton]
                 self.title = "Image"
 
             }
@@ -993,23 +1236,18 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         
         
         self.editToolBar.items = [editTextCellButton,fixedSpace,alignmentButton,fixedSpace,colorButton,fixedSpace,deleteBarButton]
-//        if !editToolBar.isDescendant(of: self.view){
-//            self.view.addSubview(self.editToolBar)
-//        }
-        
         
         
 
-        let cell =  self.collectionView.cellForItem(at: IndexPath(item: selectedItemIndex, section: 0)) as! TextCellStoryCollectionViewCell
-        
+        if  let cell =  self.collectionView.cellForItem(at: IndexPath(item: selectedItemIndex, section: 0)) as? TextCellStoryCollectionViewCell{
         let screenshotOfTextCell = screenShotOfView(of: cell)
-        
         if let TextCell = screenshotOfTextCell{
             
             var temp = self.collectionArray[selectedIndexPath]
             
             temp.updateValue(screenshotOfTextCell, forKey: "text_image")
             
+        }
         }
     
     }
@@ -1129,6 +1367,30 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         
     }
     
+   
+    
+    func keyboardNotification(notification: NSNotification) {
+        
+        if let userInfo = notification.userInfo {
+            let endFrame = (userInfo[UIKeyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue
+            let duration:TimeInterval = (userInfo[UIKeyboardAnimationDurationUserInfoKey] as? NSNumber)?.doubleValue ?? 0
+            let animationCurveRawNSN = userInfo[UIKeyboardAnimationCurveUserInfoKey] as? NSNumber
+            let animationCurveRaw = animationCurveRawNSN?.uintValue ?? UIViewAnimationOptions.curveEaseInOut.rawValue
+            let animationCurve:UIViewAnimationOptions = UIViewAnimationOptions(rawValue: animationCurveRaw)
+            if (endFrame?.origin.y)! >= UIScreen.main.bounds.size.height {
+               // self.keyboardHeightLayoutConstraint?.constant = 0.0
+            } else {
+               // self.keyboardHeightLayoutConstraint?.constant = endFrame?.size.height ?? 0.0
+            }
+            UIView.animate(withDuration: duration,
+                           delay: TimeInterval(0),
+                           options: animationCurve,
+                           animations: { self.view.layoutIfNeeded() },
+                           completion: nil)
+        }
+        
+    }
+    
     func populateImage(objects:[[String:AnyObject]]) {
         var localpartitionGrid = [[[String]]]()
         var grid = [[[String]]]()
@@ -1164,61 +1426,125 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                 
                 var singleObj = [String]()
                 var singleGrid = [String]()
-                
-                let below = element["below"] as! String
-                if (below == ""){
-                    search.updateValue(index, forKey: element["id"] as! String)
-                    let left = element["left"] as! Int
-                    if left == Int(0){
-                        singleObj.append("\(i)-\(leftCount)-\(0)")
-                        singleGrid.append(element["id"] as! String)
-                        leftCount += 1
-                    }else{
-                        singleObj.append("\(i)-\(leftCount)-\(0)")
-                        singleGrid.append(element["id"] as! String)
-                        leftCount += 1
-                    }
-                    
-                    
-                    partitionGrid.append(singleGrid)
-                    partition.append(singleObj)
-                    
-                }else{
-                    var index = ""
-                    // var indexToNest = id.index(of: below)
-                    
-                    var countLength = partition.count
-                    
-                    //  var indexToInsert = search[below]
-                    belowCount += 1
-                    var tempMiddle = leftCount - 1
-                    partition[countLength-1].append("\(i)-\(tempMiddle)-\(belowCount)")
-               
-                }
-                
                 var dictToAdd = [AnyHashable:Any]()
-                let id = element["id"] as! String
-                let imagePath = element["imagePath"] as! String
-                let type = element["type"] as! String
-                let dw = element["dw"] as! String
-                let dh = element["dh"] as! String
-                if let factor = element["factor"] as? AnyObject{
-                    dictToAdd.updateValue("\(factor)", forKey: "factor")
+                if let type = element["type"] as? String{
+                    
+                    if type == "txt"{
+                  
+                        let id = element["id"] as? String ?? ""
+                        let imagePath = element["imagePath"] as? String ?? ""
+                        let type = element["type"] as? String ?? "Text"
+                       // let dw = element["dw"] as! String
+                      //  let dh = element["dh"] as! String
+                        let height = element["height"] as? Int ?? 0
+                        let width = element["width"] as? Int ?? 0
+                        
+                        let txtSize = CGSize(width: SCREENWIDTH, height: CGFloat(height))
+                        
+                       
+                        dictToAdd.updateValue(NSStringFromCGSize(txtSize), forKey: "original_size")
+                        
+                       // let original_size = CGSize(width: CGFloat((dw as NSString).floatValue), height: CGFloat((dh as NSString).floatValue))
+                        let item_size = CGSize(width: SCREENWIDTH, height: CGFloat(height))
+                        dictToAdd.updateValue(id, forKey: "photo_id")
+                        dictToAdd.updateValue(imagePath, forKey: "item_url")
+                        dictToAdd.updateValue("Text", forKey: "type")
+                        
+                        dictToAdd.updateValue("#322e20", forKey: "hexCode")
+                        //dictToAdd.updateValue(item_size, forKey: "original_size")
+                        dictToAdd.updateValue(item_size, forKey: "item_size")
+                        dictToAdd.updateValue("Hello hi", forKey: "title")
+                        dictToAdd.updateValue("xelpmoc story making processs", forKey: "description")
+                       // dictToAdd.updateValue("xelpmoc story making processs", forKey: "textColor")
+                        
+                        dictToAdd.updateValue("#322e20", forKey: "textColor")
+                        
+                        dictToAdd.updateValue("#FFFFFF", forKey: "backgroundColor")
+                        singleObj.append("\(i)-\(leftCount)-\(0)")
+                        singleGrid.append(id)
+                        leftCount += 1
+                        partitionGrid.append(singleGrid)
+                        partition.append(singleObj)
+
+                          //  dictToAdd.updateValue(color, forKey: "hexCode")
+                        
+                    }else{
+                        
+                        let below = element["below"] as! String
+                        if (below == ""){
+                            search.updateValue(index, forKey: element["id"] as! String)
+                            let left = element["left"] as! Int
+                            if left == Int(0){
+                                singleObj.append("\(i)-\(leftCount)-\(0)")
+                                singleGrid.append(element["id"] as! String)
+                                leftCount += 1
+                            }else{
+                                singleObj.append("\(i)-\(leftCount)-\(0)")
+                                singleGrid.append(element["id"] as! String)
+                                leftCount += 1
+                            }
+                            
+                            
+                            partitionGrid.append(singleGrid)
+                            partition.append(singleObj)
+                            
+                        }else{
+                            var index = ""
+                            // var indexToNest = id.index(of: below)
+                            
+                            var countLength = partition.count
+                            
+                            //  var indexToInsert = search[below]
+                            belowCount += 1
+                            var tempMiddle = leftCount - 1
+                            partition[countLength-1].append("\(i)-\(tempMiddle)-\(belowCount)")
+                            
+                        }
+                        
+                        
+                        let id = element["id"] as? String ?? ""
+                        let imagePath = element["imagePath"] as? String ?? ""
+                        let type = element["type"] as? String ?? ""
+                        var dw = element["dw"] as? String ?? ""
+                        if dw == "undefined"{
+                            dw = "0"
+                        }
+                        var dh = element["dh"] as? String ?? ""
+                        if dh == "undefined"{
+                            dh = "0"
+                        }
+                        
+                        if let factor = element["factor"] as? AnyObject{
+                            dictToAdd.updateValue("\(factor)", forKey: "factor")
+                        }
+                        if type != "video"{
+                             let color = element["color"] as?  String ?? ""
+                            dictToAdd.updateValue(color, forKey: "hexCode")
+                        }
+                       
+                        let height = element["height"] as? Int ?? 0
+                        let width = element["width"] as? Int ?? 0
+                        
+                        let original_size = CGSize(width: CGFloat((dw as NSString).floatValue), height: CGFloat((dh as NSString).floatValue))
+                        let item_size = CGSize(width: CGFloat(width), height: CGFloat(height))
+                        dictToAdd.updateValue(id, forKey: "photo_id")
+                        dictToAdd.updateValue(imagePath, forKey: "item_url")
+                        dictToAdd.updateValue(type, forKey: "type")
+                        dictToAdd.updateValue(original_size, forKey: "original_size")
+                        dictToAdd.updateValue(item_size, forKey: "item_size")
+                        
+                        
+                        // dictToAdd.updateValue(type, forKey: "type")
+                      
+                        
+                        
+                    }
                 }
-                let color = element["color"] as! String
-                let height = element["height"] as! Int
-                let width = element["width"] as! Int
                 
-                let original_size = CGSize(width: CGFloat((dw as NSString).floatValue), height: CGFloat((dh as NSString).floatValue))
-                let item_size = CGSize(width: CGFloat(width), height: CGFloat(height))
-                dictToAdd.updateValue(id, forKey: "photo_id")
-                dictToAdd.updateValue(imagePath, forKey: "item_url")
-                dictToAdd.updateValue(type, forKey: "type")
-                dictToAdd.updateValue(original_size, forKey: "original_size")
-                dictToAdd.updateValue(item_size, forKey: "item_size")
                 
-               // dictToAdd.updateValue(type, forKey: "type")
-                dictToAdd.updateValue(color, forKey: "hexCode")
+                
+                
+               
                 
                 self.collectionArray.append(dictToAdd)
             }
@@ -1362,8 +1688,12 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
     }
     func autoScrollToTop()
     {
-        let headerAttributes = self.collectionView.supplementaryView(forElementKind: UICollectionElementKindSectionHeader, at: IndexPath(item: 0, section: 0))
-        self.collectionView.setContentOffset(CGPoint(x: 0, y: (headerAttributes?.frame.origin.y)!), animated: true)
+        
+        if let headerAttributes =  self.collectionView.collectionViewLayout.layoutAttributesForItem(at: IndexPath(item: 0, section: 0)){
+        self.collectionView.setContentOffset(CGPoint(x: 0, y: (headerAttributes.frame.origin.x)), animated: true)
+        }
+        
+        
         
     }
     
@@ -1372,32 +1702,50 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
             if reloadHeaderView == true{
             headerView =  collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionElementKindSectionHeader, withReuseIdentifier: "HeaderView", for: indexPath) as! PictureHeaderCollectionReusableView
                 headerView?.delegate = self
+                self.headerView?.iboTitle.delegate = self
+                self.headerView?.iboSubTitle.delegate = self
+                
             if self.isViewStory{
+                headerView?.removeGestureRecognizer(singleTap)
                 self.headerView?.iboHeaderImage.backgroundColor = UIColor(hexString: self.story_cover_photo_slice_code)
                 var urlImage = self.story_cover_photo_path.components(separatedBy: "album")
                 
                 var totalPath = URLConstants.imgDomain
                 
-                self.headerView?.iboHeaderImage.sd_setImage(with: URL(string: totalPath + urlImage[1]), placeholderImage: UIImage(named: ""), options: SDWebImageOptions.progressiveDownload, completed: { (image, data, error, finished) in
-                    
-                    
-                    guard let image = image else { return  }
-                    print("Image loaded!")
-                    self.headerView?.iboHeaderImage.contentMode = UIViewContentMode.scaleAspectFill
-                    self.headerView?.iboHeaderImage.image = image
-                    self.coverdata =  UIImagePNGRepresentation(image)!
-                    //    self.iboProfileLoaderIndicator.stopAnimating()
-
-                    
-                })
-
+                if  let data = coverdata
+                {
+                    //self.headerView?.iboHeaderImage.contentMode = UIViewContentMode.scaleAspectFill
+                    DispatchQueue.main.async {
+                    self.headerView?.iboHeaderImage.image = data
+                    }
+                   
+                }else {
+                    self.headerView?.iboHeaderImage.sd_setImage(with: URL(string: totalPath + urlImage[1]), placeholderImage: UIImage(named: ""), options: SDWebImageOptions.progressiveDownload, completed: { (image, data, error, finished) in
+                        
+                        
+                        guard let image = image else { return  }
+                        print("Image loaded!")
+                        self.headerView?.iboHeaderImage.contentMode = UIViewContentMode.scaleAspectFill
+                        self.headerView?.iboHeaderImage.image = image
+                        self.coverdata =  image
+                        //    self.iboProfileLoaderIndicator.stopAnimating()
+                        
+                        
+                    })
+                }
+               
                 
                 
-                self.headerView?.iboHeaderImage.sd_setImage(with: URL(string: totalPath + urlImage[1]), placeholderImage: UIImage(named: ""))
+                //self.headerView?.iboHeaderImage.sd_setImage(with: URL(string: totalPath + urlImage[1]), placeholderImage: UIImage(named: ""))
             }else{
                 
+                headerView?.addGestureRecognizer(singleTap)
                 
-                self.headerView?.iboHeaderImage.image = UIImage(data: coverdata)
+                
+                if let coverData = coverdata{
+                self.headerView?.iboHeaderImage.image = coverData
+                }
+                
             }
                 self.headerView?.iboTitle.inputAccessoryView = keyboardView
                 self.headerView?.iboSubTitle.inputAccessoryView = keyboardView
@@ -1503,7 +1851,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                             
                         })
                         // }
-                    }else if differenceRight < 25 && differenceRight > 0{
+                    }else if differenceRight < 25 && differenceRight > 0 && sourceType != "Text"{
                         
                         //                    if self.sameRowOrNot(sourceIndexPath: sourceIndexPath.item, destinationIndexPath: indexPath.item){
                         //
@@ -1535,7 +1883,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                             
                         })
                         
-                    }else if (differenceTop > -20 && differenceTop < 0 && destinationCell.frame.size.width < (UIScreen.main.bounds.width - 16)){
+                    }else if (differenceTop > -20 && differenceTop < 0 && destinationCell.frame.size.width < (UIScreen.main.bounds.width - 16) && sourceType != "Text"){
                         print("Insert to the TOP of the cell line")
                         lineView.removeFromSuperview()
                         self.swapView?.removeFromSuperview()
@@ -1558,7 +1906,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                         })
                         
                         
-                    }else if(differenceBottom > 0 && differenceBottom < 20 && destinationCell.frame.size.width < (UIScreen.main.bounds.width - 16)){
+                    }else if(differenceBottom > 0 && differenceBottom < 20 && destinationCell.frame.size.width < (UIScreen.main.bounds.width - 16) && sourceType != "Text"){
                         print("Insert to the Bottom of the cell line")
                         lineView.removeFromSuperview()
                         self.swapView?.removeFromSuperview()
@@ -1629,8 +1977,6 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                             
                             
                         }
-                        
-                        
                         
                     }
                         }else{
@@ -1793,7 +2139,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                     let cellFrame = CGRectFromString(frmaes[Int(lKey[0])!])
                     
                     let xOffset = cellFrame.origin.x
-                    let yValue = cellFrame.origin.y - 5
+                    let yValue = cellFrame.origin.y
                     let nestedWidth = cellFrame.size.width
                     let nestedHeight = CGFloat(2.0)
                     
@@ -3096,6 +3442,8 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                                             
                                         }else{
                                             
+                                            
+                                            
                                             if (cell.frame.size.width == destinationCell.frame.size.width){
                                                 
                                                 self.exchangeDataSource(sourceIndex: indexPath.item, destIndex: (self.originalIndexPath?.item)!)
@@ -3331,23 +3679,6 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
             }else{
                 self.lineView.removeFromSuperview()
                 guard var frameOfDraging = self.frameOfDragingIndexPath else { return }
-                if let sourceCell = vc.cellForItem(at: originalIndexPath){
-                    sourceCell.alpha = 0
-                    UIView.animate(withDuration: 0.25, animations: {
-                        dragView.center = (sourceCell.center)
-                        dragView.transform = CGAffineTransform.identity
-                        dragView.alpha = 0.0;
-                        sourceCell.alpha = 1.0;
-                    }, completion: { (flag) in
-                        sourceCell.isHidden = false
-                        self.originalIndexPath = nil
-                        dragView.removeFromSuperview()
-                    })
-                    
-                }else{
-                    
-                     if let sourceCell = vc.cellForItem(at: originalIndexPath){
-                        sourceCell.alpha = 1
                     UIView.animate(withDuration: 0.25, animations: {
                         dragView.center = frameOfDraging
                         dragView.transform = CGAffineTransform.identity
@@ -3358,8 +3689,8 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                         self.originalIndexPath = nil
                         dragView.removeFromSuperview()
                     })
-                    }
-                }
+                
+                
     
             }
             
@@ -3446,7 +3777,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                                 
                                 var uploadViewController = self.storyboard?.instantiateViewController(withIdentifier: "ImagesUploadViewController") as! ImagesUploadViewController
                                 uploadViewController.uploadData = newItemsArray
-                                uploadViewController.storyId = "44"
+                                uploadViewController.storyId = String(self.randomNumber())
                                 
                                 uploadViewController.dismissView = {(sender : UIViewController?,initialize:Bool?,newObjects:[[AnyHashable:Any]]?) -> Void in
                                     
@@ -3498,7 +3829,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                                             self.getDataFromUrl(url: URL(string: sizeOrg!)!) { (data, response, error)  in
                                                 guard let data = data, error == nil else { return }
                                                 
-                                                self.coverdata = data
+                                                self.coverdata = UIImage(data: data)
                                                 
                                                 DispatchQueue.main.async() { () -> Void in
                                                     self.longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress))
@@ -3583,7 +3914,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                                 
                                 var uploadViewController = self.storyboard?.instantiateViewController(withIdentifier: "ImagesUploadViewController") as! ImagesUploadViewController
                                 uploadViewController.uploadData = newItemsArray
-                                uploadViewController.storyId = "44"
+                                uploadViewController.storyId = String(self.randomNumber())
                               //let addHomes = self.storyboard?.instantiateViewController(withIdentifier: "AddHomesVC") as! AddHomesVC
                              //   var uploadViewController = ImagesUploadViewController(with: self.collectionArray, storyId: "5678")
                                 
@@ -3637,7 +3968,7 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
                                             self.getDataFromUrl(url: URL(string: sizeOrg!)!) { (data, response, error)  in
                                                 guard let data = data, error == nil else { return }
                                                 
-                                                self.coverdata = data
+                                                self.coverdata = UIImage(data: data)
                                                 
                                                 DispatchQueue.main.async() { () -> Void in
                                                     self.longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(self.handleLongPress))
@@ -3760,31 +4091,42 @@ class ViewController: UIViewController,UIImagePickerControllerDelegate,UINavigat
         for photoIndex in 0 ..< self.collectionArray.count {
             let temp = collectionArray[photoIndex]
             
-            var url = temp["item_url"] as? String
-            var urlImage = url?.components(separatedBy: "album")
-            var totalPath = URLConstants.imgDomain
-            url = totalPath + (urlImage?[1])!
-            var version = url?.components(separatedBy: "compressed")
             
-            var afterAppending  = url?.components(separatedBy: "compressed")
-            var widthImage = (version?[0])! + "480" + (afterAppending?[1])!
-
-            
-           // let sizeOrg = (temp as AnyObject).object(forKey: "data") as? Data
-            
-            let data = NSData.init(contentsOf: URL(string: widthImage)!)
-            let imageView = UIImage(data: data as! Data)
-            
-            //let image = images[photoIndex]
-            let title = NSAttributedString(string: "\(photoIndex + 1)", attributes: [NSForegroundColorAttributeName: UIColor.white])
-            
-            let photo = shouldSetImageOnIndex(photoIndex: photoIndex) ? ExamplePhoto(image: imageView, attributedCaptionTitle: title) : ExamplePhoto(attributedCaptionTitle: title)
-            
-            if photoIndex == CustomEverythingPhotoIndex {
-                photo.placeholderImage = UIImage(named: PlaceholderImageName)
+            if let type = temp["type"] as? String{
+                
+            }else{
+                
+                var url = temp["item_url"] as? String
+                if url != ""{
+                    var urlImage = url?.components(separatedBy: "album")
+                    var totalPath = URLConstants.imgDomain
+                    url = totalPath + (urlImage?[1])!
+                    var version = url?.components(separatedBy: "compressed")
+                    
+                    var afterAppending  = url?.components(separatedBy: "compressed")
+                    var widthImage = (version?[0])! + "480" + (afterAppending?[1])!
+                    
+                    
+                    // let sizeOrg = (temp as AnyObject).object(forKey: "data") as? Data
+                    
+                    let data = NSData.init(contentsOf: URL(string: widthImage)!)
+                    let imageView = UIImage(data: data as! Data)
+                    
+                    //let image = images[photoIndex]
+                    let title = NSAttributedString(string: "\(photoIndex + 1)", attributes: [NSForegroundColorAttributeName: UIColor.white])
+                    
+                    let photo = shouldSetImageOnIndex(photoIndex: photoIndex) ? ExamplePhoto(image: imageView, attributedCaptionTitle: title) : ExamplePhoto(attributedCaptionTitle: title)
+                    
+                    if photoIndex == CustomEverythingPhotoIndex {
+                        photo.placeholderImage = UIImage(named: PlaceholderImageName)
+                    }
+                    
+                    mutablePhotos.append(photo)
+                }
+                
             }
             
-            mutablePhotos.append(photo)
+
         }
         
     }
@@ -3968,9 +4310,19 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
             
             let photosViewController = NYTPhotosViewController(photos: mutablePhotos)
             
-            photosViewController.display(mutablePhotos[indexPath.row], animated: true)
-            photosViewController.delegate = self
-            self.present(photosViewController, animated: true, completion: nil)
+            let temp = collectionArray[indexPath.row]
+            let type  =  temp["type"] as! String
+            
+            if type == "Text"{
+                
+            }else{
+                photosViewController.display(mutablePhotos[indexPath.row], animated: true)
+                photosViewController.delegate = self
+                self.present(photosViewController, animated: true, completion: nil)
+                
+            }
+            
+            
             
         }
         
@@ -4064,8 +4416,17 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
                     cell.subTitleLabel.isUserInteractionEnabled = false
                     cell.layer.borderWidth = CGFloat.leastNormalMagnitude
                     cell.layer.borderColor = UIColor.clear.cgColor
-                    cell.titleLabel.text = temp["title"] as! String
-                    cell.subTitleLabel.text = temp["description"] as! String
+                    if let title = temp["title"] as? String{
+                    cell.titleLabel.text = title
+                    }else{
+                        
+                    }
+                    if let subTitleLabel = temp["description"] as? String{
+                    cell.subTitleLabel.text = subTitleLabel
+                    }else{
+                        
+                    }
+                    
                     //cell.subTitleLabel.textColor =
                     if let allign = temp["textAlignment"] as? Int{
                         if allign == 1{
@@ -4079,8 +4440,20 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
                     
                     //cell.titleLabel.inputAccessoryView = self.keyboardView
                     //cell.subTitleLabel.inputAccessoryView = self.keyboardView
-                    cell.titleLabel.textColor = UIColor(hexString:(temp["textColor"] as! String))
-                    cell.myView.backgroundColor = UIColor(hexString:(temp["backgroundColor"] as! String))
+                    if let textColor = temp["textColor"] as? String
+                    {
+                        cell.titleLabel.textColor = UIColor(hexString:textColor)
+                    }else{
+                        
+                    }
+                    
+                    if let backgroundColor = temp["backgroundColor"] as? String
+                    {
+                        cell.myView.backgroundColor = UIColor(hexString:backgroundColor)
+                    }else{
+                        
+                    }
+                    
                     
                     
                     
@@ -4120,9 +4493,9 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
                                         imageViewCell.videoAsSubView.layer.addSublayer(player_layer)
                                         imageViewCell.player = layer
                                         //imageViewCell.playerItm = temp.playerItm
-                                        imageViewCell.player.isMuted = true
+                                        imageViewCell.player.isMuted = false
                                         // imageViewCell.volumeBtn.setImage(UIImage(named: "icon_muted"), for: .normal)
-                                        // imageViewCell.player.play()
+                                        imageViewCell.player.play()
                                         
                                         NotificationCenter.default.addObserver(self,selector: #selector(self.restartVideoFromBeginning),name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,object: imageViewCell.player.currentItem)
                                     }else{
@@ -4133,9 +4506,9 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
                                         imageViewCell.videoAsSubView.layer.addSublayer(player_layer)
                                         imageViewCell.player = layer
                                         //  imageViewCell.playerItm = temp.playerItm
-                                        imageViewCell.player.isMuted = true
+                                        imageViewCell.player.isMuted = false
                                         //imageViewCell.iboSound.setImage(UIImage(named: "icon_muted"), for: .normal)
-                                        //imageViewCell.player.play()
+                                        imageViewCell.player.play()
                                         print("layer is there")
                                         
                                         NotificationCenter.default.addObserver(self,selector: #selector(self.restartVideoFromBeginning),name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,object: imageViewCell.player.currentItem)
@@ -4148,9 +4521,9 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
                                     imageViewCell.videoAsSubView.layer.addSublayer(player_layer)
                                     imageViewCell.player = layer
                                     //imageViewCell.playerItm = temp.playerItm
-                                    imageViewCell.player.isMuted = true
+                                    imageViewCell.player.isMuted = false
                                     //  imageViewCell.iboSound.setImage(UIImage(named: "icon_muted"), for: .normal)
-                                    //  imageViewCell.player.play()
+                                    imageViewCell.player.play()
                                     
                                     NotificationCenter.default.addObserver(self,selector: #selector(self.restartVideoFromBeginning),name: NSNotification.Name.AVPlayerItemDidPlayToEndTime,object: imageViewCell.player.currentItem)
                                 }
@@ -4182,7 +4555,7 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
                                         //  imageViewCell.volumeBtn.setImage(UIImage(named: "icon_muted"), for: .normal)
                                         //cell.iboVideoView.layer.sublayers = nil
                                         imageViewCell.videoAsSubView.layer.addSublayer(imageViewCell.playerLayer)
-                                        //imageViewCell.player.play()
+                                        imageViewCell.player.play()
                                         self.collectionArray[indexPath.row].updateValue(imageViewCell.player, forKey: "player_layer")
                                         self.collectionArray[indexPath.row].updateValue(imageViewCell.player, forKey: "player")
                                         //temp
@@ -4204,6 +4577,7 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
                         
                  else{
                         var url = temp["item_url"] as? String
+                            
                         var urlImage = url?.components(separatedBy: "album")
                         let totalPath = URLConstants.imgDomain
                         if urlImage?.count == 2 {
@@ -4268,9 +4642,7 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
                     var afterAppending  = url?.components(separatedBy: "compressed")
                     var widthImage = (version?[0])! + "480" + (afterAppending?[1])!
                     
-                    
-                    
-                    
+               
                    // url = URLConstants.imgDomain  + url!
                    // imageViewCell.alpha = 1
                     //imageViewCell.isHidden = false
@@ -4344,19 +4716,31 @@ extension ViewController:UICollectionViewDelegate,UICollectionViewDataSource,NYT
                         //cell.subTitleLabel.inputAccessoryView = self.keyboardView
                         cell.titleLabel.textColor = UIColor(hexString:(temp["textColor"] as! String))
                         cell.myView.backgroundColor = UIColor(hexString:(temp["backgroundColor"] as! String))
-                        
-                        
-                        
-                        
-                        
-                        
-                    }
+                                }
                 }
             }
         }
         
         
     }
+
+    
+     func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: ImageViewCollectionViewCell, forItemAt indexPath: IndexPath) {
+        
+        
+        if !editTurnOn{
+            
+            let indexData = self.collectionArray[indexPath.item]
+            let type  =  indexData["type"] as! String
+            
+            if type == "Video" {
+                cell.player.isMuted = true
+            }
+        }
+    }
+    
+    
+    
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         

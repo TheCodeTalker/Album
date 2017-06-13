@@ -21,6 +21,7 @@ class PictureHeaderCollectionReusableView: UICollectionReusableView {
     @IBOutlet weak var iboTitle: UITextField!
     @IBOutlet weak var iboScrollDownBrn: UIButton!
     @IBOutlet weak var iboHeaderImage: UIImageView!
+    var headerNib : UINib?
     var delegate:autoScrollDelegate! = nil
 //    - (void)layoutHeaderViewForScrollViewOffset:(CGPoint)offset
 //    {
@@ -45,11 +46,16 @@ class PictureHeaderCollectionReusableView: UICollectionReusableView {
 //    self.headerTitleLabel.alpha = 1 - (delta) * 1 / kMaxTitleAlphaOffset;
 //    }
 //    }
-
+    
+   
     override func awakeFromNib() {
         super.awakeFromNib()
         self.iboHeaderImage.clipsToBounds = true
         self.iboHeaderImage.autoresizingMask = UIViewAutoresizing.flexibleHeight
+        
+        self.iboSubTitle.tag = 99
+        self.iboTitle.tag = 89
+        
         //[self.headerImageView setClipsToBounds:YES];
         //[self.headerImageView setAutoresizingMask:UIViewAutoresizingFlexibleHeight];
     }
