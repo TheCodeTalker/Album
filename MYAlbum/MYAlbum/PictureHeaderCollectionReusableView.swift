@@ -18,6 +18,7 @@ class PictureHeaderCollectionReusableView: UICollectionReusableView {
     let  kParallaxDeltaFactor :CGFloat = 0.5
     @IBOutlet weak var iboHeaderScroll: UIScrollView!
     @IBOutlet weak var iboSubTitle: UITextField!
+    @IBOutlet weak var titleView: UIView!
     @IBOutlet weak var iboTitle: UITextField!
     @IBOutlet weak var iboScrollDownBrn: UIButton!
     @IBOutlet weak var iboHeaderImage: UIImageView!
@@ -53,8 +54,8 @@ class PictureHeaderCollectionReusableView: UICollectionReusableView {
         self.iboHeaderImage.clipsToBounds = true
         self.iboHeaderImage.autoresizingMask = UIViewAutoresizing.flexibleHeight
         
-        self.iboSubTitle.tag = 99
-        self.iboTitle.tag = 89
+        self.iboSubTitle.tag = 98
+        self.iboTitle.tag = 99
         
         //[self.headerImageView setClipsToBounds:YES];
         //[self.headerImageView setAutoresizingMask:UIViewAutoresizingFlexibleHeight];

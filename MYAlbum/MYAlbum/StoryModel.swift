@@ -14,4 +14,6 @@ struct StoryModel{
     var story_cover_photo_slice_code : String
     var story_cover_photo_path :String
     var blurOrNot : Bool
+    var story_heading : String
+    var story_heading_description:String
 }

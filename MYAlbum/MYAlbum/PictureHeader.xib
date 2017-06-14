@@ -48,15 +48,17 @@
                             <subviews>
                                 <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" placeholder="Enter your title here" textAlignment="center" minimumFontSize="28" translatesAutoresizingMaskIntoConstraints="NO" id="sXO-ff-VKn">
                                     <rect key="frame" x="0.0" y="8" width="403" height="40"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="40" id="z31-Hs-wHh"/>
                                     </constraints>
                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <fontDescription key="fontDescription" name="Raleway-Light" family="Raleway" pointSize="26"/>
-                                    <textInputTraits key="textInputTraits" autocapitalizationType="words" returnKeyType="done"/>
+                                    <textInputTraits key="textInputTraits" autocapitalizationType="words" returnKeyType="next"/>
                                 </textField>
                                 <textField opaque="NO" clipsSubviews="YES" tag="1" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" placeholder="Enter your subtitle here" textAlignment="center" minimumFontSize="15" translatesAutoresizingMaskIntoConstraints="NO" id="QCy-iO-y4u">
                                     <rect key="frame" x="0.0" y="56" width="403" height="18"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                     <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                     <fontDescription key="fontDescription" name="Raleway-Regular" family="Raleway" pointSize="15"/>
                                     <textInputTraits key="textInputTraits" autocapitalizationType="sentences" returnKeyType="done"/>
@@ -106,6 +108,7 @@
                 <outlet property="iboScrollDownBrn" destination="M5B-0b-lIg" id="XFk-bV-Mme"/>
                 <outlet property="iboSubTitle" destination="QCy-iO-y4u" id="gdA-6E-uZx"/>
                 <outlet property="iboTitle" destination="sXO-ff-VKn" id="AMU-Au-jgX"/>
+                <outlet property="titleView" destination="uMc-vn-R9m" id="h2J-w8-ibS"/>
             </connections>
             <point key="canvasLocation" x="96" y="553"/>
         </collectionReusableView>

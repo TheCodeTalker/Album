@@ -146,8 +146,8 @@ class ImagesUploadViewController: UIViewController {
                     var mimeType = ""
                     if let type  =  element["type"] as? String{
                         
-                        if type == "Video" {
-                            let urlName  =  element["video_url"] as! URL
+                        if type == "video" {
+                            let urlName  =  element["item_url"] as! URL
                             fName = "\(urlName)"
                             mimeType = "video/mp4"
                         }else if type == "img" {
@@ -203,8 +203,8 @@ class ImagesUploadViewController: UIViewController {
                                 // let sizeImage = CGSize(width: width, height: height)
                                 //self.uploadData[index + 1].updateValue(NSStringFromCGSize(sizeImage) as AnyObject, forKey: "item_size")
                                 //dictToAdd.updateValue(videoData as AnyObject, forKey: "data")
-                                self.uploadData[tempIndex].updateValue(element["photo_path"]!, forKey: "video_url")
-                                self.uploadData[tempIndex].updateValue("Video", forKey: "type")
+                                self.uploadData[tempIndex].updateValue(element["photo_path"]!, forKey: "item_url")
+                                self.uploadData[tempIndex].updateValue("video", forKey: "type")
                                 // self.collectionArray.append(dictToAdd)
                                 
                                 

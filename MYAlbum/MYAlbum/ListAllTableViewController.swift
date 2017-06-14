@@ -62,10 +62,14 @@ class ListAllTableViewController: UIViewController {
 
         self.navigationController?.isNavigationBarHidden = false
         self.navigationController?.setNavigationBarHidden(false, animated: false)
+        self.navigationController?.navigationBar.setBackgroundImage(nil, for: UIBarMetrics.default)
+        self.navigationController?.navigationBar.shadowImage = nil
         //self.navigationController?.navigationItem.leftBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: UIBarButtonItem., target: <#T##Any?#>, action: <#T##Selector?#>)
-        //self.navigationController?.navigationBar.tintColor = UIColor.
-        //self.navigationController?.navigationBar.barTintColor = UIColor.clear
+//        self.navigationController?.navigationBar.tintColor = UIColor.black
+//        self.navigationController?.navigationBar.barTintColor = UIColor.black
         self.navigationItem.setRightBarButton(UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addStory(_:))), animated: true)
+        self.navigationItem.rightBarButtonItem?.tintColor = UIColor.blue
+        //self.navigationItem.rightBarButtonItem.
             //UIBarButtonItem.init(image:, style:UIBarButtonItemStyle.Plain, target: self, action: Selector("back"))
 
 
@@ -322,20 +326,27 @@ class ListAllTableViewController: UIViewController {
                         //self.allHomesArray = (response.valueForKey("results") as? NSMutableArray)!
                         for i in 0 ..< self.allStoryArray.count{
                           let singleStory = self.allStoryArray[i]
-                            let story_id = singleStory["story_id"] as! Int
-                            let writen_by = singleStory["writen_by"] as! String
-                            var story_cover_photo_path  = ""
-                            var story_cover_photo_slice_code = ""
-                            if let cover_photo_path = singleStory["story_cover_photo_path"] as? String{
-                                 story_cover_photo_path = cover_photo_path
-                            }
-                            if let cover_photo_path = singleStory["story_cover_photo_slice_code"] as? String{
-                                story_cover_photo_slice_code = cover_photo_path
-                            }
+                            let story_id = singleStory["story_id"] as? Int ?? 0
+                            let writen_by = singleStory["writen_by"] as? String ?? ""
+                           
+                            
+                            let story_cover_photo_path = singleStory["story_cover_photo_path"] as? String ?? ""
+                            
+                           
+                             let story_cover_photo_slice_code = singleStory["story_cover_photo_slice_code"] as? String ?? ""
+                            
+                            
+                          //  let story_cover_photo_code = singleStory["story_cover_photo_code"] as? String ?? ""
+                           
+                            let story_heading = singleStory["story_heading"] as? String ?? ""
+                            let story_heading_description = singleStory["story_heading_description"] as? String ?? ""
+                                //story_cover_photo_slice_code = cover_photo_path
+                            
+                            
                             
                             //let story_cover_photo_path = singleStory["story_cover_photo_path"] as! String
                             //let story_cover_photo_slice_code = singleStory["story_cover_photo_slice_code"] as!  String
-                            let story = StoryModel(writen_by: writen_by, story_id: story_id, story_cover_photo_slice_code: story_cover_photo_slice_code, story_cover_photo_path: story_cover_photo_path,blurOrNot:false)
+                            let story = StoryModel(writen_by: writen_by, story_id: story_id, story_cover_photo_slice_code: story_cover_photo_slice_code, story_cover_photo_path: story_cover_photo_path,blurOrNot:false, story_heading: story_heading, story_heading_description: story_heading_description)
                             self.storyArray.append(story)
                             
                         }
@@ -411,7 +422,7 @@ extension ListAllTableViewController : UITableViewDelegate,UITableViewDataSource
         if urlImage.count == 2{
         cell.storyImage.sd_setImage(with: URL(string: totalPath + urlImage[1]), placeholderImage: UIImage(named: ""))
         }
-        cell.storyLabel.text = story.writen_by.capitalized
+        cell.storyLabel.text = story.story_heading.capitalized
        if  story.blurOrNot{
         cell.visiualEffect.isHidden = false
         }else{

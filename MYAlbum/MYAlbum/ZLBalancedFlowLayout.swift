@@ -295,6 +295,18 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
             for section in (0..<collectionView.numberOfSections) {
                 let sectionIndexPath = IndexPath(item: 0, section: section)
                 if let headerAttributes = layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader, at: sectionIndexPath), headerAttributes.frame.size != CGSize.zero && headerAttributes.frame.intersects(rect) {
+                    
+                    
+                    let insets = collectionView.contentInset
+                    let offset = collectionView.contentOffset
+                    let minY = -insets.top
+                    if (offset.y < minY) {
+                        let deltaY = fabs(offset.y - minY)
+                        var frame = headerAttributes.frame
+                        frame.size.height = min(max(minY, SCREENHEIGHT + deltaY), 0)
+                        frame.origin.y = frame.minY - deltaY
+                        headerAttributes.frame = frame
+                    }
                     layoutAttributes.append(headerAttributes)
                 }
                 if let footerAttributes = layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionFooter, at: sectionIndexPath), footerAttributes.frame.size != CGSize.zero && footerAttributes.frame.intersects(rect) {
