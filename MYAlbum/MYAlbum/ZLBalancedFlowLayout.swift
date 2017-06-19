@@ -48,7 +48,7 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
         if let local = defaults.object(forKey: "partition") as? partitionTypeLayout{
             //containSameElements(local, localPartition)
             if compareElement(local, self.localPartition){
-                return false
+                return true
             }else{
                 return true
             }
@@ -295,15 +295,13 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
             for section in (0..<collectionView.numberOfSections) {
                 let sectionIndexPath = IndexPath(item: 0, section: section)
                 if let headerAttributes = layoutAttributesForSupplementaryView(ofKind: UICollectionElementKindSectionHeader, at: sectionIndexPath), headerAttributes.frame.size != CGSize.zero && headerAttributes.frame.intersects(rect) {
-                    
-                    
                     let insets = collectionView.contentInset
                     let offset = collectionView.contentOffset
-                    let minY = -insets.top
+                    let minY = CGFloat(0)
                     if (offset.y < minY) {
                         let deltaY = fabs(offset.y - minY)
                         var frame = headerAttributes.frame
-                        frame.size.height = min(max(minY, SCREENHEIGHT + deltaY), 0)
+                        frame.size.height = max(minY, frame.height + deltaY)
                         frame.origin.y = frame.minY - deltaY
                         headerAttributes.frame = frame
                     }
@@ -323,16 +321,6 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
                 let lowerIndex = binarySearch(itemOriginYs[section], value: minY)
                 let upperIndex = binarySearch(itemOriginYs[section], value: maxY)
                 
-//                var numberItems  = collectionView.numberOfItems(inSection: 0)
-//                
-//                for  i in 0 ..< numberItems {
-//                let itemFrame = frameArray[i]
-//                    if rect.intersects(itemFrame)
-//                    {
-//                    layoutAttributes.append(self.layoutAttributesForItem(at: IndexPath(item: i, section: section)))
-//                    }
-//                    
-//                }
                 for item in lowerIndex..<upperIndex {
                     layoutAttributes.append(self.layoutAttributesForItem(at: IndexPath(item: item, section: section))!)
                 }

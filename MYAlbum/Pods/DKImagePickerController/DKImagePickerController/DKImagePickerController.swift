@@ -406,9 +406,55 @@ open class DKImagePickerController : UINavigationController {
     }
     
     open func done() {
-        self.presentingViewController?.dismiss(animated: true, completion: {
-            self.didSelectAssets?(self.selectedAssets)
-        })
+        if let local = UserDefaults.standard.object(forKey: "FirstTimeUpload") as? Bool{
+            if local == true{
+                if self.selectedAssets.count == 1{
+                    if (self.selectedAssets.first?.isVideo)!{
+                        let alert = UIAlertController(title: "Please Select atlist one image", message: "One Image Please", preferredStyle: UIAlertControllerStyle.alert)
+                        
+                        self.present(alert, animated: true, completion: nil)
+                        
+                        alert.addAction(UIAlertAction(title: "Ok", style: .default, handler: { action in
+                            switch action.style{
+                            case .default:
+                                //self.dismiss(animated: true, completion: nil)
+                                break
+                            case .cancel:
+                                // self.dismiss(animated: true, completion: nil)
+                                print("cancel")
+                                
+                            case .destructive:
+                                //self.dismiss(animated: true, completion: nil)
+                                print("destructive")
+                            }
+                        }))
+                    }
+                }else{
+                    self.presentingViewController?.dismiss(animated: true, completion: {
+                        UserDefaults.standard.set(false, forKey: "FirstTimeUpload")
+                        self.didSelectAssets?(self.selectedAssets)
+                    })
+                }
+                
+            }else{
+                self.presentingViewController?.dismiss(animated: true, completion: {
+                    UserDefaults.standard.set(false, forKey: "FirstTimeUpload")
+                    self.didSelectAssets?(self.selectedAssets)
+                })
+                
+            }
+            
+        }else{
+            self.presentingViewController?.dismiss(animated: true, completion: {
+                UserDefaults.standard.set(false, forKey: "FirstTimeUpload")
+                self.didSelectAssets?(self.selectedAssets)
+            })
+            
+        }
+        
+        
+
+        
     }
     
     // MARK: - Selection

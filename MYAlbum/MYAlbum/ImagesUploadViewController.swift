@@ -48,6 +48,24 @@ class ImagesUploadViewController: UIViewController {
         if insideUpload{
             self.uploadOtherThenCoverPhoto()
         }else{
+            
+            if let first =  self.uploadData.first {
+                
+                 let type = first["type"] as! String
+                if type != "img"{
+                    for (index,element) in self.uploadData.enumerated(){
+                        if (element["type"] as! String) == "img"{
+                            let temp = first
+                        self.uploadData[0] = self.uploadData[index]
+                            self.uploadData[index] = temp
+                            break
+                        }
+                    }
+                }
+                
+                
+            }
+            
             self.uploadMultipleImagesWithTextMessageMultipartFormat()
             
             
@@ -198,10 +216,12 @@ class ImagesUploadViewController: UIViewController {
                                 self.uploadData[tempIndex].updateValue(element["color_codes"], forKey: "hexCode")
                                 self.uploadData[tempIndex].updateValue(element["photo_id"]!, forKey: "photo_id")
                                 
+                                
+                                
                                 // let height = element["imgHeight"] as! CGFloat
                                 //let width = CGFloat(375 - 10)
                                 // let sizeImage = CGSize(width: width, height: height)
-                                //self.uploadData[index + 1].updateValue(NSStringFromCGSize(sizeImage) as AnyObject, forKey: "item_size")
+                              //  self.uploadData[tempIndex].updateValue(NSStringFromCGSize(sizeImage) as AnyObject, forKey: "item_size")
                                 //dictToAdd.updateValue(videoData as AnyObject, forKey: "data")
                                 self.uploadData[tempIndex].updateValue(element["photo_path"]!, forKey: "item_url")
                                 self.uploadData[tempIndex].updateValue("video", forKey: "type")

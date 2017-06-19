@@ -10,6 +10,8 @@ import UIKit
 
 class ListTableViewCell: UITableViewCell {
 
+    @IBOutlet weak var subtitleLabel: UILabel!
+    @IBOutlet weak var creatorImage: UIImageView!
     @IBOutlet weak var visiualEffect: UIVisualEffectView!
     @IBOutlet weak var storyLabel: UILabel!
     @IBOutlet weak var storyImage: UIImageView!

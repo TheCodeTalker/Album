@@ -22,4 +22,15 @@ class ImageViewCollectionViewCell: UICollectionViewCell {
     var player : AVPlayer!
     var playerLayer : AVPlayerLayer!
     var playerItm : AVPlayerItem!
+    
+    override func apply(_ layoutAttributes: UICollectionViewLayoutAttributes) {
+        super.apply(layoutAttributes)
+        
+        self.layoutIfNeeded()
+    }
+    
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        self.backgroundColor = UIColor.clear
+    }
 }

@@ -16,5 +16,5 @@ target 'MYAlbum' do
   pod 'NVActivityIndicatorView'
   pod 'Fabric'
   pod 'Crashlytics'
-
+  pod 'SABlurImageView'
 end

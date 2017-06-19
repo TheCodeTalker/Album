@@ -415,14 +415,26 @@ extension ListAllTableViewController : UITableViewDelegate,UITableViewDataSource
       func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
      let cell = tableView.dequeueReusableCell(withIdentifier: "ListTableViewCell", for: indexPath) as! ListTableViewCell
         var story = self.storyArray[indexPath.item]
-        
         var urlImage = story.story_cover_photo_path.components(separatedBy: "album")
-        
         var totalPath = URLConstants.imgDomain
+        cell.storyImage.backgroundColor = UIColor(hexString:story.story_cover_photo_slice_code)
         if urlImage.count == 2{
-        cell.storyImage.sd_setImage(with: URL(string: totalPath + urlImage[1]), placeholderImage: UIImage(named: ""))
+            cell.storyImage.sd_setShowActivityIndicatorView(true)
+       // cell.storyImage.sd_setImage(with: URL(string: totalPath + urlImage[1]), placeholderImage: UIImage(named: ""))
+           
+            
+            cell.storyImage.sd_setImage(with: URL(string: totalPath + urlImage[1]), placeholderImage: UIImage(named: ""), options: [], completed: { (image, data, error, finished) in
+                guard let image = image else{ return}
+                cache.setObject(image, forKey: "\(totalPath + urlImage[1])" as NSString)
+        })
+            
+            
+            
+            
         }
         cell.storyLabel.text = story.story_heading.capitalized
+        cell.subtitleLabel.text = story.story_heading_description.capitalized
+        cell.creatorImage.setImage(string: story.writen_by, color: UIColor(hexString:"#7FC9F1"), circular: true)
        if  story.blurOrNot{
         cell.visiualEffect.isHidden = false
         }else{
@@ -442,6 +454,18 @@ extension ListAllTableViewController : UITableViewDelegate,UITableViewDataSource
         var home = self.storyboard?.instantiateViewController(withIdentifier: "HomePage") as! ViewController
         var story = self.storyArray[indexPath.item]
         home.storyId = String(story.story_id)
+        home.storyTitle = story.story_heading
+        home.storySubtitle = story.story_heading_description
+        
+        var urlImage = story.story_cover_photo_path.components(separatedBy: "album")
+        let totalPath = URLConstants.imgDomain
+        
+        let items = urlImage[1]
+        
+        let url = totalPath + items
+        
+        
+        home.story_cover_photo_path = url
         self.navigationController?.pushViewController(home, animated: true)
         
         
