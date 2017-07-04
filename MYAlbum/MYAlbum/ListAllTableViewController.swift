@@ -9,17 +9,33 @@
 import UIKit
 import Alamofire
 import SDWebImage
-
-class ListAllTableViewController: UIViewController {
+ var blurFlag = -1
+class ListAllTableViewController: UIViewController,UINavigationControllerDelegate,NTTransitionProtocol {
 
     @IBOutlet weak var tableView: UITableView!
     var allStoryArray = [[String: AnyObject]]()
+    var stopped : Bool = false
     lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
         refreshControl.addTarget(self, action: #selector(handleRefresh(refreshControl:)), for: UIControlEvents.valueChanged)
         return refreshControl
     }()
+    var openingFrame: CGRect?
+    var cellView:UIView?{
+        didSet{
+            print("hel;lpo")
+        }
+    }
+    
+    // var visualEffectView: UIView?
+    
+   
+
+    var cellindexPath:IndexPath?
+    
+   //  let transitionDelegate: TransitioningDelegate = TransitioningDelegate()
     var storyArray = [StoryModel]()
+   
     override func viewDidLoad() {
         super.viewDidLoad()
         self.tableView.delegate = self
@@ -27,20 +43,26 @@ class ListAllTableViewController: UIViewController {
         
         self.tableView.emptyDataSetSource = self
         self.tableView.emptyDataSetDelegate = self
-        
+        self.navigationController?.delegate = self
         
         tableView.register(UINib(nibName: "ListTableViewCell", bundle: nil), forCellReuseIdentifier: "ListTableViewCell")
         let longpress = UILongPressGestureRecognizer(target: self, action: #selector(longPressGestureRecognized))
         self.tableView.addGestureRecognizer(longpress)
         
-        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(self.respondToSwipeGesture))
-        swipeLeft.direction = UISwipeGestureRecognizerDirection.left
-        self.tableView.addGestureRecognizer(swipeLeft)
-        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(self.respondToSwipeGesture))
-        swipeRight.direction = UISwipeGestureRecognizerDirection.right
-        self.tableView.addGestureRecognizer(swipeRight)
+        //UINavigationBar.appearance()
+        //self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(), for: UIBarMetrics.default)
         
-        self.tableView.addSubview(self.refreshControl)
+       
+        
+     //   let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(self.respondToSwipeGesture))
+      //  swipeLeft.direction = UISwipeGestureRecognizerDirection.left
+       // self.tableView.addGestureRecognizer(swipeLeft)
+//        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(self.respondToSwipeGesture))
+  //      swipeRight.direction = UISwipeGestureRecognizerDirection.right
+    //    self.tableView.addGestureRecognizer(swipeRight)
+     //   self.tableView.addSubview(self.refreshControl)
+        
+     //   self.transitioningDelegate = self
         
         
         // Uncomment the following line to preserve selection between presentations
@@ -57,21 +79,148 @@ class ListAllTableViewController: UIViewController {
     }
     
     
+    func scrollIfNeed(snapshotView:UIView)  {
+        var cellCenter = snapshotView.center
+        
+        var newOffset = tableView.contentOffset
+        let buffer  = CGFloat(10)
+        let bottomY = tableView.contentOffset.y + tableView.frame.size.height - 100
+        // print("bottomY\(bottomY)")
+        //print("(snapshotView.frame.maxY - buffer)\((snapshotView.frame.maxY - buffer))")
+        
+        //print("condition \(bottomY  < (snapshotView.frame.maxY - buffer))")
+        if (bottomY  < (snapshotView.frame.maxY - buffer)){
+            
+            newOffset.y = newOffset.y + 1
+            
+            //      print("uppppp")
+            
+            if (((newOffset.y) + (tableView.bounds.size.height)) > (tableView.contentSize.height)) {
+                return
+            }
+            cellCenter.y = cellCenter.y + 1
+        }
+        
+        
+        let offsetY = tableView.contentOffset.y
+        // print("chita \(offsetY)")
+        if (snapshotView.frame.minY + buffer < offsetY) {
+            // print("Atul\(snapshotView.frame.minY + buffer)")
+            // We're scrolling up
+            newOffset.y = newOffset.y - 1
+            
+            //   print("downnnn")
+            if ((newOffset.y) <= CGFloat(0)) {
+                return
+            }
+            
+            // adjust cell's center by 1
+            cellCenter.y = cellCenter.y - 1
+        }
+        
+        
+        tableView.contentOffset = newOffset
+        snapshotView.center = cellCenter;
+        
+        // Repeat until we went to far.
+        if(self.stopped == true){
+            
+            return
+            
+        }else
+        {
+            let deadlineTime = DispatchTime.now() + 0.1
+            DispatchQueue.main.asyncAfter(deadline: deadlineTime, execute: {
+                self.scrollIfNeed(snapshotView: snapshotView)
+            })
+        }
+        
+        
+    }
+    
+    
+    func navigationController(_ navigationController: UINavigationController, animationControllerFor operation: UINavigationControllerOperation, from fromVC: UIViewController, to toVC: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        if operation == .push{
+            
+            let fromVCConfromA = (fromVC as? NTTransitionProtocol)
+       //     let fromVCConfromB = (fromVC as? NTTansitionWaterfallGridViewProtocol)
+            if (fromVCConfromA != nil){
+                let presentationAnimator = PresentationAnimator()
+                presentationAnimator.openingFrame = openingFrame!
+                presentationAnimator.cellView = cellView
+                presentationAnimator.indexPath = cellindexPath
+                return presentationAnimator
+            }
+           
+        }else if operation == .pop{
+//            let dismissAnimator = DismissalAnimator()
+//            dismissAnimator.openingFrame = openingFrame!
+//            dismissAnimator.cellView = cellView
+//            return dismissAnimator
+        }
+        return nil
+    }
+    
+    func transitionCollectionView() -> UITableView!{
+        return tableView
+    }
+    
+    func animationController(forPresented presented: UIViewController, presenting: UIViewController, source: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        let presentationAnimator = PresentationAnimator()
+        
+        presentationAnimator.openingFrame = openingFrame!
+        presentationAnimator.cellView = cellView
+        presentationAnimator.indexPath = cellindexPath
+        return presentationAnimator
+    }
+    
+    func animationController(forDismissed dismissed: UIViewController) -> UIViewControllerAnimatedTransitioning? {
+        let dismissAnimator = DismissalAnimator()
+        dismissAnimator.openingFrame = openingFrame!
+        dismissAnimator.cellView = cellView
+        
+        return dismissAnimator
+    }
+
+    
+    
+    
     override func viewWillAppear(_ animated: Bool) {
         self.navigationController?.navigationBar.isHidden = false
 
         self.navigationController?.isNavigationBarHidden = false
         self.navigationController?.setNavigationBarHidden(false, animated: false)
-        self.navigationController?.navigationBar.setBackgroundImage(nil, for: UIBarMetrics.default)
-        self.navigationController?.navigationBar.shadowImage = nil
+      //  self.navigationController?.navigationBar.setBackgroundImage(nil, for: UIBarMetrics.default)
+     //   self.navigationController?.navigationBar.shadowImage = nil
         //self.navigationController?.navigationItem.leftBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: UIBarButtonItem., target: <#T##Any?#>, action: <#T##Selector?#>)
 //        self.navigationController?.navigationBar.tintColor = UIColor.black
 //        self.navigationController?.navigationBar.barTintColor = UIColor.black
+        
+        self.navigationController?.navigationBar.setBackgroundImage(UIImage.init(), for: UIBarMetrics.default)
+        self.navigationController?.navigationBar.shadowImage = UIImage.init()
+        self.navigationController?.navigationBar.isTranslucent = true
+        self.navigationController?.view.backgroundColor = UIColor.clear
+        
+       //  self.navigationController?.navigationBar.setBackgroundImage(UIImage(named: "navigation")!.resizableImage(withCapInsets: UIEdgeInsetsMake(0, 0, 0, 0), resizingMode: .stretch), for: .default)
         self.navigationItem.setRightBarButton(UIBarButtonItem(barButtonSystemItem: .add, target: self, action: #selector(addStory(_:))), animated: true)
         self.navigationItem.rightBarButtonItem?.tintColor = UIColor.blue
         //self.navigationItem.rightBarButtonItem.
             //UIBarButtonItem.init(image:, style:UIBarButtonItemStyle.Plain, target: self, action: Selector("back"))
-
+//       for cell in tableView.visibleCells {
+//        let cell1 = cell as! ListTableViewCell
+//        cell1.scrollviewCell.isUserInteractionEnabled = true
+//        
+        self.getAllStoryAPICall {
+            
+            DispatchQueue.main.async {
+        //        refreshControl.endRefreshing()
+                self.tableView.reloadData()
+            }
+        }
+        
+//        }
+        
+        
 
     }
     
@@ -83,13 +232,7 @@ class ListAllTableViewController: UIViewController {
 
     }
     func handleRefresh(refreshControl: UIRefreshControl) {
-               self.getAllStoryAPICall {
-            
-            DispatchQueue.main.async {
-                 refreshControl.endRefreshing()
-                self.tableView.reloadData()
-            }
-        }
+
     }
     
     func title(forEmptyDataSet scrollView: UIScrollView) -> NSAttributedString? {
@@ -151,9 +294,9 @@ class ListAllTableViewController: UIViewController {
                     let swipeLocation = gesture.location(in: self.tableView)
                     if let swipedIndexPath = tableView.indexPathForRow(at: swipeLocation) {
                         if let swipedCell = self.tableView.cellForRow(at: swipedIndexPath) as? ListTableViewCell{
-                             self.storyArray[swipedIndexPath.item].blurOrNot = true
+                            // self.storyArray[swipedIndexPath.item].blurOrNot = true
                             //self.tableView.reloadRows(at: [swipedIndexPath], with: UITableViewRowAnimation.left)
-                            swipedCell.visiualEffect.isHidden = true
+                           // swipedCell.visiualEffect.isHidden = true
                         }
                     }
                 }
@@ -162,13 +305,12 @@ class ListAllTableViewController: UIViewController {
             case UISwipeGestureRecognizerDirection.down:
                 print("Swiped down")
             case UISwipeGestureRecognizerDirection.left:
-                
                 if gesture.state == UIGestureRecognizerState.ended {
                     let swipeLocation = gesture.location(in: self.tableView)
                     if let swipedIndexPath = tableView.indexPathForRow(at: swipeLocation) {
                         if let swipedCell = self.tableView.cellForRow(at: swipedIndexPath) as? ListTableViewCell{
-                            swipedCell.visiualEffect.isHidden = false
-                            self.storyArray[swipedIndexPath.item].blurOrNot = false
+                           // swipedCell.visiualEffect.isHidden = false
+                            //self.storyArray[swipedIndexPath.item].blurOrNot = false
                           //  self.tableView.reloadRows(at: [swipedIndexPath], with: UITableViewRowAnimation.right)
                         }
                     }
@@ -220,6 +362,18 @@ class ListAllTableViewController: UIViewController {
         
         switch state {
         case UIGestureRecognizerState.began:
+            
+            if let cell = self.tableView.cellForRow(at: IndexPath(item: blurFlag, section: 0)) as? ListTableViewCell{
+                DispatchQueue.main.async() {
+                    UIView.animate(withDuration: 0.2, delay: 0, options: UIViewAnimationOptions.curveLinear, animations: {
+                        cell.scrollviewCell.contentOffset.x = 0
+                    }, completion: { (test) in
+                        blurFlag = -1
+                    })
+                }
+            }
+            
+            
             if indexPath != nil {
                 Path.initialIndexPath = indexPath as IndexPath?
                 let cell = tableView.cellForRow(at: indexPath!) as UITableViewCell!
@@ -233,8 +387,8 @@ class ListAllTableViewController: UIViewController {
                 UIView.animate(withDuration: 0.25, animations: { () -> Void in
                     center?.y = locationInView.y
                     My.cellIsAnimating = true
-                    My.cellSnapshot!.center = center!
-                    My.cellSnapshot!.transform = CGAffineTransform(scaleX: 1.05, y: 1.05)
+                    My.cellSnapshot!.center = CGPoint(x: locationInView.x, y: locationInView.y)
+                    My.cellSnapshot!.transform = CGAffineTransform(scaleX: 0.5, y: 0.5)
                     My.cellSnapshot!.alpha = 0.98
                     cell?.alpha = 0.0
                 }, completion: { (finished) -> Void in
@@ -253,18 +407,26 @@ class ListAllTableViewController: UIViewController {
             }
             
         case UIGestureRecognizerState.changed:
+            stopped = false
+            
             if My.cellSnapshot != nil {
+                self.scrollIfNeed(snapshotView: My.cellSnapshot!)
                 var center = My.cellSnapshot!.center
                 center.y = locationInView.y
+                center.x = locationInView.x
                 My.cellSnapshot!.center = center
                 
                 if let indexPath = indexPath , indexPath != Path.initialIndexPath {
                     storyArray.insert(storyArray.remove(at: Path.initialIndexPath!.row), at: indexPath.row)
                     tableView.moveRow(at: Path.initialIndexPath!, to: indexPath)
+                    
                     Path.initialIndexPath = indexPath
                 }
             }
-        default:
+            
+        case UIGestureRecognizerState.ended:
+            
+            stopped = true
             if Path.initialIndexPath != nil {
                 let cell = tableView.cellForRow(at: Path.initialIndexPath! as IndexPath) as UITableViewCell!
                 if My.cellIsAnimating {
@@ -277,17 +439,22 @@ class ListAllTableViewController: UIViewController {
                 UIView.animate(withDuration: 0.25, animations: { () -> Void in
                     My.cellSnapshot!.center = (cell?.center)!
                     My.cellSnapshot!.transform = CGAffineTransform.identity
-                    My.cellSnapshot!.alpha = 0.0
-                    cell?.alpha = 1.0
+                    My.cellSnapshot!.alpha = 1
+                   
                     
                 }, completion: { (finished) -> Void in
                     if finished {
+                         cell?.alpha = 1.0
                         Path.initialIndexPath = nil
                         My.cellSnapshot!.removeFromSuperview()
                         My.cellSnapshot = nil
                     }
                 })
             }
+            
+        default:
+            break
+
         }
     }
     
@@ -415,57 +582,164 @@ extension ListAllTableViewController : UITableViewDelegate,UITableViewDataSource
       func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
      let cell = tableView.dequeueReusableCell(withIdentifier: "ListTableViewCell", for: indexPath) as! ListTableViewCell
         var story = self.storyArray[indexPath.item]
-        var urlImage = story.story_cover_photo_path.components(separatedBy: "album")
-        var totalPath = URLConstants.imgDomain
-        cell.storyImage.backgroundColor = UIColor(hexString:story.story_cover_photo_slice_code)
-        if urlImage.count == 2{
-            cell.storyImage.sd_setShowActivityIndicatorView(true)
-       // cell.storyImage.sd_setImage(with: URL(string: totalPath + urlImage[1]), placeholderImage: UIImage(named: ""))
-           
-            
-            cell.storyImage.sd_setImage(with: URL(string: totalPath + urlImage[1]), placeholderImage: UIImage(named: ""), options: [], completed: { (image, data, error, finished) in
-                guard let image = image else{ return}
-                cache.setObject(image, forKey: "\(totalPath + urlImage[1])" as NSString)
-        })
-            
-            
-            
-            
+       cell.configureWithItem(story: story)
+        cell.slideBtn.tag = indexPath.item
+        cell.scrollviewCell.tag = indexPath.item
+        //cell.scrollviewCell.delegate = self
+        let singleTap = UITapGestureRecognizer(target: self, action: #selector(ListAllTableViewController.clickedScrollView(_:)))
+        cell.ViewForScroll.removeGestureRecognizer(singleTap)
+        singleTap.numberOfTapsRequired = 1
+        cell.ViewForScroll.addGestureRecognizer(singleTap)
+        cell.slideBtn.addTarget(self, action: #selector(scrollWithAnimation(sender:)), for: UIControlEvents.touchUpInside)
+        if blurFlag == indexPath.item{
+            cell.scrollviewCell.contentOffset.x = 85
         }
-        cell.storyLabel.text = story.story_heading.capitalized
-        cell.subtitleLabel.text = story.story_heading_description.capitalized
-        cell.creatorImage.setImage(string: story.writen_by, color: UIColor(hexString:"#7FC9F1"), circular: true)
-       if  story.blurOrNot{
-        cell.visiualEffect.isHidden = false
-        }else{
-            cell.visiualEffect.isHidden = true
-        }
-        
-     
-     return cell
+        return cell
      }
     
+    
+    func pickCellCleanUp() {
+        for cell in self.tableView.visibleCells{
+            let celltemp = cell as! ListTableViewCell
+            DispatchQueue.main.async() {
+                UIView.animate(withDuration: 0.2, delay: 0, options: UIViewAnimationOptions.curveLinear, animations: {
+                    celltemp.scrollviewCell.contentOffset.x = 0
+                }, completion: { (test) in
+                    blurFlag = -1
+                })
+            }
+        }
+    }
+    
+    
+    func scrollWithAnimation(sender : AnyObject)  {
+        guard let cellNo = sender.tag else {return}
+        guard let cellClicked = self.tableView.cellForRow(at: IndexPath(item: cellNo, section: 0)) as? ListTableViewCell else {return}
+        for cell in self.tableView.visibleCells{
+            let celltemp = cell as! ListTableViewCell
+            DispatchQueue.main.async() {
+                UIView.animate(withDuration: 0.2, delay: 0, options: UIViewAnimationOptions.curveLinear, animations: {
+                    celltemp.scrollviewCell.contentOffset.x = 0
+                }, completion: { (test) in
+                blurFlag = cellNo
+                })
+            }
+        }
+        DispatchQueue.main.async() {
+            UIView.animate(withDuration: 0.2, delay: 0, options: UIViewAnimationOptions.curveLinear, animations: {
+                cellClicked.scrollviewCell.contentOffset.x = 85
+            }, completion: { (test) in
+            blurFlag = cellNo
+            })
+        }
+        
+    }
+
+    
+    
+    @IBAction func deleteBtnCliked(sender : AnyObject) {
+        let point =  sender.convert(CGPoint(x: 0, y: 0), to: self.tableView)
+        //let point = sender.convert(CGPoint(x: 0, y: 0), toView : self.tableView)
+        let indexPath = self.tableView.indexPathForRow(at: point)
+        
+        let actionSheetControllerIOS8: UIAlertController = UIAlertController(title: "Delete item ?", message: "Are you sure that you wish to delete this?", preferredStyle: .actionSheet)
+        
+        let cancelActionButton: UIAlertAction = UIAlertAction(title: "Cancel", style: .default) { action -> Void in
+        }
+        actionSheetControllerIOS8.addAction(cancelActionButton)
+        
+        let deleteActionButton: UIAlertAction = UIAlertAction(title: "Delete", style: .destructive)
+        { action -> Void in
+            //self.deleteHomesAPICall(timeLineID: String(describing: self.profile!.timeLine[(indexPath?.row)!].timeLineID), handler: {
+                
+                
+                self.tableView.beginUpdates()
+                
+                self.tableView.deleteRows(at: [indexPath!], with: UITableViewRowAnimation.automatic)
+                
+                self.storyArray.remove(at: indexPath!.row)
+                
+                self.tableView.endUpdates()
+          //  })
+            
+        }
+        actionSheetControllerIOS8.addAction(deleteActionButton)
+        self.present(actionSheetControllerIOS8, animated: true, completion: nil)
+        
+    }
+    
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 320
+        return 280
+    }
+    
+    
+    func clickedScrollView(_ sender: UITapGestureRecognizer) {
+        
+    
+        let touchLocation = sender.location(ofTouch: 0, in: self.tableView)
+        let indexpath = self.tableView.indexPathForRow(at: touchLocation)
+        if let  indexpath = indexpath{
+            let cell = self.tableView.cellForRow(at: indexpath) as! ListTableViewCell
+            
+            if (cell.visualEffectView?.alpha)! > CGFloat(0.5){
+                DispatchQueue.main.async() {
+                    
+                    UIView.animate(withDuration: 0.2, delay: 0, options: UIViewAnimationOptions.curveLinear, animations: {
+                        cell.scrollviewCell.contentOffset.x = 0
+                    }, completion: nil)
+                }
+
+            }else{
+            blurFlag = -1
+            let home = self.storyboard?.instantiateViewController(withIdentifier: "HomePage") as! ViewController
+            let story = self.storyArray[indexpath.item]
+            home.storyId = String(story.story_id)
+            home.storyTitle = story.story_heading
+            home.storySubtitle = story.story_heading_description
+            var urlImage = story.story_cover_photo_path.components(separatedBy: "album")
+            var totalPath = URLConstants.imgDomain
+            if urlImage.count > 1{
+           totalPath = totalPath + urlImage[1]
+            }else{
+                totalPath = totalPath + urlImage[0]
+            }
+            let url = totalPath
+            home.story_cover_photo_path = url
+            let cell = tableView.cellForRow(at: indexpath) as! ListTableViewCell
+            openingFrame = cell.frame
+            cellView = cell.storyImage
+            cellindexPath = indexpath
+            self.navigationController?.pushViewController(home, animated: true)
+            }
+
+        }
+        
+        
+        
     }
  
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        var home = self.storyboard?.instantiateViewController(withIdentifier: "HomePage") as! ViewController
-        var story = self.storyArray[indexPath.item]
+        let home = self.storyboard?.instantiateViewController(withIdentifier: "HomePage") as! ViewController
+        let story = self.storyArray[indexPath.item]
         home.storyId = String(story.story_id)
         home.storyTitle = story.story_heading
         home.storySubtitle = story.story_heading_description
-        
         var urlImage = story.story_cover_photo_path.components(separatedBy: "album")
         let totalPath = URLConstants.imgDomain
-        
         let items = urlImage[1]
-        
         let url = totalPath + items
-        
-        
         home.story_cover_photo_path = url
+        let cell = tableView.cellForRow(at: indexPath) as! ListTableViewCell
+        openingFrame = cell.frame
+        cellView = cell.storyImage
+        cellindexPath = indexPath
+       // home.transitioningDelegate = self
+     //   home.modalPresentationStyle = .custom
+        
+        //let navController = UINavigationController(rootViewController: home)
+        //self.present(navController, animated:true, completion: nil)
+        //self.navigationController?.present(home, animated: true, completion: nil)
         self.navigationController?.pushViewController(home, animated: true)
         
         

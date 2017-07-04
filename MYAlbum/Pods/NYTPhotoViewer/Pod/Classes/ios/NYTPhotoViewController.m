@@ -10,12 +10,13 @@
 #import "NYTPhoto.h"
 #import "NYTScalingImageView.h"
 
+
 #ifdef ANIMATED_GIF_SUPPORT
 #import <FLAnimatedImage/FLAnimatedImage.h>
 #endif
 
 NSString * const NYTPhotoViewControllerPhotoImageUpdatedNotification = @"NYTPhotoViewControllerPhotoImageUpdatedNotification";
-
+NSString * const singleClicked = @"NYTPhotoViewControllerPhotoImageUpdatedNotification";
 @interface NYTPhotoViewController () <UIScrollViewDelegate>
 
 @property (nonatomic) id <NYTPhoto> photo;
@@ -64,11 +65,26 @@ NSString * const NYTPhotoViewControllerPhotoImageUpdatedNotification = @"NYTPhot
     self.scalingImageView.frame = self.view.bounds;
     [self.view addSubview:self.scalingImageView];
     
+   // NYTPhoto* test = (NYTPhoto *) photo;
+    if (_photo.isVideo){
+    UIButton *btnTwo = [UIButton buttonWithType:UIButtonTypeRoundedRect];
+    btnTwo.frame = CGRectMake(self.view.bounds.size.width/2, self.view.bounds.size.height/2, 40, 40);
+    
+    UIImage *btnImage = [UIImage imageNamed:@"CircledPlay.png"];
+    [btnTwo setImage:btnImage forState:UIControlStateNormal];
+    [btnTwo addTarget:self action:@selector(playVideo:) forControlEvents:UIControlEventTouchUpInside];
+    [self.view addSubview: btnTwo];
+    }
+    
+    
     [self.view addSubview:self.loadingView];
     [self.loadingView sizeToFit];
     
+    
+    
     [self.view addGestureRecognizer:self.doubleTapGestureRecognizer];
     [self.view addGestureRecognizer:self.longPressGestureRecognizer];
+    
 }
 
 - (void)viewWillLayoutSubviews {
@@ -78,6 +94,24 @@ NSString * const NYTPhotoViewControllerPhotoImageUpdatedNotification = @"NYTPhot
     
     [self.loadingView sizeToFit];
     self.loadingView.center = CGPointMake(CGRectGetMidX(self.view.bounds), CGRectGetMidY(self.view.bounds));
+}
+
+- (void)playVideo:(UIButton *)sender {
+    
+    if (_photo.isVideo){
+        if (_photo.videoUrl  != nil){
+            NSURL *url = [NSURL URLWithString:_photo.videoUrl];
+            AVPlayer *player = [AVPlayer playerWithURL: url];
+            AVPlayerViewController *controller = [[AVPlayerViewController alloc] init];
+            player.muted = false;
+            [self presentViewController:controller animated:YES completion:nil];
+            controller.player = player;
+            [player play];
+        }
+        
+    }
+
+
 }
 
 #pragma mark - NYTPhotoViewController
@@ -152,6 +186,8 @@ NSString * const NYTPhotoViewControllerPhotoImageUpdatedNotification = @"NYTPhot
     
     self.longPressGestureRecognizer = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(didLongPressWithGestureRecognizer:)];
 }
+
+
 
 - (void)didDoubleTapWithGestureRecognizer:(UITapGestureRecognizer *)recognizer {
     CGPoint pointInView = [recognizer locationInView:self.scalingImageView.imageView];

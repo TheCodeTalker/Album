@@ -8,6 +8,8 @@
 
 @import UIKit;
 #import "NYTPhotoContainer.h"
+@import AVKit;
+@import AVFoundation;
 
 @class NYTScalingImageView;
 
@@ -45,6 +47,10 @@ extern NSString * const NYTPhotoViewControllerPhotoImageUpdatedNotification;
  *  The object that acts as the photo view controller's delegate.
  */
 @property (nonatomic, weak, nullable) id <NYTPhotoViewControllerDelegate> delegate;
+
+
+
+@property (nonatomic, readonly) UIButton *play;
 
 /**
  *  The designated initializer that takes the photo and activity view.

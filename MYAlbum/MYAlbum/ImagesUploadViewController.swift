@@ -102,8 +102,6 @@ class ImagesUploadViewController: UIViewController {
                         print("Success with JSON: \(JSON)")
                         
                         let response = JSON as! NSDictionary
-                        
-                        
                         //example if there is an id
                         let dataArray = response.value(forKey: "details") as! [[String: AnyObject]]
                         self.uploadData[0].updateValue((dataArray.first?["photo_path"]!)!, forKey: "cloudFilePath")
@@ -122,9 +120,18 @@ class ImagesUploadViewController: UIViewController {
                         self.uploadData[0].updateValue("img", forKey: "type")
                         self.uploadData[0].updateValue((dataArray.first?["photo_id"]!)!, forKey: "photo_id")
                         if self.uploadData.count == 0{
-                            
                         }else{
+                            if self.uploadData.count > 1{
                         self.uploadOtherThenCoverPhoto()
+                            }else{
+                                //finish uploading 
+                                self.defaults.set(false, forKey: "insideUploads")
+                                self.dismissView!(self,false,self.uploadData)
+                                
+                                self.dismiss(animated: true, completion: nil)
+                            }
+                            
+                        
                         }
                         
                         

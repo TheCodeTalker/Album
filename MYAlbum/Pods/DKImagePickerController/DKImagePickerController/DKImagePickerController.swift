@@ -409,7 +409,7 @@ open class DKImagePickerController : UINavigationController {
         if let local = UserDefaults.standard.object(forKey: "FirstTimeUpload") as? Bool{
             if local == true{
                 if self.selectedAssets.count == 1{
-                    if (self.selectedAssets.first?.isVideo)!{
+                    if let checkMedia =  self.selectedAssets.first , checkMedia.isVideo{
                         let alert = UIAlertController(title: "Please Select atlist one image", message: "One Image Please", preferredStyle: UIAlertControllerStyle.alert)
                         
                         self.present(alert, animated: true, completion: nil)
@@ -428,8 +428,15 @@ open class DKImagePickerController : UINavigationController {
                                 print("destructive")
                             }
                         }))
+                    }else{
+                        print("hello")
+                        self.presentingViewController?.dismiss(animated: true, completion: {
+                            UserDefaults.standard.set(false, forKey: "FirstTimeUpload")
+                            self.didSelectAssets?(self.selectedAssets)
+                        })
                     }
                 }else{
+                    print("hello")
                     self.presentingViewController?.dismiss(animated: true, completion: {
                         UserDefaults.standard.set(false, forKey: "FirstTimeUpload")
                         self.didSelectAssets?(self.selectedAssets)

@@ -58,7 +58,6 @@
 
 - (instancetype)initWithImage:(UIImage *)image frame:(CGRect)frame {
     self = [super initWithFrame:frame];
-
     if (self) {
         [self commonInitWithImage:image imageData:nil];
     }

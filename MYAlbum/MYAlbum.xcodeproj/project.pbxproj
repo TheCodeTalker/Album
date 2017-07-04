@@ -8,9 +8,12 @@
 
 /* Begin PBXBuildFile section */
 		2063E70D0057AE76417001BC /* Pods_MYAlbum.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D8EE2002A809137522D10EAD /* Pods_MYAlbum.framework */; };
+		B649926B1EFA4AB700247C34 /* NTTransitionProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = B649926A1EFA4AB700247C34 /* NTTransitionProtocol.swift */; };
 		B660EA811ED4823400B24FB0 /* SAMTextView.m in Sources */ = {isa = PBXBuildFile; fileRef = B660EA801ED4823200B24FB0 /* SAMTextView.m */; };
 		B660EA831ED4826100B24FB0 /* TextCellStory.xib in Resources */ = {isa = PBXBuildFile; fileRef = B660EA821ED4826100B24FB0 /* TextCellStory.xib */; };
 		B660EA851ED4833B00B24FB0 /* TextCellStoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = B660EA841ED4833B00B24FB0 /* TextCellStoryCollectionViewCell.swift */; };
+		B662673F1EF9499A0058568B /* DismissalAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B662673C1EF949990058568B /* DismissalAnimator.swift */; };
+		B66267401EF9499A0058568B /* PresentationAnimator.swift in Sources */ = {isa = PBXBuildFile; fileRef = B662673D1EF9499A0058568B /* PresentationAnimator.swift */; };
 		B662D8351EDBFEAB009300C1 /* ImagesUploadViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B662D8341EDBFEAB009300C1 /* ImagesUploadViewController.swift */; };
 		B667D1881E7AEA3F00747D23 /* PictureHeader.xib in Resources */ = {isa = PBXBuildFile; fileRef = B667D1871E7AEA3F00747D23 /* PictureHeader.xib */; };
 		B667D18A1E7AEA8C00747D23 /* PictureHeaderCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B667D1891E7AEA8C00747D23 /* PictureHeaderCollectionReusableView.swift */; };
@@ -50,10 +53,13 @@
 
 /* Begin PBXFileReference section */
 		AA4E140A50FC9544679E4EA1 /* Pods-MYAlbum.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MYAlbum.release.xcconfig"; path = "Pods/Target Support Files/Pods-MYAlbum/Pods-MYAlbum.release.xcconfig"; sourceTree = "<group>"; };
+		B649926A1EFA4AB700247C34 /* NTTransitionProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NTTransitionProtocol.swift; sourceTree = "<group>"; };
 		B660EA7F1ED4823200B24FB0 /* SAMTextView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SAMTextView.h; sourceTree = "<group>"; };
 		B660EA801ED4823200B24FB0 /* SAMTextView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SAMTextView.m; sourceTree = "<group>"; };
 		B660EA821ED4826100B24FB0 /* TextCellStory.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = TextCellStory.xib; sourceTree = "<group>"; };
 		B660EA841ED4833B00B24FB0 /* TextCellStoryCollectionViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextCellStoryCollectionViewCell.swift; sourceTree = "<group>"; };
+		B662673C1EF949990058568B /* DismissalAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DismissalAnimator.swift; sourceTree = "<group>"; };
+		B662673D1EF9499A0058568B /* PresentationAnimator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PresentationAnimator.swift; sourceTree = "<group>"; };
 		B662D8341EDBFEAB009300C1 /* ImagesUploadViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImagesUploadViewController.swift; sourceTree = "<group>"; };
 		B667D1871E7AEA3F00747D23 /* PictureHeader.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = PictureHeader.xib; sourceTree = "<group>"; };
 		B667D1891E7AEA8C00747D23 /* PictureHeaderCollectionReusableView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PictureHeaderCollectionReusableView.swift; sourceTree = "<group>"; };
@@ -155,6 +161,9 @@
 				B68B7AFE1ED2EBFD007FB510 /* UIColorExtensions.swift */,
 				B66A796A1E6EEC0A001A2861 /* ZLBalancedFlowLayout.swift */,
 				B67637501E6FE9BF0029808C /* ExamplePhoto.swift */,
+				B662673C1EF949990058568B /* DismissalAnimator.swift */,
+				B662673D1EF9499A0058568B /* PresentationAnimator.swift */,
+				B649926A1EFA4AB700247C34 /* NTTransitionProtocol.swift */,
 				B68B7B001ED2EC96007FB510 /* StringExtensions.swift */,
 				B667D1871E7AEA3F00747D23 /* PictureHeader.xib */,
 				B678C51E1ECEE94200D748F8 /* ImageCollectionViewCell.xib */,
@@ -375,11 +384,14 @@
 				B667D18A1E7AEA8C00747D23 /* PictureHeaderCollectionReusableView.swift in Sources */,
 				B66A79561E6ED2A3001A2861 /* Utils.swift in Sources */,
 				B66A796B1E6EEC0A001A2861 /* ZLBalancedFlowLayout.swift in Sources */,
+				B662673F1EF9499A0058568B /* DismissalAnimator.swift in Sources */,
 				B66ECA9F1ED0700F00E2F780 /* UIScrollView+EmptyDataSet.m in Sources */,
 				B684762D1EE96D7300D62686 /* TextViewController.swift in Sources */,
 				B68B7B011ED2EC96007FB510 /* StringExtensions.swift in Sources */,
 				B66ECA971ED066C500E2F780 /* ImagesUploadProgressViewController.swift in Sources */,
 				B66ECAA71ED078F600E2F780 /* StoryModel.swift in Sources */,
+				B66267401EF9499A0058568B /* PresentationAnimator.swift in Sources */,
+				B649926B1EFA4AB700247C34 /* NTTransitionProtocol.swift in Sources */,
 				B67CCC641EF11DBE00184FE8 /* CalculationsShape.swift in Sources */,
 				B67CCC661EF136A400184FE8 /* CoverTitleViewEditViewController.swift in Sources */,
 				B660EA851ED4833B00B24FB0 /* TextCellStoryCollectionViewCell.swift in Sources */,

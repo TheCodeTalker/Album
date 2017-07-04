@@ -53,6 +53,9 @@ NS_ASSUME_NONNULL_BEGIN
  */
 @property (nonatomic, readonly, nullable) NSAttributedString *attributedCaptionCredit;
 
+@property (nonatomic, assign) BOOL isVideo;
+@property (nonatomic, retain, nullable) NSString *videoUrl;
+
 @end
 
 NS_ASSUME_NONNULL_END

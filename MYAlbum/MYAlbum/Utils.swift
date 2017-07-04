@@ -139,7 +139,7 @@ private func requestVideoDataForExportSession(_ exportSession: AVAssetExportSess
     exportSession.outputURL = URL(fileURLWithPath: tempFilePath)
     
     exportSession.exportAsynchronously() {
-        print("Video export completed, status: \(exportSession.status), error: \(exportSession.error)")
+        print("Video export completed, status: \(exportSession.status), error: \(String(describing: exportSession.error))")
         
         if exportSession.status == .completed {
             print("Video encoding OK, the process took \(-startTime.timeIntervalSinceNow) seconds")
@@ -180,20 +180,7 @@ func requestVideoDataForAssetUrl(_ url: URL, callback: @escaping ((_ videoFileUr
  Asynchronously get image data for AVAsset url.
  The callback will be called on the main thread.
 */
-func requestImageDataForAssetUrl(_ url: URL, callback: @escaping ((_ imageData: Data) -> Void)) {
-    let fetchResult = PHAsset.fetchAssets(withALAssetURLs: [url], options: nil)
-    //TODO : XCODE 8
-//    if let phAsset = fetchResult.firstObject as? PHAsset {
-//        PHImageManager.default().requestImageData(for: phAsset, options: nil) {
-//            (imageData, dataURI, orientation, info) -> Void in
-//            if let data = imageData {
-//                runOnMainThread {
-//                    callback(imageData: data)
-//                }
-//            }
-//        }
-//    }
-}
+
 
 
 /** 

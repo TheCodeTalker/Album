@@ -104,7 +104,6 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
         
         var  width  = [Float]()
         
-        if let collectionView = self.collectionView {
         let maxWidth = Float(scrollDirection == .vertical ? contentSize.width : contentSize.height)
         for i in (index ..< count) {
             let itemSize = self.sizeForItemAtIndexPath(IndexPath(item: i, section: 0)),
@@ -114,7 +113,7 @@ open class ZLBalancedFlowLayout: UICollectionViewFlowLayout {
             width.append(min(Float(ratio*self.rowHeight), Float(maxWidth)))
             
         }
-        }
+        
         return width
         
     }

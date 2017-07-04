@@ -19,7 +19,6 @@ PODS:
     - NYTPhotoViewer/Core
   - NYTPhotoViewer/Core (1.1.0)
   - ReachabilitySwift (3)
-  - SABlurImageView (3.0.1)
   - SDWebImage (4.0.0):
     - SDWebImage/Core (= 4.0.0)
   - SDWebImage/Core (4.0.0)
@@ -33,7 +32,6 @@ DEPENDENCIES:
   - NVActivityIndicatorView
   - NYTPhotoViewer (~> 1.1.0)
   - ReachabilitySwift (~> 3)
-  - SABlurImageView
   - SDWebImage
 
 SPEC CHECKSUMS:
@@ -46,9 +44,8 @@ SPEC CHECKSUMS:
   NVActivityIndicatorView: 9f52a7f84bf5c6a798722c450fe3c198e01c56ed
   NYTPhotoViewer: e80e8767f3780d2df37c6f72cbab15d6c7232911
   ReachabilitySwift: f5b9bb30a0777fac8f09ce8b067e32faeb29bb64
-  SABlurImageView: bd0940330d0e8571379a495623e57c436659a202
   SDWebImage: 76a6348bdc74eb5a55dd08a091ef298e56b55e41
 
-PODFILE CHECKSUM: 3261468512f099ed3e501c0f9a602e1c99b542f5
+PODFILE CHECKSUM: 550a82148e508310088c56a27234824df6cef54b
 
 COCOAPODS: 1.2.0
